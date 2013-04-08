@@ -1,8 +1,11 @@
 package com.zelwise.spiewnik;
 
+import java.io.IOException;
+
 import org.jsoup.nodes.Document;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,10 +24,44 @@ public class AppManager {
 	
 	public AppManager(Context context,ViewPager viewPager) {
 		this.dBHelper = new DBHelper(context);
-		this.db = dBHelper.getWritableDatabase();
 		this.context = context;
 		this.viewPager = viewPager;
+		
+		if(!this.dBHelper.checkDataBase()){
+			copyDb();
+		}
+		
+		this.db = dBHelper.getWritableDatabase();
     }
+	
+	private void copyDb(){
+		try
+		{
+			dBHelper.copyDataBase();
+		}
+		catch (IOException ioe)
+		{
+	 		throw new Error("Unable to create database");
+	 	}
+		
+		/*
+        try
+        {
+        	this.dBHelper.createDataBase();
+	 	}
+        catch (IOException ioe) {
+	 		throw new Error("Unable to create database");
+	 	}
+	 
+	 	try
+	 	{
+	 		this.dBHelper.OpenDataBase();
+	 	}
+	 	catch(SQLException sqle)
+	 	{
+	 		throw sqle;
+	 	}*/
+	}
 	
 	public void HideKeyboard(){
 		InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);

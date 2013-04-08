@@ -19,20 +19,23 @@
         android:text="0"
         android:visibility="invisible">
         </TextView>
-    <ScrollView 
-         android:layout_width="fill_parent"
-         android:layout_height="match_parent"
-         android:id="@+id/scrollview">
-    <TextView
-        android:id="@+id/SongTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="left|top"
-        android:background="#fff"
-        android:text="Song Content"
-        android:textColor="#000"
-        android:textSize="20sp">
+
+    <ScrollView
+        android:id="@+id/SongContentScrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/SongTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:gravity="left|top"
+            android:padding="10dp"
+            android:text="Song Content"
+            android:textColor="#000"
+            android:textSize="20sp" >
         </TextView>
-	</ScrollView>
+    </ScrollView>
+
 </LinearLayout>

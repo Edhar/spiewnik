@@ -1,6 +1,5 @@
 package com.zelwise.spiewnik;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +10,7 @@ import com.zelwise.spiewnik.SongArrayAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -31,15 +31,25 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity  extends Activity implements OnClickListener {
   Button downloadButton,dropTablesButton,recentlyViewedButton,
   oftenViewedButton,siteRatingViewedButton,searcTextClearButton;
+  
   EditText searchEditText,downloadFromEditText,downloadToEditText;
+  
+  LinearLayout advanceLinearLayout;
+  
+  CheckBox advanceCheckBox;
+  
   ListView songsListView;
   
   ViewPager viewPager;
@@ -49,10 +59,18 @@ public class MainActivity  extends Activity implements OnClickListener {
   Integer searchViewIndex = 1;
   Integer songViewIndex = 2;
   
-  public Integer maxSongInList = 20;
+  private Integer maxSongInResultList = 30;
+  public Integer GetMaxSongInResultList(){
+	  try{
+		  View settingView = manager.viewPager.findViewWithTag(settingsViewIndex);
+		  EditText MaxSongsPerPageOnResult = (EditText) settingView.findViewById(R.id.MaxSongsPerPageOnResult);
+		  return Utils.ToInt(MaxSongsPerPageOnResult.getText().toString(), maxSongInResultList);
+	  }catch(Exception e){
+		  
+	  }
+	  return maxSongInResultList;
+  }
   public Integer minSymbolsForStartSearch = 2;
-  
-  
   
   AppManager manager;
 
@@ -97,7 +115,6 @@ public class MainActivity  extends Activity implements OnClickListener {
         	
 			if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
 				activity.setTitle(getResources().getString(R.string.app_settings_name));
-				SetDropTableButtonText();
 			}else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
 				activity.setTitle(getResources().getString(R.string.app_name));
 			}else if (manager.viewPager.getCurrentItem() == songViewIndex) {
@@ -133,6 +150,21 @@ public class MainActivity  extends Activity implements OnClickListener {
     downloadButton.setOnClickListener(this);    
     dropTablesButton = (Button) settingsView.findViewById(R.id.DropTablesButton);
     dropTablesButton.setOnClickListener(this);
+    advanceLinearLayout = (LinearLayout) settingsView.findViewById(R.id.AdvanceLinearLayout);
+    advanceCheckBox = (CheckBox) settingsView.findViewById(R.id.AdvanceCheckBox);
+    advanceCheckBox.setOnClickListener(new OnClickListener() {    	 
+  	  @Override
+  	  public void onClick(View v) {
+  		if (((CheckBox) v).isChecked()) {
+  			advanceLinearLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+  			advanceLinearLayout.setVisibility(View.VISIBLE);
+  			SetDropTableButtonText();
+  		}else{
+  			advanceLinearLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,0));
+  			advanceLinearLayout.setVisibility(View.INVISIBLE);
+  		}
+  	  }
+  	});
     
     siteRatingViewedButton = (Button) searchView.findViewById(R.id.SiteRatingViewedButton);
     siteRatingViewedButton.setOnClickListener(this);
@@ -149,8 +181,13 @@ public class MainActivity  extends Activity implements OnClickListener {
         @Override
         public void onItemClick(AdapterView<?> a, View view, int position, long id)
         {
+        	
+        	
         	Song selSong =(Song) (songsListView.getItemAtPosition(position));
         	View songView = viewPager.findViewWithTag(songViewIndex);
+        	
+        	viewPager.setCurrentItem(songViewIndex);
+        	
         	TextView songTitle = (TextView)songView.findViewById(R.id.SongTitleTextView);
         	songTitle.setText(selSong.Title());
         	TextView songId = (TextView)songView.findViewById(R.id.SongIdTextView);
@@ -166,7 +203,10 @@ public class MainActivity  extends Activity implements OnClickListener {
         	Activity activity = (Activity) manager.context;
         	activity.setTitle(selSong.Title());
         	
-        	viewPager.setCurrentItem(songViewIndex);        	
+        	ScrollView songScroll = (ScrollView)songView.findViewById(R.id.SongContentScrollView);
+        	songScroll.scrollTo(0, 0);
+        	
+        	        	
         	//Toast.makeText(manager.context, "Id - " + selSong.Id() + "; Title - " + selSong.Title(), Toast.LENGTH_SHORT).show();
         }
     });
@@ -190,6 +230,7 @@ public class MainActivity  extends Activity implements OnClickListener {
             }
         }
     });
+
     registerForContextMenu(songsListView);
     
     searchEditText = (EditText) searchView.findViewById(R.id.SearchEditText);
@@ -207,10 +248,10 @@ public class MainActivity  extends Activity implements OnClickListener {
 
         @Override
         public void afterTextChanged(Editable searchText) {
+        	ToggleClearSearchButton(true);
         	if(searchText.length() >= minSymbolsForStartSearch){
-        	  ArrayList<Song> songs = Song.GetSongs(manager.db,searchText.toString(), maxSongInList,"");
+        	  ArrayList<Song> songs = Song.GetSongs(manager.db,searchText.toString(), GetMaxSongInResultList(),"");
         	  CreateAdapterAndSetToSongList(songs);
-        	  searcTextClearButton.setVisibility(View.VISIBLE);
         	}
         }
       });
@@ -227,34 +268,6 @@ public class MainActivity  extends Activity implements OnClickListener {
     
     LoadRecentlyViewed();
     FocusedFirstSongsListViewItem();
-  }
-  
-  /*
-  private static final long DOUBLE_PRESS_INTERVAL =  some value in ns.;
-  private long lastPressTime;
-
-  @Override
-  public void onBackPressed() {
-      long pressTime = System.nanoTime();
-      if(pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
-          // this is a double click event
-      }
-      lastPressTime = pressTime;
-  }*/
-  
-  @Override
-  public void onBackPressed() {
-	  
-	  if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
-		  manager.viewPager.setCurrentItem(searchViewIndex);
-	  }else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
-			moveTaskToBack(true);
-	  }else if (manager.viewPager.getCurrentItem() == songViewIndex) {
-			manager.viewPager.setCurrentItem(searchViewIndex);
-	  }
-	  
-	  manager.HideKeyboard();
-	  
   }
 
   @Override
@@ -300,7 +313,7 @@ public class MainActivity  extends Activity implements OnClickListener {
 		  break;
 	  case R.id.SearcTextClearButton:
 		  searchEditText.setText("");
-		  searcTextClearButton.setVisibility(View.INVISIBLE);
+		  ToggleClearSearchButton(false);
 		  LoadRecentlyViewed();
 		  break;
 	  }
@@ -354,17 +367,17 @@ public class MainActivity  extends Activity implements OnClickListener {
 	  }
   }
   private void LoadOftenViewed(){
-	  ArrayList<Song> songs = Song.GetSongs(manager.db,"", maxSongInList, Names.Rating + DBHelper.SortDescending);
+	  ArrayList<Song> songs = Song.GetSongs(manager.db,"", GetMaxSongInResultList(), Names.Rating + DBHelper.SortDescending);
 	  CreateAdapterAndSetToSongList(songs);
   }
   
   private void LoadSiteRatingViewed(){
-	  ArrayList<Song> songs = Song.GetSongs(manager.db,"", maxSongInList, Names.SiteRating + DBHelper.SortDescending);
+	  ArrayList<Song> songs = Song.GetSongs(manager.db,"", GetMaxSongInResultList(), Names.SiteRating + DBHelper.SortDescending);
 	  CreateAdapterAndSetToSongList(songs);
   }
   
   private void LoadRecentlyViewed(){
-	  ArrayList<Song> songs = Song.GetSongs(manager.db,"", maxSongInList, Names.RecentlyViewedDate + DBHelper.SortDescending);
+	  ArrayList<Song> songs = Song.GetSongs(manager.db,"", GetMaxSongInResultList(), Names.RecentlyViewedDate + DBHelper.SortDescending);
 	  CreateAdapterAndSetToSongList(songs);
   }
   
@@ -411,7 +424,17 @@ public class MainActivity  extends Activity implements OnClickListener {
             return super.onOptionsItemSelected(item);
         }
   }
-  
+  private void ToggleClearSearchButton(Boolean show){
+	  if(show){
+		  searcTextClearButton.setVisibility(View.VISIBLE);
+    	  searcTextClearButton.setLayoutParams(
+    			  new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+	  }else{
+		  searcTextClearButton.setVisibility(View.INVISIBLE);
+    	  searcTextClearButton.setLayoutParams(
+    			  new LayoutParams(0, LayoutParams.WRAP_CONTENT));
+	  }
+  }
   private void DeleteMenuAction(Song song){
 	  (song).Delete(manager.db);
 	  manager.viewPager.setCurrentItem(searchViewIndex);
