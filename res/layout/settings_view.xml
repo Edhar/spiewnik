@@ -1,138 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff" >
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:orientation="vertical" >
+        android:layout_height="fill_parent" >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center" 
-            android:layout_marginTop="15dip">
-
-            <CheckBox
-                android:id="@+id/AdvanceCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Advance"
-                android:textSize="18sp" >
-            </CheckBox>
-        </LinearLayout>
-
-        <View style="@style/Line" />
-
-        <LinearLayout
-            android:id="@+id/AdvanceLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:orientation="vertical"
-            android:visibility="invisible" >
+            android:background="#fff"
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dip"
                 android:gravity="center" >
 
-                <Button
-                    android:id="@+id/DropTablesButton"
+                <CheckBox
+                    android:id="@+id/AdvanceCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Clear All Songs"
+                    android:text="Advance"
                     android:textSize="18sp" >
-                </Button>
+                </CheckBox>
             </LinearLayout>
 
             <View style="@style/Line" />
 
             <LinearLayout
+                android:id="@+id/AdvanceLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center" >
+                android:layout_height="0dip"
+                android:orientation="vertical"
+                android:visibility="invisible" >
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:gravity="left|center_vertical"
-                    android:text="From:"
-                    android:textSize="18sp" >
-                </TextView>
+                    android:gravity="center" >
 
-                <EditText
-                    android:id="@+id/DownloadFromEditText"
-                    android:layout_width="100dip"
-                    android:layout_height="wrap_content"
-                    android:digits="1234567890"
-                    android:inputType="number"
-                    android:text="1"
-                    android:textSize="18sp" >
-                </EditText>
+                    <Button
+                        android:id="@+id/DropTablesButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Clear All Songs"
+                        android:textSize="18sp" >
+                    </Button>
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:gravity="left|center_vertical"
-                    android:text="To:"
-                    android:textSize="18sp" >
-                </TextView>
+                <View style="@style/Line" />
 
-                <EditText
-                    android:id="@+id/DownloadToEditText"
-                    android:layout_width="100dip"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:digits="1234567890"
-                    android:inputType="number"
-                    android:text="15000"
-                    android:textSize="18sp" >
-                </EditText>
+                    android:gravity="center" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:gravity="left|center_vertical"
+                        android:text="From:"
+                        android:textSize="18sp" >
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/DownloadFromEditText"
+                        android:layout_width="100dip"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:text="1"
+                        android:textSize="18sp" >
+                    </EditText>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:gravity="left|center_vertical"
+                        android:text="To:"
+                        android:textSize="18sp" >
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/DownloadToEditText"
+                        android:layout_width="100dip"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:text="15000"
+                        android:textSize="18sp" >
+                    </EditText>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/DownloadStatus"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Download Status"
+                        android:textSize="20sp" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <Button
+                        android:id="@+id/DownloadButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Download Content" >
+                    </Button>
+                </LinearLayout>
+
+                <View style="@style/Line" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:id="@+id/DownloadStatus"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Download Status"
-                    android:textSize="20sp" >
-                </TextView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center" >
 
-                <Button
-                    android:id="@+id/DownloadButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Download Content" >
-                </Button>
-            </LinearLayout>
-
-            <View style="@style/Line" />
-        </LinearLayout>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center" >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="left|center_vertical"
-                    android:text="Max Songs Per Page On Result:">
+                    android:text="Max Songs Per Page On Result:" >
                 </TextView>
 
                 <EditText
@@ -141,26 +148,30 @@
                     android:layout_height="wrap_content"
                     android:digits="1234567890"
                     android:inputType="number"
-                    android:text="30">
+                    android:text="30" >
                 </EditText>
-        </LinearLayout>
-		<View style="@style/Line" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center" >
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="zelwise@gmail.com"
-                android:textColor="#609"
-                android:textSize="30sp"
-                android:textStyle="bold|italic" >
-            </TextView>
-        </LinearLayout>
-        <View style="@style/Line" />
-    </LinearLayout>
+                android:gravity="center" >
 
-</ScrollView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="zelwise@gmail.com"
+                    android:textColor="#609"
+                    android:textSize="30sp"
+                    android:textStyle="bold|italic" >
+                </TextView>
+            </LinearLayout>
+
+            <View style="@style/Line" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
