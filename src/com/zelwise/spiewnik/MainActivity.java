@@ -441,6 +441,34 @@ public class MainActivity  extends Activity implements OnClickListener {
 	  LoadRecentlyViewed();
   }
   
+  /*
+  private static final long DOUBLE_PRESS_INTERVAL =  some value in ns.;
+  private long lastPressTime;
+
+  @Override
+  public void onBackPressed() {
+      long pressTime = System.nanoTime();
+      if(pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
+          // this is a double click event
+      }
+      lastPressTime = pressTime;
+  }*/
+  
+  @Override
+  public void onBackPressed() {
+	  
+	  if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
+		  manager.viewPager.setCurrentItem(searchViewIndex);
+	  }else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
+			moveTaskToBack(true);
+	  }else if (manager.viewPager.getCurrentItem() == songViewIndex) {
+			manager.viewPager.setCurrentItem(searchViewIndex);
+	  }
+	  
+	  manager.HideKeyboard();
+	  
+  }
+  
   private Song GetSongFromSongViewPage()
   {
 	  try{
