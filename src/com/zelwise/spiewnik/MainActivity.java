@@ -228,6 +228,21 @@ public class MainActivity  extends Activity implements OnClickListener {
     LoadRecentlyViewed();
     FocusedFirstSongsListViewItem();
   }
+  
+  @Override
+  public void onBackPressed() {
+	  
+	  if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
+		  manager.viewPager.setCurrentItem(searchViewIndex);
+	  }else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
+			moveTaskToBack(true);
+	  }else if (manager.viewPager.getCurrentItem() == songViewIndex) {
+			manager.viewPager.setCurrentItem(searchViewIndex);
+	  }
+	  
+	  manager.HideKeyboard();
+	  
+  }
 
   @Override
   public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
