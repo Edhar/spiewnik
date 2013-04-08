@@ -5,10 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 import com.zelwise.spiewnik.Song;
 import com.zelwise.spiewnik.Category;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -70,6 +72,25 @@ public class DBHelper extends SQLiteOpenHelper {
                     + ");");
     	}
     }
+    
+    public void ClearStatistics(SQLiteDatabase db){
+    	
+    	ContentValues cv = new ContentValues();
+    	cv.put(Song.Names.Rating, 0);
+    	cv.put(Song.Names.RecentlyViewedDate, new Date().getTime());
+    	db.update(Song.Names.TableName, cv, null, null);
+    }
+    
+	public void ClearRatingStatistics(SQLiteDatabase db){
+		ContentValues cv = new ContentValues();
+    	cv.put(Song.Names.Rating, 0);    	
+    	db.update(Song.Names.TableName, cv, null, null);
+	}
+	public void ClearRecentlyViewedDateStatistics(SQLiteDatabase db){
+		ContentValues cv = new ContentValues();
+    	cv.put(Song.Names.RecentlyViewedDate, new Date().getTime());   	
+    	db.update(Song.Names.TableName, cv, null, null);
+	}
     
     public void copyDataBase() throws IOException{
     	

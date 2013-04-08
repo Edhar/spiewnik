@@ -19,7 +19,8 @@
                 android:id="@+id/AdvanceCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Advance" >
+                android:text="Advance"
+                android:textSize="18sp" >
             </CheckBox>
         </LinearLayout>
 
@@ -28,9 +29,8 @@
         <LinearLayout
             android:id="@+id/AdvanceLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:orientation="vertical"
-            android:visibility="invisible" >
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,7 +41,8 @@
                     android:id="@+id/DropTablesButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Clear All Songs" >
+                    android:text="Clear All Songs"
+                    android:textSize="18sp" >
                 </Button>
             </LinearLayout>
 
@@ -59,7 +60,7 @@
                     android:layout_marginRight="5dp"
                     android:gravity="left|center_vertical"
                     android:text="From:"
-                    android:textSize="20sp" >
+                    android:textSize="18sp" >
                 </TextView>
 
                 <EditText
@@ -69,7 +70,7 @@
                     android:digits="1234567890"
                     android:inputType="number"
                     android:text="1"
-                    android:textSize="25sp" >
+                    android:textSize="18sp" >
                 </EditText>
 
                 <TextView
@@ -79,7 +80,7 @@
                     android:layout_marginRight="5dp"
                     android:gravity="left|center_vertical"
                     android:text="To:"
-                    android:textSize="20sp" >
+                    android:textSize="18sp" >
                 </TextView>
 
                 <EditText
@@ -89,7 +90,7 @@
                     android:digits="1234567890"
                     android:inputType="number"
                     android:text="15000"
-                    android:textSize="25sp" >
+                    android:textSize="18sp" >
                 </EditText>
             </LinearLayout>
 
