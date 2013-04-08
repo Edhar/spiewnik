@@ -3,16 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    android:orientation="vertical">
+    android:orientation="vertical" >
 
     <LinearLayout
         android:id="@+id/LinearLayoutSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:background="#609"
         android:paddingBottom="5dp"
-        android:paddingTop="5dp" 
-        android:layout_alignParentTop="true">
+        android:paddingTop="5dp" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -107,13 +107,14 @@
         android:id="@+id/LinearLayoutSongList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/LinearLayoutSearch"
-        android:layout_above="@id/LinearLayoutButtonsGroup">
+        android:layout_above="@id/LinearLayoutButtonsGroup"
+        android:layout_below="@id/LinearLayoutSearch" >
+
         <ListView
             android:id="@+id/SongsListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="#00000000">
+            android:divider="#00000000" >
         </ListView>
     </LinearLayout>
 

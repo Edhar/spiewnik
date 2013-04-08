@@ -3,39 +3,48 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#fff"
-    android:orientation="vertical"
-     >
-    <TextView
-        android:id="@+id/SongTitleTextView"
-        android:layout_width="wrap_content"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/SongTitleEditText"
+        android:layout_width="match_parent"
         android:layout_height="0dip"
+        android:cursorVisible="false"
+        android:inputType="none"
         android:text=""
-        android:visibility="invisible">
-        </TextView>
-     <TextView
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" >
+    </EditText>
+
+    <TextView
         android:id="@+id/SongIdTextView"
         android:layout_width="wrap_content"
         android:layout_height="0dip"
         android:text="0"
-        android:visibility="invisible">
-        </TextView>
+        android:visibility="invisible" >
+    </TextView>
 
     <ScrollView
         android:id="@+id/SongContentScrollView"
         android:layout_width="fill_parent"
         android:layout_height="match_parent" >
 
-        <TextView
-            android:id="@+id/SongTextView"
+        <EditText
+            android:id="@+id/SongContentEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#fff"
+            android:cursorVisible="false"
+            android:editable="false"
+            android:inputType="none"
             android:gravity="left|top"
             android:padding="10dp"
             android:text="Song Content"
             android:textColor="#000"
             android:textSize="20sp" >
-        </TextView>
+        </EditText>
     </ScrollView>
 
 </LinearLayout>

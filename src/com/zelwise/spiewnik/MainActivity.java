@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -45,7 +46,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			oftenViewedButton, siteRatingViewedButton, searcTextClearButton;
 
 	EditText searchEditText, downloadFromEditText, downloadToEditText,
-			maxSongsPerPageOnResult;
+			maxSongsPerPageOnResult, songTitleEditText, songContentEditText;
 
 	LinearLayout advanceLinearLayout;
 
@@ -65,7 +66,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	AppManager manager;
 
 	private void LoadSettings() {
-		maxSongsPerPageOnResult.setText(manager.settings.MaxSongInResultList().toString());
+		maxSongsPerPageOnResult.setText(manager.settings.MaxSongInResultList()
+				.toString());
 	}
 
 	@Override
@@ -115,9 +117,9 @@ public class MainActivity extends Activity implements OnClickListener {
 							R.string.app_name));
 				} else if (manager.viewPager.getCurrentItem() == songViewIndex) {
 					try {
-						TextView songTitle = (TextView) pagerAdapter.pages.get(
+						EditText songTitle = (EditText) pagerAdapter.pages.get(
 								songViewIndex).findViewById(
-								R.id.SongTitleTextView);
+								R.id.SongTitleEditText);
 
 						if (songTitle != null
 								&& songTitle.getText().length() != 0) {
@@ -144,15 +146,20 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		maxSongsPerPageOnResult = (EditText) settingsView
 				.findViewById(R.id.MaxSongsPerPageOnResult);
-		maxSongsPerPageOnResult.setOnFocusChangeListener(new OnFocusChangeListener() {
+		maxSongsPerPageOnResult
+				.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (!hasFocus) {
-					manager.settings.MaxSongInResultList(maxSongsPerPageOnResult.getText().toString());
-					//Toast.makeText(manager.context,"new value" + maxSongsPerPageOnResult.getText().toString() , Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (!hasFocus) {
+							manager.settings
+									.MaxSongInResultList(maxSongsPerPageOnResult
+											.getText().toString());
+							// Toast.makeText(manager.context,"new value" +
+							// maxSongsPerPageOnResult.getText().toString() ,
+							// Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
 
 		downloadFromEditText = (EditText) settingsView
 				.findViewById(R.id.DownloadFromEditText);
@@ -198,6 +205,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				.findViewById(R.id.SearcTextClearButton);
 		searcTextClearButton.setOnClickListener(this);
 
+		songTitleEditText = (EditText) songView
+				.findViewById(R.id.SongTitleEditText);
+		songContentEditText = (EditText) songView
+				.findViewById(R.id.SongContentEditText);
+
 		songsListView = (ListView) searchView.findViewById(R.id.SongsListView);
 		songsListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -210,15 +222,12 @@ public class MainActivity extends Activity implements OnClickListener {
 
 				viewPager.setCurrentItem(songViewIndex);
 
-				TextView songTitle = (TextView) songView
-						.findViewById(R.id.SongTitleTextView);
-				songTitle.setText(selSong.Title());
+				songTitleEditText.setText(selSong.Title());
+				songContentEditText.setText(selSong.Content());
 				TextView songId = (TextView) songView
 						.findViewById(R.id.SongIdTextView);
 				songId.setText(selSong.Id() + "");
-				TextView songText = (TextView) songView
-						.findViewById(R.id.SongTextView);
-				songText.setText(selSong.Content());
+
 				manager.HideKeyboard();
 
 				selSong.RecentlyViewedDate(new Date());
@@ -467,10 +476,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			ShowInFutureToast();
 			return true;
 		case R.id.menu_Edit:
-			ShowInFutureToast();
+			SetSongEditMode();
+			//ShowInFutureToast();
 			return true;
 		case R.id.menu_Save:
-			ShowInFutureToast();
+			SetSongViewMode();
+			//ShowInFutureToast();
 			return true;
 		case R.id.menu_Properties:
 			ShowSongProperties(GetSongFromSongViewPage());
@@ -539,6 +550,29 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 
 		return new Song();
+	}
+
+	private void SetSongEditMode() {
+		songTitleEditText.setVisibility(View.VISIBLE);
+		songTitleEditText.setLayoutParams(new LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		songTitleEditText.setCursorVisible(true);
+		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+
+		songContentEditText.setCursorVisible(true);
+		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+
+	}
+
+	private void SetSongViewMode() {
+		songTitleEditText.setVisibility(View.INVISIBLE);
+		songTitleEditText.setLayoutParams(new LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		songTitleEditText.setCursorVisible(false);
+		songTitleEditText.setInputType(InputType.TYPE_NULL);
+
+		songContentEditText.setCursorVisible(false);
+		songContentEditText.setInputType(InputType.TYPE_NULL);
 	}
 
 	@Override

@@ -30,11 +30,11 @@ public final class R {
         public static final int SearcTextClearButton=0x7f070002;
         public static final int SearchEditText=0x7f070001;
         public static final int SiteRatingViewedButton=0x7f070006;
+        public static final int SongContentEditText=0x7f070015;
         public static final int SongContentScrollView=0x7f070014;
         public static final int SongIdTextView=0x7f070013;
         public static final int SongListItemTextView=0x7f070011;
-        public static final int SongTextView=0x7f070015;
-        public static final int SongTitleTextView=0x7f070012;
+        public static final int SongTitleEditText=0x7f070012;
         public static final int SongsListView=0x7f070008;
         public static final int menu_Add=0x7f070017;
         public static final int menu_Delete=0x7f07001a;
