@@ -22,10 +22,13 @@ public class AppManager {
 	public ViewPager viewPager;
 	private Handler responseHandler;
 	
+	public SettingsHelper settings;
+	
 	public AppManager(Context context,ViewPager viewPager) {
 		this.dBHelper = new DBHelper(context);
 		this.context = context;
 		this.viewPager = viewPager;
+		this.settings = new SettingsHelper(context);
 		
 		if(!this.dBHelper.checkDataBase()){
 			copyDb();

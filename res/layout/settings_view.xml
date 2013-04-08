@@ -29,8 +29,9 @@
         <LinearLayout
             android:id="@+id/AdvanceLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="0dip"
+            android:orientation="vertical"
+            android:visibility="invisible" >
 
             <LinearLayout
                 android:layout_width="match_parent"
