@@ -6,7 +6,9 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -133,12 +135,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center" >
+                android:gravity="left|center_vertical"
+                android:layout_weight="10" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="left|center_vertical"
+                    android:textSize="18sp"
+                    android:layout_weight="5"
                     android:text="Max Songs Per Page On Result:" >
                 </TextView>
 
@@ -150,6 +155,31 @@
                     android:inputType="number"
                     android:text="30" >
                 </EditText>
+            </LinearLayout>
+
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:layout_weight="10" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center_vertical"
+                    android:textSize="18sp"
+                    android:layout_weight="5"
+                    android:text="Seach By And Show Song Numbers In Result:" >
+                </TextView>
+
+                <CheckBox
+                    android:id="@+id/SeachByAndShowSongNumbersInResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" >
+                </CheckBox>
             </LinearLayout>
 
             <View style="@style/Line" />

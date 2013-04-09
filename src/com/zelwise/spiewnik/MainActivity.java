@@ -52,7 +52,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	LinearLayout advanceLinearLayout;
 
-	CheckBox advanceCheckBox;
+	CheckBox advanceCheckBox,seachByAndShowSongNumbersInResult;
 
 	ListView songsListView;
 
@@ -69,13 +69,14 @@ public class MainActivity extends Activity implements OnClickListener {
 	Integer searchViewIndex = 1;
 	Integer songViewIndex = 2;
 
-	public Integer minSymbolsForStartSearch = 2;
+	
 
 	AppManager manager;
 
 	private void LoadSettings() {
 		maxSongsPerPageOnResult.setText(manager.settings.MaxSongInResultList()
 				.toString());
+		seachByAndShowSongNumbersInResult.setChecked(manager.settings.SeachByAndShowSongNumbersInResult());
 	}
 
 	@Override
@@ -162,9 +163,6 @@ public class MainActivity extends Activity implements OnClickListener {
 							manager.settings
 									.MaxSongInResultList(maxSongsPerPageOnResult
 											.getText().toString());
-							// Toast.makeText(manager.context,"new value" +
-							// maxSongsPerPageOnResult.getText().toString() ,
-							// Toast.LENGTH_SHORT).show();
 						}
 					}
 				});
@@ -192,6 +190,14 @@ public class MainActivity extends Activity implements OnClickListener {
 				} else {
 					advanceLinearLayout.setVisibility(View.GONE);
 				}
+			}
+		});
+		seachByAndShowSongNumbersInResult = (CheckBox) settingsView
+				.findViewById(R.id.SeachByAndShowSongNumbersInResult);
+		seachByAndShowSongNumbersInResult.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				manager.settings.SeachByAndShowSongNumbersInResult(((CheckBox) v).isChecked());
 			}
 		});
 
@@ -278,10 +284,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void afterTextChanged(Editable searchText) {
 				ToggleClearSearchButton(true);
-				if (searchText.length() >= minSymbolsForStartSearch) {
+				if (searchText.length() >= manager.settings.MinSymbolsForStartSearch) {
 					ArrayList<Song> songs = Song.GetSongs(manager.db,
-							searchText.toString(),
-							manager.settings.MaxSongInResultList(), "");
+							searchText.toString().trim(),
+							manager.settings.MaxSongInResultList(), "",manager.settings.SeachByAndShowSongNumbersInResult());
 					CreateAdapterAndSetToSongList(songs);
 				}
 			}
@@ -409,7 +415,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void CreateAdapterAndSetToSongList(ArrayList<Song> songs) {
 		if (songs.size() > 0) {
 			SongArrayAdapter<Song> adapter = new SongArrayAdapter<Song>(
-					manager.context, R.layout.song_list_item, songs);
+					manager, R.layout.song_list_item, songs);
 			songsListView.setAdapter(adapter);
 		} else {
 			songsListView.setAdapter(null);
@@ -421,21 +427,21 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void LoadOftenViewed() {
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.Rating
-						+ DBHelper.SortDescending);
+						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
 		CreateAdapterAndSetToSongList(songs);
 	}
 
 	private void LoadSiteRatingViewed() {
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.SiteRating
-						+ DBHelper.SortDescending);
+						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
 		CreateAdapterAndSetToSongList(songs);
 	}
 
 	private void LoadRecentlyViewed() {
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(),
-				Names.RecentlyViewedDate + DBHelper.SortDescending);
+				Names.RecentlyViewedDate + DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
 		CreateAdapterAndSetToSongList(songs);
 	}
 

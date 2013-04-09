@@ -239,20 +239,32 @@ public class Song {
 		return false;
 	}
 
-	public static ArrayList<Song> GetSongs(SQLiteDatabase db,
-			String searchText, Integer maxCount, String orderByString) {
+	public static ArrayList<Song> GetSongs(SQLiteDatabase db, String searchText,
+			Integer maxCount, String orderByString,
+			Boolean seachByAndShowSongNumbersInResult) {
+
 		ArrayList<Song> list = new ArrayList<Song>();
+		String searchTextLIKE = "%" + searchText + "%";
+
 		String selection = Names.Title + " != ?";
 		String[] selectionArgs = new String[] { "" };
 		if (searchText.length() > 0) {
 			selection = Names.Title + " LIKE ? AND " + selection;
-			selectionArgs = new String[] { "%" + searchText + "%",
+			selectionArgs = new String[] { searchTextLIKE,
 					selectionArgs[0] };
 		}
-		String orderBy = Names.Title + " ASC";
+		
+		String orderBy = Names.Title + DBHelper.SortAscending;
 		if (orderByString != "") {
 			orderBy = orderByString + "," + orderBy;
 		}
+		
+		if (seachByAndShowSongNumbersInResult && searchText.length() > 0) {
+				selection = "(" + Names.Id + " LIKE ? OR " + Names.Title	+ " LIKE ?) AND " + Names.Title + " != ?";
+				selectionArgs = new String[] { searchTextLIKE, searchTextLIKE,"" };
+				orderBy = Names.Id + DBHelper.SortAscending + "," + orderBy;
+		}
+
 		Cursor cursor = db.query(false, Names.TableName, new String[] {
 				Names.Id, Names.SiteId, Names.CategoryId, Names.Title,
 				Names.Content, Names.Rating, Names.SiteRating,
