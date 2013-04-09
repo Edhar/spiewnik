@@ -10,8 +10,8 @@ import com.zelwise.spiewnik.SongArrayAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -26,9 +26,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -43,7 +45,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener{
 	Button downloadButton, dropTablesButton, recentlyViewedButton,
 			oftenViewedButton, siteRatingViewedButton, searcTextClearButton;
 
@@ -61,9 +63,42 @@ public class MainActivity extends Activity implements OnClickListener {
 	public Boolean IsSongEditMode() {
 		return isSongEditMode;
 	}
+	
+	private OnTouchListener onTouchListenerClear = new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			Button btn = (Button)v;
+			if (event.getAction() == MotionEvent.ACTION_DOWN){
+			    btn.setBackgroundColor(Color.parseColor("#C1E3FC"));
+			}
+			if (event.getAction() == MotionEvent.ACTION_UP){
+				btn.setBackgroundColor(Color.parseColor("#00000000"));
+				v.performClick();
+			}
+			return true;
+		}
+	};
+	private OnTouchListener onTouchListener = new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			Button btn = (Button)v;
+			if (event.getAction() == MotionEvent.ACTION_DOWN){
+			    btn.setBackgroundColor(Color.parseColor("#660099"));
+			}
+			if (event.getAction() == MotionEvent.ACTION_UP){
+				btn.setBackgroundColor(Color.parseColor("#C1E3FC"));
+				v.performClick();
+			}
+			return true;
+		}
+	};
 
 	ViewPager viewPager;
 	AppPagerAdapter pagerAdapter;
+
+	SongArrayAdapter songsArrayAdapter;
 
 	Integer settingsViewIndex = 0;
 	Integer searchViewIndex = 1;
@@ -111,6 +146,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onPageSelected(int arg0) {
 				CheckIfSongEditModeOrContentSaved();
+				
 				Activity activity = (Activity) manager.context;
 
 				if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
@@ -119,8 +155,10 @@ public class MainActivity extends Activity implements OnClickListener {
 				} else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
 					activity.setTitle(getResources().getString(
 							R.string.app_name));
+					songsArrayAdapter.notifyDataSetChanged();
 				} else if (manager.viewPager.getCurrentItem() == songViewIndex) {
 					try {
+						SetSongViewViewMode();
 						EditText songTitle = (EditText) pagerAdapter.pages.get(
 								songViewIndex).findViewById(
 								R.id.SongTitleEditText);
@@ -155,17 +193,27 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		maxSongsPerPageOnResult = (EditText) settingsView
 				.findViewById(R.id.MaxSongsPerPageOnResult);
-		maxSongsPerPageOnResult
-				.setOnFocusChangeListener(new OnFocusChangeListener() {
+		maxSongsPerPageOnResult.addTextChangedListener(new TextWatcher() {
 
-					public void onFocusChange(View v, boolean hasFocus) {
-						if (!hasFocus) {
-							manager.settings
-									.MaxSongInResultList(maxSongsPerPageOnResult
-											.getText().toString());
-						}
-					}
-				});
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable searchText) {
+				manager.settings
+				.MaxSongInResultList(maxSongsPerPageOnResult
+						.getText().toString());
+			}
+		});
 
 		downloadFromEditText = (EditText) settingsView
 				.findViewById(R.id.DownloadFromEditText);
@@ -284,7 +332,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void afterTextChanged(Editable searchText) {
 				ToggleClearSearchButton(true);
-				if (searchText.length() >= manager.settings.MinSymbolsForStartSearch) {
+				if (searchText.toString().trim().length() >= manager.settings.MinSymbolsForStartSearch) {
 					ArrayList<Song> songs = Song.GetSongs(manager.db,
 							searchText.toString().trim(),
 							manager.settings.MaxSongInResultList(), "",manager.settings.SeachByAndShowSongNumbersInResult());
@@ -302,7 +350,12 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 			}
 		});
-
+		
+		recentlyViewedButton.setOnTouchListener(onTouchListener);
+		oftenViewedButton.setOnTouchListener(onTouchListener);
+		siteRatingViewedButton.setOnTouchListener(onTouchListener);
+		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
+		
 		LoadSettings();
 		LoadRecentlyViewed();
 		FocusedFirstSongsListViewItem();
@@ -414,9 +467,9 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void CreateAdapterAndSetToSongList(ArrayList<Song> songs) {
 		if (songs.size() > 0) {
-			SongArrayAdapter<Song> adapter = new SongArrayAdapter<Song>(
+			songsArrayAdapter = new SongArrayAdapter<Song>(
 					manager, R.layout.song_list_item, songs);
-			songsListView.setAdapter(adapter);
+			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
 			Toast.makeText(manager.context, "Not found songs",
@@ -496,12 +549,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void ToggleClearSearchButton(Boolean show) {
 		if (show) {
 			searcTextClearButton.setVisibility(View.VISIBLE);
-			searcTextClearButton.setLayoutParams(new LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		} else {
-			searcTextClearButton.setVisibility(View.INVISIBLE);
-			searcTextClearButton.setLayoutParams(new LayoutParams(0,
-					LayoutParams.WRAP_CONTENT));
+			searcTextClearButton.setVisibility(View.GONE);
 		}
 	}
 

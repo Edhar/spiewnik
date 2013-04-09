@@ -20,6 +20,7 @@ public class AppManager {
 	public SQLiteDatabase db;
 	public Context context;
 	public ViewPager viewPager;
+	
 	private Handler responseHandler;
 	
 	public SettingsHelper settings;

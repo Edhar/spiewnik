@@ -149,11 +149,13 @@
 
                 <EditText
                     android:id="@+id/MaxSongsPerPageOnResult"
-                    android:layout_width="100dip"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
                     android:digits="1234567890"
                     android:inputType="number"
                     android:text="30" >
+
                 </EditText>
             </LinearLayout>
 
@@ -178,7 +180,9 @@
                     android:id="@+id/SeachByAndShowSongNumbersInResult"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
                     android:checked="false" >
+
                 </CheckBox>
             </LinearLayout>
 

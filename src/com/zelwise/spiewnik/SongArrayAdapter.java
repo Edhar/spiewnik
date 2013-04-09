@@ -40,7 +40,7 @@ public class SongArrayAdapter<T> extends ArrayAdapter<T> {
                 TextView tv = (TextView)view.findViewById(R.id.SongListItemTextView);
                 if (tv != null) {
                 	if(manager.settings.SeachByAndShowSongNumbersInResult()){
-                		tv.setText(String.format("%5s. ", curSong.Id()) + curSong.Title());
+                		tv.setText(String.format("%5s.", curSong.Id()).replace(" ", "o") + " " + curSong.Title());
                 	}else{
                 		tv.setText(curSong.Title());
                 	}
