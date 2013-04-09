@@ -12,7 +12,7 @@ public class SettingsHelper {
 	private SharedPreferences settings;
 	private SharedPreferences.Editor editor;
 
-	public Integer MaxSongInResultListDefault = 10;
+	public Integer MaxSongInResultListDefault = 20;
 	private Integer maxSongInResultList;
 
 	public Integer MaxSongInResultList() {

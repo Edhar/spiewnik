@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -20,6 +21,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,6 +55,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	CheckBox advanceCheckBox;
 
 	ListView songsListView;
+
+	private Boolean isSongEditMode = false;
+
+	public Boolean IsSongEditMode() {
+		return isSongEditMode;
+	}
 
 	ViewPager viewPager;
 	AppPagerAdapter pagerAdapter;
@@ -101,12 +109,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void onPageSelected(int arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				CheckIfSongEditModeOrContentSaved();
 				Activity activity = (Activity) manager.context;
 
 				if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
@@ -138,9 +141,14 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 
 			@Override
-			public void onPageScrollStateChanged(int arg0) {
-				// TODO Auto-generated method stub
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+								
+				
+			}
 
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				
 			}
 		});
 
@@ -179,15 +187,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onClick(View v) {
 				if (((CheckBox) v).isChecked()) {
-					advanceLinearLayout.setLayoutParams(new LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT));
 					advanceLinearLayout.setVisibility(View.VISIBLE);
 					SetDropTableButtonText();
 				} else {
-					advanceLinearLayout.setLayoutParams(new LayoutParams(
-							LayoutParams.MATCH_PARENT, 0));
-					advanceLinearLayout.setVisibility(View.INVISIBLE);
+					advanceLinearLayout.setVisibility(View.GONE);
 				}
 			}
 		});
@@ -215,34 +218,22 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> a, View view, int position,
 					long id) {
-
-				Song selSong = (Song) (songsListView
-						.getItemAtPosition(position));
-				View songView = viewPager.findViewWithTag(songViewIndex);
-
 				viewPager.setCurrentItem(songViewIndex);
 
-				songTitleEditText.setText(selSong.Title());
-				songContentEditText.setText(selSong.Content());
-				TextView songId = (TextView) songView
-						.findViewById(R.id.SongIdTextView);
-				songId.setText(selSong.Id() + "");
-
 				manager.HideKeyboard();
+				SetSongViewViewMode();
 
-				selSong.RecentlyViewedDate(new Date());
-				selSong.Rating(selSong.Rating() + 1);
-				selSong.SaveOrUpdate(manager.db);
+				Song curSong = (Song) (songsListView
+						.getItemAtPosition(position));
 
-				Activity activity = (Activity) manager.context;
-				activity.setTitle(selSong.Title());
+				// TODO update adapter
+				curSong = Song.Get(manager.db, curSong.Id());
 
-				ScrollView songScroll = (ScrollView) songView
-						.findViewById(R.id.SongContentScrollView);
-				songScroll.scrollTo(0, 0);
+				UpdateContenSongView(curSong);
 
-				// Toast.makeText(manager.context, "Id - " + selSong.Id() +
-				// "; Title - " + selSong.Title(), Toast.LENGTH_SHORT).show();
+				curSong.RecentlyViewedDate(new Date());
+				curSong.Rating(curSong.Rating() + 1);
+				curSong.SaveOrUpdate(manager.db);
 			}
 		});
 		songsListView.setOnScrollListener(new OnScrollListener() {
@@ -381,6 +372,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
 				manager.context);
+		alertBuilder.setIcon(0);
 		alertBuilder.setTitle(song.Title());
 
 		alertBuilder.setMessage(content).setCancelable(false)
@@ -473,21 +465,22 @@ public class MainActivity extends Activity implements OnClickListener {
 			System.exit(0);
 			return true;
 		case R.id.menu_Add:
-			ShowInFutureToast();
+			AddNewSongSongView();
 			return true;
 		case R.id.menu_Edit:
 			SetSongEditMode();
-			//ShowInFutureToast();
 			return true;
 		case R.id.menu_Save:
-			SetSongViewMode();
-			//ShowInFutureToast();
+			Song newSong = GetSongFromSongView();
+			newSong.SaveOrUpdate(manager.db);
+			UpdateContenSongView(newSong);
+			SetSongViewViewMode();
 			return true;
 		case R.id.menu_Properties:
-			ShowSongProperties(GetSongFromSongViewPage());
+			ShowSongProperties(GetSongFromSongView());
 			return true;
 		case R.id.menu_Delete:
-			DeleteMenuAction(GetSongFromSongViewPage());
+			DeleteMenuAction(GetSongFromSongView());
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -523,7 +516,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onBackPressed() {
-
 		if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
 			manager.viewPager.setCurrentItem(searchViewIndex);
 		} else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
@@ -536,20 +528,121 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	}
 
-	private Song GetSongFromSongViewPage() {
+	private void CheckIfSongEditModeOrContentSaved()
+	{
+		if(this.IsSongEditMode()){
+			Song curSong = GetSongFromSongView();
+			
+			if(curSong.Title().trim().length() != 0 || curSong.Content().trim().length() != 0){
+				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
+				
+				alertBuilder.setIcon(0);
+				alertBuilder.setTitle("Would you like to save this song:");
+				alertBuilder.setMessage(curSong.Title());
+				alertBuilder.setCancelable(false);
+				alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								GetSongFromSongView().SaveOrUpdate(manager.db);
+								isSongEditMode = false;
+							}
+						});
+				alertBuilder.setCancelable(false);
+				alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						isSongEditMode = false;
+						dialog.cancel();
+					}
+				});
+				AlertDialog alert = alertBuilder.show();
+				TextView messageText = (TextView)alert.findViewById(android.R.id.message);
+				messageText.setGravity(Gravity.CENTER);
+				messageText.setTypeface(Typeface.DEFAULT_BOLD);
+				alert.show();
+			}
+		}
+	}
+
+	private Song GetSongFromSongView() {
+		Song song = new Song();
+		
 		try {
-			View songView = (View) pagerAdapter.pages.get(manager.viewPager
-					.getCurrentItem());
+			View songView = manager.viewPager.findViewWithTag(songViewIndex);
 			TextView songId = (TextView) songView
 					.findViewById(R.id.SongIdTextView);
 			Integer id = Utils.ToInt(songId.getText().toString(), 0);
 			if (id != 0) {
-				return Song.Get(manager.db, id);
+				song = Song.Get(manager.db, id);
 			}
 		} catch (Exception e) {
 		}
 
-		return new Song();
+		return UpdateSongFromEditMode(song);
+	}
+
+	private void AddNewSongSongView() {
+		View songView = manager.viewPager.findViewWithTag(songViewIndex);
+		if (manager.viewPager.getCurrentItem() != songViewIndex) {
+			manager.viewPager.setCurrentItem(songViewIndex);
+		}
+
+		UpdateContenSongView(new Song());
+		SetSongEditMode();
+	}
+
+	private Song UpdateSongFromEditMode(Song originalSong) {
+		try {
+			View songView = manager.viewPager.findViewWithTag(songViewIndex);
+
+			EditText newTitle = (EditText) songView
+					.findViewById(R.id.SongTitleEditText);
+			EditText newContent = (EditText) songView
+					.findViewById(R.id.SongContentEditText);
+
+			originalSong.Title(newTitle.getText().toString());
+			originalSong.Content(newContent.getText().toString());
+		} catch (Exception e) {
+
+		}
+
+		return originalSong;
+	}
+
+	private void UpdateContenSongView(Song newSong) {
+		try {
+			View songView = manager.viewPager.findViewWithTag(songViewIndex);
+
+			TextView newId = (TextView) songView
+					.findViewById(R.id.SongIdTextView);
+			EditText newTitle = (EditText) songView
+					.findViewById(R.id.SongTitleEditText);
+			EditText newContent = (EditText) songView
+					.findViewById(R.id.SongContentEditText);
+
+			newId.setText(newSong.Id().toString());
+			newTitle.setText(newSong.Title());
+			newContent.setText(newSong.Content());
+
+			Activity activity = (Activity) manager.context;
+
+			if (manager.viewPager.getCurrentItem() == songViewIndex) {
+				try {
+					if (newSong.Title().length() != 0) {
+						activity.setTitle(newSong.Title());
+					} else {
+						activity.setTitle(getResources().getString(
+								R.string.app_name));
+					}
+					;
+				} catch (Exception e) {
+					activity.setTitle(getResources().getString(
+							R.string.app_name));
+				}
+			}
+
+		} catch (Exception e) {
+
+		}
+
 	}
 
 	private void SetSongEditMode() {
@@ -560,37 +653,48 @@ public class MainActivity extends Activity implements OnClickListener {
 		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT);
 
 		songContentEditText.setCursorVisible(true);
-		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT
+				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
+		isSongEditMode = true;
 
 	}
 
-	private void SetSongViewMode() {
-		songTitleEditText.setVisibility(View.INVISIBLE);
+	private void SetSongViewViewMode() {
+		View songView = manager.viewPager.findViewWithTag(songViewIndex);
+		ScrollView songScroll = (ScrollView) songView
+				.findViewById(R.id.SongContentScrollView);
+		songScroll.scrollTo(0, 0);
+
+		songTitleEditText.setVisibility(View.GONE);
 		songTitleEditText.setLayoutParams(new LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				LayoutParams.MATCH_PARENT, 0));
 		songTitleEditText.setCursorVisible(false);
 		songTitleEditText.setInputType(InputType.TYPE_NULL);
 
 		songContentEditText.setCursorVisible(false);
 		songContentEditText.setInputType(InputType.TYPE_NULL);
+		songContentEditText.setSingleLine(false);
+
+		isSongEditMode = false;
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
 				.getMenuInfo();
+		Song curSong = (Song) songsListView.getItemAtPosition(info.position);
 		switch (item.getItemId()) {
 		case R.id.menu_Edit_Context:
-			ShowInFutureToast();
-			// info.id;
+			viewPager.setCurrentItem(songViewIndex);
+			UpdateContenSongView(curSong);
+			SetSongEditMode();
 			return true;
 		case R.id.menu_Properties_Context:
-			ShowSongProperties((Song) songsListView
-					.getItemAtPosition(info.position));
+			ShowSongProperties(curSong);
 			return true;
 		case R.id.menu_Delete_Context:
-			DeleteMenuAction((Song) songsListView
-					.getItemAtPosition(info.position));
+			DeleteMenuAction(curSong);
 			return true;
 		default:
 			return super.onContextItemSelected(item);

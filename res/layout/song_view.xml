@@ -8,22 +8,23 @@
     <EditText
         android:id="@+id/SongTitleEditText"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
+        android:layout_height="wrap_content"
         android:cursorVisible="false"
+        android:gravity="center_vertical"
+        android:hint="Song Title"
         android:inputType="none"
         android:text=""
-        android:gravity="center_vertical"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:visibility="invisible" >
+        android:visibility="gone" >
     </EditText>
 
     <TextView
         android:id="@+id/SongIdTextView"
         android:layout_width="wrap_content"
-        android:layout_height="0dip"
+        android:layout_height="wrap_content"
         android:text="0"
-        android:visibility="invisible" >
+        android:visibility="gone" >
     </TextView>
 
     <ScrollView
@@ -38,10 +39,11 @@
             android:background="#fff"
             android:cursorVisible="false"
             android:editable="false"
-            android:inputType="none"
             android:gravity="left|top"
+            android:hint="Song Content"
+            android:inputType="none"
             android:padding="10dp"
-            android:text="Song Content"
+            android:text=""
             android:textColor="#000"
             android:textSize="20sp" >
         </EditText>

@@ -105,7 +105,7 @@ public class AppManager {
 				        try 
 				        {		        	
 				        	doc = DownloadHelper.DownloadFromUrlDocument(url + number);
-				        	new Song(doc, number).SaveOrUpdate(db);
+				        	new Song(doc, number).SaveOrUpdateForDownloadFromSite(db);
 				        }
 				        catch (Exception e)
 				        {

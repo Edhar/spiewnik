@@ -54,6 +54,8 @@
         android:id="@+id/LinearLayoutButtonsGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
         android:layout_alignParentBottom="true"
         android:weightSum="3" >
 
