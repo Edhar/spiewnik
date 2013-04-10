@@ -336,7 +336,7 @@ public class MainActivity extends Activity implements OnClickListener{
 					ArrayList<Song> songs = Song.GetSongs(manager.db,
 							searchText.toString(),
 							manager.settings.MaxSongInResultList(), "",manager.settings.SeachByAndShowSongNumbersInResult());
-					CreateAdapterAndSetToSongList(songs);
+					CreateAdapterAndSetToSongList(songs,searchText.toString());
 				}
 			}
 		});
@@ -403,12 +403,15 @@ public class MainActivity extends Activity implements OnClickListener{
 			// Category.Names.TableName, Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.RecentlyViewedButton:
+			ClearSearchText();
 			LoadRecentlyViewed();
 			break;
 		case R.id.OftenViewedButton:
+			ClearSearchText();
 			LoadOftenViewed();
 			break;
 		case R.id.SiteRatingViewedButton:
+			ClearSearchText();
 			LoadSiteRatingViewed();
 			break;
 		case R.id.SearcTextClearButton:
@@ -465,14 +468,13 @@ public class MainActivity extends Activity implements OnClickListener{
 		songsListView.requestFocus();
 	}
 
-	private void CreateAdapterAndSetToSongList(ArrayList<Song> songs) {
+	private void CreateAdapterAndSetToSongList(ArrayList<Song> songs, String searchText) {
 		if (songs.size() > 0) {
 			songsArrayAdapter = new SongArrayAdapter<Song>(
-					manager, R.layout.song_list_item, songs);
+					manager,searchText, R.layout.song_list_item, songs);
 			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
-			LoadDefaultSongsListContent();
 			Toast.makeText(manager.context, "Not found songs",
 					Toast.LENGTH_SHORT).show();
 		}
@@ -483,27 +485,24 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 
 	private void LoadOftenViewed() {
-		ClearSearchText();
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.Rating
 						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs);
+		CreateAdapterAndSetToSongList(songs,"");
 	}
 
 	private void LoadSiteRatingViewed() {
-		ClearSearchText();
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.SiteRating
 						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs);
+		CreateAdapterAndSetToSongList(songs,"");
 	}
 
 	private void LoadRecentlyViewed() {
-		ClearSearchText();
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(),
 				Names.RecentlyViewedDate + DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs);
+		CreateAdapterAndSetToSongList(songs,"");
 	}
 
 	@Override
