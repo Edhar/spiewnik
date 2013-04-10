@@ -412,7 +412,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			LoadSiteRatingViewed();
 			break;
 		case R.id.SearcTextClearButton:
-			searchEditText.setText("");
+			ClearSearchText();
 			ToggleClearSearchButton(false);
 			LoadDefaultSongsListContent();
 			break;
@@ -477,8 +477,13 @@ public class MainActivity extends Activity implements OnClickListener{
 					Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	private void ClearSearchText(){
+		searchEditText.setText("");
+	}
 
 	private void LoadOftenViewed() {
+		ClearSearchText();
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.Rating
 						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
@@ -486,6 +491,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 
 	private void LoadSiteRatingViewed() {
+		ClearSearchText();
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.SiteRating
 						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
@@ -493,6 +499,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 
 	private void LoadRecentlyViewed() {
+		ClearSearchText();
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(),
 				Names.RecentlyViewedDate + DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
