@@ -332,9 +332,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			@Override
 			public void afterTextChanged(Editable searchText) {
 				ToggleClearSearchButton(true);
-				if (searchText.toString().trim().length() >= manager.settings.MinSymbolsForStartSearch) {
+				if (searchText.toString().length() >= manager.settings.MinSymbolsForStartSearch) {
 					ArrayList<Song> songs = Song.GetSongs(manager.db,
-							searchText.toString().trim(),
+							searchText.toString(),
 							manager.settings.MaxSongInResultList(), "",manager.settings.SeachByAndShowSongNumbersInResult());
 					CreateAdapterAndSetToSongList(songs);
 				}
@@ -357,7 +357,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
 		
 		LoadSettings();
-		LoadRecentlyViewed();
+		LoadDefaultSongsListContent();
 		FocusedFirstSongsListViewItem();
 	}
 
@@ -414,7 +414,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		case R.id.SearcTextClearButton:
 			searchEditText.setText("");
 			ToggleClearSearchButton(false);
-			LoadRecentlyViewed();
+			LoadDefaultSongsListContent();
 			break;
 		}
 	}
@@ -511,41 +511,6 @@ public class MainActivity extends Activity implements OnClickListener{
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
-		switch (item.getItemId()) {
-		case R.id.menu_settings:
-			viewPager.setCurrentItem(settingsViewIndex);
-			return true;
-		case R.id.menu_Exit:
-			finish();
-			System.exit(0);
-			return true;
-		case R.id.menu_Add:
-			AddNewSongSongView();
-			return true;
-		case R.id.menu_Edit:
-			SetSongEditMode();
-			return true;
-		case R.id.menu_Save:
-			Song newSong = GetSongFromSongView();
-			newSong.SaveOrUpdate(manager.db);
-			UpdateContenSongView(newSong);
-			SetSongViewViewMode();
-			return true;
-		case R.id.menu_Properties:
-			ShowSongProperties(GetSongFromSongView());
-			return true;
-		case R.id.menu_Delete:
-			DeleteMenuAction(GetSongFromSongView());
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
 	private void ToggleClearSearchButton(Boolean show) {
 		if (show) {
 			searcTextClearButton.setVisibility(View.VISIBLE);
@@ -553,11 +518,47 @@ public class MainActivity extends Activity implements OnClickListener{
 			searcTextClearButton.setVisibility(View.GONE);
 		}
 	}
-
-	private void DeleteMenuAction(Song song) {
-		(song).Delete(manager.db);
-		manager.viewPager.setCurrentItem(searchViewIndex);
+	
+	private void LoadDefaultSongsListContent(){
 		LoadRecentlyViewed();
+	}
+
+	private void ReloadSongsListContent(){
+		LoadRecentlyViewed();
+	}
+
+	private void DeleteSongMenuAction(Song song) {
+		final Song songToDelete = song;
+		
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
+		
+		alertBuilder.setIcon(0);
+		alertBuilder.setTitle("Are you sure you want to delete this song:");
+		alertBuilder.setMessage("\"" + song.Title() + "\"");
+		alertBuilder.setCancelable(false);
+		alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						songToDelete.Delete(manager.db);
+						if(manager.viewPager.getCurrentItem()==searchViewIndex){
+							manager.viewPager.setCurrentItem(searchViewIndex);
+						}
+						isSongEditMode = false;
+						ReloadSongsListContent();
+					}
+				});
+		alertBuilder.setCancelable(false);
+		alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		AlertDialog alert = alertBuilder.show();
+		TextView messageText = (TextView)alert.findViewById(android.R.id.message);
+		messageText.setGravity(Gravity.CENTER);
+		messageText.setTypeface(Typeface.DEFAULT_BOLD);
+		messageText.setTextColor(Color.RED);
+		alert.show();
+		
 	}
 
 	/*
@@ -586,24 +587,32 @@ public class MainActivity extends Activity implements OnClickListener{
 	private void CheckIfSongEditModeOrContentSaved()
 	{
 		if(this.IsSongEditMode()){
-			Song curSong = GetSongFromSongView();
+			final Song curSong = GetSongFromSongView();
 			
 			if(curSong.Title().trim().length() != 0 || curSong.Content().trim().length() != 0){
+				if(curSong.Title().trim().length() == 0){
+					curSong.Title(Song.DoSongTitle(curSong.Content()));
+				}
+				
 				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
 				
 				alertBuilder.setIcon(0);
 				alertBuilder.setTitle("Would you like to save this song:");
-				alertBuilder.setMessage(curSong.Title());
+				alertBuilder.setMessage("\"" + curSong.Title() + "\"");
 				alertBuilder.setCancelable(false);
 				alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								GetSongFromSongView().SaveOrUpdate(manager.db);
+								curSong.SaveOrUpdate(manager.db);
 								isSongEditMode = false;
 							}
 						});
 				alertBuilder.setCancelable(false);
 				alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
+						if(curSong.Id() != 0){
+							Song savedSong = Song.Get(manager.db, curSong.Id());
+							UpdateContenSongView(savedSong);
+						}
 						isSongEditMode = false;
 						dialog.cancel();
 					}
@@ -707,9 +716,13 @@ public class MainActivity extends Activity implements OnClickListener{
 		songTitleEditText.setCursorVisible(true);
 		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT);
 
+		
 		songContentEditText.setCursorVisible(true);
 		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT
 				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+		songContentEditText.setSingleLine(false);
+		
+		songContentEditText.setEnabled(true);
 
 		isSongEditMode = true;
 
@@ -730,9 +743,47 @@ public class MainActivity extends Activity implements OnClickListener{
 		songContentEditText.setCursorVisible(false);
 		songContentEditText.setInputType(InputType.TYPE_NULL);
 		songContentEditText.setSingleLine(false);
+		
+		songContentEditText.setEnabled(false);
 
 		isSongEditMode = false;
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
+				.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+			viewPager.setCurrentItem(settingsViewIndex);
+			return true;
+		case R.id.menu_Exit:
+			finish();
+			System.exit(0);
+			return true;
+		case R.id.menu_Add:
+			AddNewSongSongView();
+			return true;
+		case R.id.menu_Edit:
+			SetSongEditMode();
+			return true;
+		case R.id.menu_Save:
+			Song newSong = GetSongFromSongView();
+			newSong.SaveOrUpdate(manager.db);
+			UpdateContenSongView(newSong);
+			SetSongViewViewMode();
+			return true;
+		case R.id.menu_Properties:
+			ShowSongProperties(GetSongFromSongView());
+			return true;
+		case R.id.menu_Delete:
+			DeleteSongMenuAction(GetSongFromSongView());
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
@@ -749,7 +800,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			ShowSongProperties(curSong);
 			return true;
 		case R.id.menu_Delete_Context:
-			DeleteMenuAction(curSong);
+			DeleteSongMenuAction(curSong);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
