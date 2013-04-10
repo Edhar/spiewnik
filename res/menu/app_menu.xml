@@ -16,20 +16,21 @@
 		 android:title="Edit">
 		</item>	
 		<item
-		 android:id="@+id/menu_Save"
+		 android:id="@+id/menu_Delete"
 		 android:orderInCategory="3"
+		 android:title="Delete">
+		</item>	
+		<item
+		 android:id="@+id/menu_Save"
+		 android:orderInCategory="4"
 		 android:title="Save">
 		</item>
 		<item
 		 android:id="@+id/menu_Properties"
-		 android:orderInCategory="4"
+		 android:orderInCategory="5"
 		 android:title="Properties">
 		</item>	
-		<item
-		 android:id="@+id/menu_Delete"
-		 android:orderInCategory="5"
-		 android:title="Delete">
-		</item>	
+		
 	</group>
 	<item
 	 android:id="@+id/menu_settings"
