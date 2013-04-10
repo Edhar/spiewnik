@@ -37,17 +37,17 @@ public final class R {
         public static final int SongListItemTextView=0x7f070012;
         public static final int SongTitleEditText=0x7f070013;
         public static final int SongsListView=0x7f070008;
-        public static final int menu_Add=0x7f070018;
-        public static final int menu_Delete=0x7f07001b;
+        public static final int menu_Add=0x7f070017;
+        public static final int menu_Delete=0x7f07001c;
         public static final int menu_Delete_Context=0x7f070021;
-        public static final int menu_Edit=0x7f07001a;
-        public static final int menu_EditGroup=0x7f070019;
+        public static final int menu_Edit=0x7f070019;
+        public static final int menu_EditGroup=0x7f070018;
         public static final int menu_Edit_Context=0x7f07001f;
         public static final int menu_Exit=0x7f07001e;
-        public static final int menu_Properties=0x7f07001d;
+        public static final int menu_Properties=0x7f07001b;
         public static final int menu_Properties_Context=0x7f070020;
-        public static final int menu_Save=0x7f07001c;
-        public static final int menu_settings=0x7f070017;
+        public static final int menu_Save=0x7f07001a;
+        public static final int menu_settings=0x7f07001d;
     }
     public static final class layout {
         public static final int search_view=0x7f030000;
