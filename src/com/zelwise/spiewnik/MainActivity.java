@@ -472,6 +472,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
+			LoadDefaultSongsListContent();
 			Toast.makeText(manager.context, "Not found songs",
 					Toast.LENGTH_SHORT).show();
 		}

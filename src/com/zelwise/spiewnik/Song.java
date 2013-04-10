@@ -149,8 +149,8 @@ public class Song {
 
 		cv.put(Names.SiteId, this.SiteId());
 		cv.put(Names.CategoryId, this.CategoryId());
-		cv.put(Names.Title, this.Title());
-		cv.put(Names.Content, this.Content());
+		cv.put(Names.Title, this.Title().trim());
+		cv.put(Names.Content, this.Content().trim());
 		cv.put(Names.Rating, this.Rating());
 		cv.put(Names.SiteRating, this.SiteRating());
 		cv.put(Names.RecentlyViewedDate, this.RecentlyViewedDate().getTime());
