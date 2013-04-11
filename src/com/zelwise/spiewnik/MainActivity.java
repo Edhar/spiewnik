@@ -11,12 +11,15 @@ import com.zelwise.spiewnik.SongArrayAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
@@ -45,7 +48,25 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener{
+import com.google.android.vending.licensing.AESObfuscator;
+import com.google.android.vending.licensing.LicenseChecker;
+import com.google.android.vending.licensing.LicenseCheckerCallback;
+import com.google.android.vending.licensing.Policy;
+import com.google.android.vending.licensing.ServerManagedPolicy;
+
+public class MainActivity extends Activity implements OnClickListener {
+
+	// licensing
+	private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjq+xQZIbUBTxgN0k22D78UFyqLVOkYJw8LJI/VoCl9aaD0fRm67L+a9zc2wIXrHVZBeki7gLLZ+eVO322kIbw37ebPjlc2GeRk5MdqA6+94cmQEXk8XPjOuQQki/iqEV4n6O42OW7MioE3dn4eRW5w6Xh6QDzxYAbAlMBvwlSfLDW409G10Bke3wfm8cjSnQ99PKPL5ClR5h4fPRd9frMlwcXPAVLueO8qsV8WefH7cmMdXbbijndjIiaPM9/0NO7RdkufWU51slLLqpD5mOC2D8nS99nDvrhdu9FK/gVyxnVBRgVebRyiXT99/E20aaEaEmEpGBNAO2rqzXdSFZ1QIDAQAB";
+
+	// Generate your own 20 random bytes, and put them here.
+	private static final byte[] SALT = new byte[] { 86, 45, 30, 86, -13,
+			-57, 74, -45, 51, 98, -95, -45, 45, 45, 45, -6, 78, 32, -64,
+			86 };
+	private LicenseCheckerCallback mLicenseCheckerCallback;
+    private LicenseChecker mChecker;
+	// licensing
+
 	Button downloadButton, dropTablesButton, recentlyViewedButton,
 			oftenViewedButton, siteRatingViewedButton, searcTextClearButton;
 
@@ -54,7 +75,7 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	LinearLayout advanceLinearLayout;
 
-	CheckBox advanceCheckBox,seachByAndShowSongNumbersInResult;
+	CheckBox advanceCheckBox, seachByAndShowSongNumbersInResult;
 
 	ListView songsListView;
 
@@ -63,16 +84,16 @@ public class MainActivity extends Activity implements OnClickListener{
 	public Boolean IsSongEditMode() {
 		return isSongEditMode;
 	}
-	
+
 	private OnTouchListener onTouchListenerClear = new OnTouchListener() {
-		
+
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			Button btn = (Button)v;
-			if (event.getAction() == MotionEvent.ACTION_DOWN){
-			    btn.setBackgroundColor(Color.parseColor("#C1E3FC"));
+			Button btn = (Button) v;
+			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				btn.setBackgroundColor(Color.parseColor("#C1E3FC"));
 			}
-			if (event.getAction() == MotionEvent.ACTION_UP){
+			if (event.getAction() == MotionEvent.ACTION_UP) {
 				btn.setBackgroundColor(Color.parseColor("#00000000"));
 				v.performClick();
 			}
@@ -80,14 +101,14 @@ public class MainActivity extends Activity implements OnClickListener{
 		}
 	};
 	private OnTouchListener onTouchListener = new OnTouchListener() {
-		
+
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			Button btn = (Button)v;
-			if (event.getAction() == MotionEvent.ACTION_DOWN){
-			    btn.setBackgroundColor(Color.parseColor("#660099"));
+			Button btn = (Button) v;
+			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				btn.setBackgroundColor(Color.parseColor("#660099"));
 			}
-			if (event.getAction() == MotionEvent.ACTION_UP){
+			if (event.getAction() == MotionEvent.ACTION_UP) {
 				btn.setBackgroundColor(Color.parseColor("#C1E3FC"));
 				v.performClick();
 			}
@@ -104,14 +125,13 @@ public class MainActivity extends Activity implements OnClickListener{
 	Integer searchViewIndex = 1;
 	Integer songViewIndex = 2;
 
-	
-
 	AppManager manager;
 
 	private void LoadSettings() {
 		maxSongsPerPageOnResult.setText(manager.settings.MaxSongInResultList()
 				.toString());
-		seachByAndShowSongNumbersInResult.setChecked(manager.settings.SeachByAndShowSongNumbersInResult());
+		seachByAndShowSongNumbersInResult.setChecked(manager.settings
+				.SeachByAndShowSongNumbersInResult());
 	}
 
 	@Override
@@ -146,7 +166,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			@Override
 			public void onPageSelected(int arg0) {
 				CheckIfSongEditModeOrContentSaved();
-				
+
 				Activity activity = (Activity) manager.context;
 
 				if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
@@ -181,13 +201,12 @@ public class MainActivity extends Activity implements OnClickListener{
 
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
-								
-				
+
 			}
 
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
-				
+
 			}
 		});
 
@@ -209,8 +228,7 @@ public class MainActivity extends Activity implements OnClickListener{
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				manager.settings
-				.MaxSongInResultList(maxSongsPerPageOnResult
+				manager.settings.MaxSongInResultList(maxSongsPerPageOnResult
 						.getText().toString());
 			}
 		});
@@ -242,12 +260,15 @@ public class MainActivity extends Activity implements OnClickListener{
 		});
 		seachByAndShowSongNumbersInResult = (CheckBox) settingsView
 				.findViewById(R.id.SeachByAndShowSongNumbersInResult);
-		seachByAndShowSongNumbersInResult.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				manager.settings.SeachByAndShowSongNumbersInResult(((CheckBox) v).isChecked());
-			}
-		});
+		seachByAndShowSongNumbersInResult
+				.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						manager.settings
+								.SeachByAndShowSongNumbersInResult(((CheckBox) v)
+										.isChecked());
+					}
+				});
 
 		siteRatingViewedButton = (Button) searchView
 				.findViewById(R.id.SiteRatingViewedButton);
@@ -334,9 +355,11 @@ public class MainActivity extends Activity implements OnClickListener{
 				ToggleClearSearchButton(true);
 				if (searchText.toString().length() >= manager.settings.MinSymbolsForStartSearch) {
 					ArrayList<Song> songs = Song.GetSongs(manager.db,
-							searchText.toString(),
-							manager.settings.MaxSongInResultList(), "",manager.settings.SeachByAndShowSongNumbersInResult());
-					CreateAdapterAndSetToSongList(songs,searchText.toString());
+							searchText.toString(), manager.settings
+									.MaxSongInResultList(), "",
+							manager.settings
+									.SeachByAndShowSongNumbersInResult());
+					CreateAdapterAndSetToSongList(songs, searchText.toString());
 				}
 			}
 		});
@@ -350,15 +373,18 @@ public class MainActivity extends Activity implements OnClickListener{
 				}
 			}
 		});
-		
+
 		recentlyViewedButton.setOnTouchListener(onTouchListener);
 		oftenViewedButton.setOnTouchListener(onTouchListener);
 		siteRatingViewedButton.setOnTouchListener(onTouchListener);
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
-		
+
 		LoadSettings();
 		LoadDefaultSongsListContent();
 		FocusedFirstSongsListViewItem();
+		
+		// licensing
+		// licensing
 	}
 
 	@Override
@@ -468,10 +494,11 @@ public class MainActivity extends Activity implements OnClickListener{
 		songsListView.requestFocus();
 	}
 
-	private void CreateAdapterAndSetToSongList(ArrayList<Song> songs, String searchText) {
+	private void CreateAdapterAndSetToSongList(ArrayList<Song> songs,
+			String searchText) {
 		if (songs.size() > 0) {
-			songsArrayAdapter = new SongArrayAdapter<Song>(
-					manager,searchText, R.layout.song_list_item, songs);
+			songsArrayAdapter = new SongArrayAdapter<Song>(manager, searchText,
+					R.layout.song_list_item, songs);
 			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
@@ -479,30 +506,33 @@ public class MainActivity extends Activity implements OnClickListener{
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-	private void ClearSearchText(){
+
+	private void ClearSearchText() {
 		searchEditText.setText("");
 	}
 
 	private void LoadOftenViewed() {
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.Rating
-						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs,"");
+						+ DBHelper.SortDescending,
+				manager.settings.SeachByAndShowSongNumbersInResult());
+		CreateAdapterAndSetToSongList(songs, "");
 	}
 
 	private void LoadSiteRatingViewed() {
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(), Names.SiteRating
-						+ DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs,"");
+						+ DBHelper.SortDescending,
+				manager.settings.SeachByAndShowSongNumbersInResult());
+		CreateAdapterAndSetToSongList(songs, "");
 	}
 
 	private void LoadRecentlyViewed() {
 		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
 				manager.settings.MaxSongInResultList(),
-				Names.RecentlyViewedDate + DBHelper.SortDescending,manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs,"");
+				Names.RecentlyViewedDate + DBHelper.SortDescending,
+				manager.settings.SeachByAndShowSongNumbersInResult());
+		CreateAdapterAndSetToSongList(songs, "");
 	}
 
 	@Override
@@ -525,28 +555,30 @@ public class MainActivity extends Activity implements OnClickListener{
 			searcTextClearButton.setVisibility(View.GONE);
 		}
 	}
-	
-	private void LoadDefaultSongsListContent(){
+
+	private void LoadDefaultSongsListContent() {
 		LoadRecentlyViewed();
 	}
 
-	private void ReloadSongsListContent(){
+	private void ReloadSongsListContent() {
 		LoadRecentlyViewed();
 	}
 
 	private void DeleteSongMenuAction(Song song) {
 		final Song songToDelete = song;
-		
-		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
-		
+
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
+				manager.context);
+
 		alertBuilder.setIcon(0);
 		alertBuilder.setTitle("Are you sure you want to delete this song:");
 		alertBuilder.setMessage("\"" + song.Title() + "\"");
 		alertBuilder.setCancelable(false);
-		alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		alertBuilder.setPositiveButton("Ok",
+				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						songToDelete.Delete(manager.db);
-						if(manager.viewPager.getCurrentItem()==searchViewIndex){
+						if (manager.viewPager.getCurrentItem() == searchViewIndex) {
 							manager.viewPager.setCurrentItem(searchViewIndex);
 						}
 						isSongEditMode = false;
@@ -554,18 +586,20 @@ public class MainActivity extends Activity implements OnClickListener{
 					}
 				});
 		alertBuilder.setCancelable(false);
-		alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
+		alertBuilder.setNegativeButton("No",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
 		AlertDialog alert = alertBuilder.show();
-		TextView messageText = (TextView)alert.findViewById(android.R.id.message);
+		TextView messageText = (TextView) alert
+				.findViewById(android.R.id.message);
 		messageText.setGravity(Gravity.CENTER);
 		messageText.setTypeface(Typeface.DEFAULT_BOLD);
 		messageText.setTextColor(Color.RED);
 		alert.show();
-		
+
 	}
 
 	/*
@@ -591,41 +625,46 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	}
 
-	private void CheckIfSongEditModeOrContentSaved()
-	{
-		if(this.IsSongEditMode()){
+	private void CheckIfSongEditModeOrContentSaved() {
+		if (this.IsSongEditMode()) {
 			final Song curSong = GetSongFromSongView();
-			
-			if(curSong.Title().trim().length() != 0 || curSong.Content().trim().length() != 0){
-				if(curSong.Title().trim().length() == 0){
+
+			if (curSong.Title().trim().length() != 0
+					|| curSong.Content().trim().length() != 0) {
+				if (curSong.Title().trim().length() == 0) {
 					curSong.Title(Song.DoSongTitle(curSong.Content()));
 				}
-				
-				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
-				
+
+				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
+						manager.context);
+
 				alertBuilder.setIcon(0);
 				alertBuilder.setTitle("Would you like to save this song:");
 				alertBuilder.setMessage("\"" + curSong.Title() + "\"");
 				alertBuilder.setCancelable(false);
-				alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				alertBuilder.setPositiveButton("Ok",
+						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								curSong.SaveOrUpdate(manager.db);
 								isSongEditMode = false;
 							}
 						});
 				alertBuilder.setCancelable(false);
-				alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						if(curSong.Id() != 0){
-							Song savedSong = Song.Get(manager.db, curSong.Id());
-							UpdateContenSongView(savedSong);
-						}
-						isSongEditMode = false;
-						dialog.cancel();
-					}
-				});
+				alertBuilder.setNegativeButton("No",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								if (curSong.Id() != 0) {
+									Song savedSong = Song.Get(manager.db,
+											curSong.Id());
+									UpdateContenSongView(savedSong);
+								}
+								isSongEditMode = false;
+								dialog.cancel();
+							}
+						});
 				AlertDialog alert = alertBuilder.show();
-				TextView messageText = (TextView)alert.findViewById(android.R.id.message);
+				TextView messageText = (TextView) alert
+						.findViewById(android.R.id.message);
 				messageText.setGravity(Gravity.CENTER);
 				messageText.setTypeface(Typeface.DEFAULT_BOLD);
 				alert.show();
@@ -635,7 +674,7 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	private Song GetSongFromSongView() {
 		Song song = new Song();
-		
+
 		try {
 			View songView = manager.viewPager.findViewWithTag(songViewIndex);
 			TextView songId = (TextView) songView
@@ -723,12 +762,11 @@ public class MainActivity extends Activity implements OnClickListener{
 		songTitleEditText.setCursorVisible(true);
 		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT);
 
-		
 		songContentEditText.setCursorVisible(true);
 		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT
 				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		songContentEditText.setSingleLine(false);
-		
+
 		songContentEditText.setEnabled(true);
 
 		isSongEditMode = true;
@@ -750,12 +788,12 @@ public class MainActivity extends Activity implements OnClickListener{
 		songContentEditText.setCursorVisible(false);
 		songContentEditText.setInputType(InputType.TYPE_NULL);
 		songContentEditText.setSingleLine(false);
-		
+
 		songContentEditText.setEnabled(false);
 
 		isSongEditMode = false;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
@@ -791,7 +829,6 @@ public class MainActivity extends Activity implements OnClickListener{
 		}
 	}
 
-
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
@@ -819,4 +856,69 @@ public class MainActivity extends Activity implements OnClickListener{
 		manager.CloseDB();
 		super.onDestroy();
 	}
+	
+	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
+        public void allow(int policyReason) {
+            if (isFinishing()) {
+                return;
+            }
+        }
+
+        public void dontAllow(int policyReason) {
+            if (isFinishing()) {
+                return;
+            }
+            
+            showLicensignDialog(policyReason == Policy.RETRY);
+        }
+
+        public void applicationError(int errorCode) {
+            if (isFinishing()) {
+                return;
+            }
+            
+            showLicensignDialog(true);
+        }
+    }
+	
+	private void checkLicense(){
+		
+	}
+	
+	private void showLicensignDialog(Boolean isRetry){
+		final boolean retryMode = isRetry;
+		
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
+		alertBuilder.setIcon(0);
+		alertBuilder.setTitle("License error");
+		
+		if(retryMode){
+			alertBuilder.setMessage("Please retry to checke license");
+		}else{
+			alertBuilder.setMessage(Html.fromHtml("<b>\"" + getResources().getString(R.string.app_name) + "\"</b> <font color=\"red\">will be closed?</font>"));	
+		}
+		
+		alertBuilder.setCancelable(false);
+		alertBuilder.setPositiveButton(retryMode ? "Retry" : "Buy",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						if (retryMode) {
+							checkLicense();
+	                    } else {
+	                        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://market.android.com/details?id=" + getPackageName()));
+	                        startActivity(marketIntent);                        
+	                    }
+					}
+				});
+		alertBuilder.setCancelable(false);
+		alertBuilder.setNegativeButton("Exit",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						finish();
+					}
+				});
+		AlertDialog alert = alertBuilder.create();
+		alert.show();
+	}
+	
 }
