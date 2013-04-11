@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
@@ -63,8 +64,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static final byte[] SALT = new byte[] { 86, 45, 30, 86, -13,
 			-57, 74, -45, 51, 98, -95, -45, 45, 45, 45, -6, 78, 32, -64,
 			86 };
-	private LicenseCheckerCallback mLicenseCheckerCallback;
-    private LicenseChecker mChecker;
+	private LicenseCheckerCallback licenseCheckerCallback;
+    private LicenseChecker licenseChecker;
 	// licensing
 
 	Button downloadButton, dropTablesButton, recentlyViewedButton,
@@ -384,6 +385,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		FocusedFirstSongsListViewItem();
 		
 		// licensing
+		String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+		licenseCheckerCallback = new MyLicenseCheckerCallback();
+		licenseChecker=new LicenseChecker(
+	            this, new ServerManagedPolicy(this,
+	                    new AESObfuscator(SALT, getPackageName(), deviceId)),
+	                BASE64_PUBLIC_KEY);
+		checkLicense();
 		// licensing
 	}
 
@@ -557,7 +565,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void LoadDefaultSongsListContent() {
-		LoadRecentlyViewed();
+		LoadSiteRatingViewed();
 	}
 
 	private void ReloadSongsListContent() {
@@ -854,6 +862,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		manager.CloseDB();
+		licenseChecker.onDestroy();
 		super.onDestroy();
 	}
 	
@@ -876,13 +885,15 @@ public class MainActivity extends Activity implements OnClickListener {
             if (isFinishing()) {
                 return;
             }
-            
-            showLicensignDialog(true);
         }
     }
 	
 	private void checkLicense(){
-		
+		try{
+			licenseChecker.checkAccess(licenseCheckerCallback);
+		}catch(Exception ex){
+			
+		}
 	}
 	
 	private void showLicensignDialog(Boolean isRetry){
@@ -890,7 +901,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
 		alertBuilder.setIcon(0);
-		alertBuilder.setTitle("License error");
+		alertBuilder.setTitle("License not found");
 		
 		if(retryMode){
 			alertBuilder.setMessage("Please retry to checke license");
