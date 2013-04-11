@@ -11,7 +11,7 @@ public class SettingsHelper {
 		public static final String SeachByAndShowSongNumbersInResult = "SeachByAndShowSongNumbersInResult";
 	}
 	public static class DefaultValues {
-		public static Integer MaxSongInResultList = 20;
+		public static Integer MaxSongInResultList = 50;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 	}
 	
