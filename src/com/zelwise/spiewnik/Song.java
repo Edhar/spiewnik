@@ -258,9 +258,8 @@ public class Song {
 		String selection = Names.Title + " != ?";
 		String[] selectionArgs = new String[] { "" };
 		if (searchText.length() > 0) {
-			selection = Names.Title + " LIKE ? AND " + selection;
-			selectionArgs = new String[] { searchTextLIKE,
-					selectionArgs[0] };
+			selection = selection + " AND " + Names.Title + " LIKE ? ";
+			selectionArgs = new String[] {"", searchTextLIKE,};
 		}
 		
 		String orderBy = Names.Title + DBHelper.SortAscending;
@@ -269,8 +268,8 @@ public class Song {
 		}
 		
 		if (seachByAndShowSongNumbersInResult && searchText.length() > 0) {
-				selection = "(" + Names.Id + " LIKE ? OR " + Names.Title	+ " LIKE ?) AND " + Names.Title + " != ?";
-				selectionArgs = new String[] { searchTextLIKE, searchTextLIKE,"" };
+				selection = Names.Title + " != ? AND (" + Names.Id + " LIKE ? OR " + Names.Title	+ " LIKE ?) ";
+				selectionArgs = new String[] {"", searchTextLIKE, searchTextLIKE};
 				orderBy = Names.Id + DBHelper.SortAscending + "," + orderBy;
 		}
 
