@@ -248,6 +248,41 @@ public class Song {
 		return content;
 	}
 
+	public static int AllSongsCount(SQLiteDatabase db) {
+		Integer count = 0;
+		String selection = Names.Title + " != ?";
+		String[] selectionArgs = new String[] { "" };
+		Cursor cursor = db.query(Names.TableName, new String[] { Names.Id },
+				selection, selectionArgs, null, null, null, null);
+
+		count = cursor.getCount();
+		if (cursor != null && !cursor.isClosed()) {
+			cursor.close();
+		}
+		return count;
+	}
+
+	public static int AllSongsCountWithEmpty(SQLiteDatabase db) {
+		Integer count = 0;
+		Cursor cursor = db.query(Names.TableName, null, null, null, null, null,
+				null);
+		count = cursor.getCount();
+		if (cursor != null && !cursor.isClosed()) {
+			cursor.close();
+		}
+		return count;
+	}
+
+	public void Delete(SQLiteDatabase db) {
+		Delete(db, this.Id());
+	}
+
+	public static void Delete(SQLiteDatabase db, Integer Id) {
+		if (Id != 0) {
+			db.delete(Names.TableName, Names.Id + "=" + Id, null);
+		}
+	}
+	
 	public static ArrayList<Song> GetSongs(SQLiteDatabase db, String searchText,
 			Integer maxCount, String orderByString,
 			Boolean seachByAndShowSongNumbersInResult) {
@@ -299,41 +334,6 @@ public class Song {
 			cursor.close();
 		}
 		return list;
-	}
-
-	public static int AllSongsCount(SQLiteDatabase db) {
-		Integer count = 0;
-		String selection = Names.Title + " != ?";
-		String[] selectionArgs = new String[] { "" };
-		Cursor cursor = db.query(Names.TableName, new String[] { Names.Id },
-				selection, selectionArgs, null, null, null, null);
-
-		count = cursor.getCount();
-		if (cursor != null && !cursor.isClosed()) {
-			cursor.close();
-		}
-		return count;
-	}
-
-	public static int AllSongsCountWithEmpty(SQLiteDatabase db) {
-		Integer count = 0;
-		Cursor cursor = db.query(Names.TableName, null, null, null, null, null,
-				null);
-		count = cursor.getCount();
-		if (cursor != null && !cursor.isClosed()) {
-			cursor.close();
-		}
-		return count;
-	}
-
-	public void Delete(SQLiteDatabase db) {
-		Delete(db, this.Id());
-	}
-
-	public static void Delete(SQLiteDatabase db, Integer Id) {
-		if (Id != 0) {
-			db.delete(Names.TableName, Names.Id + "=" + Id, null);
-		}
 	}
 
 }

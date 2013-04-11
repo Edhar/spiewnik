@@ -63,6 +63,38 @@ public class DBHelper extends SQLiteOpenHelper {
                     + Song.Names.SiteRating+ " integer,"
                     + Song.Names.RecentlyViewedDate+ " long"
                     + ");");
+	  		
+	  		//id ASC
+	  		db.execSQL("CREATE UNIQUE INDEX idx_Song_Id_ASC ON Song (Id ASC);");
+	  		
+	  		//title ASC
+	  		db.execSQL("CREATE INDEX idx_Song_Title_ASC ON Song (Title ASC);");
+	  		
+	  	    //Id_ASC_Title_ASC
+	  		db.execSQL("CREATE UNIQUE INDEX idx_Song_Id_ASC_Title_ASC ON Song (Id ASC,Title ASC);");
+	  		
+	  		
+	  		//Rating DESC
+	  		db.execSQL("CREATE INDEX idx_Song_Rating_DESC ON Song (Rating DESC);");
+	  		//Rating_DESC_Title_ASC
+	  		db.execSQL("CREATE INDEX idx_Song_Rating_DESC_Title_ASC ON Song (Rating DESC,Title ASC);");
+	  		//Rating_DESC_Id_ASC_Title_ASC
+	  		db.execSQL("CREATE UNIQUE INDEX idx_Song_Rating_DESC_Id_ASC_Title_ASC ON Song (Rating DESC,Id ASC,Title ASC);");
+	  		
+	  		
+	  		//RecentlyViewedDate DESC
+	  		db.execSQL("CREATE INDEX idx_Song_RecentlyViewedDate_DESC ON Song (RecentlyViewedDate DESC);");
+	  		//RecentlyViewedDate_DESC_Title_ASC
+	  		db.execSQL("CREATE INDEX idx_Song_RecentlyViewedDate_DESC_Title_ASC ON Song (RecentlyViewedDate DESC,Title ASC);");
+	  		//RecentlyViewedDate_DESC_Id_ASC_Title_ASC
+	  		db.execSQL("CREATE UNIQUE INDEX idx_Song_RecentlyViewedDate_DESC_Id_ASC_Title_ASC ON Song (RecentlyViewedDate DESC,Id ASC,Title ASC);");
+	  		
+	  		//SiteRating_DESC
+	  		db.execSQL("CREATE INDEX idx_Song_SiteRating_DESC ON Song (SiteRating DESC);");
+	  		//SiteRating_DESC_Title_ASC
+	  		db.execSQL("CREATE INDEX idx_Song_SiteRating_DESC_Title_ASC ON Song (SiteRating DESC,Title ASC);");
+	  		//SiteRating_DESC_Title_ASC
+	  		db.execSQL("CREATE UNIQUE INDEX idx_Song_SiteRating_DESC_Id_ASC_Title_ASC ON Song (SiteRating DESC,Id ASC,Title ASC);");
     	}
     	
     	if (tableName == Category.Names.TableName) {
