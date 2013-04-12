@@ -215,6 +215,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		viewPager.setCurrentItem(searchViewIndex);
 		
 		setContentView(viewPager);
+
+		manager = new AppManager(this, viewPager);
 		
 		View title = getWindow().findViewById(android.R.id.title);
 		if (title != null) {
@@ -224,10 +226,10 @@ public class MainActivity extends Activity implements OnClickListener {
 				//titleBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				titleBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 70));
 			}
-		}	
-			
-
-		manager = new AppManager(this, viewPager);
+		}
+		
+		Activity activity = (Activity) manager.context;
+		activity.setTitle(getResources().getString(R.string.app_name));
 
 		viewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
