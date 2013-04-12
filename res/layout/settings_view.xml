@@ -136,16 +136,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left|center_vertical"
-                android:layout_weight="10" >
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left|center_vertical"
-                    android:textSize="18sp"
                     android:layout_weight="5"
-                    android:text="Max Songs Per Page On Result:" >
+                    android:gravity="left|center_vertical"
+                    android:text="Max Songs Per Page On Result:"
+                    android:textSize="18sp" >
                 </TextView>
 
                 <EditText
@@ -156,7 +156,6 @@
                     android:digits="1234567890"
                     android:inputType="number"
                     android:text="30" >
-
                 </EditText>
             </LinearLayout>
 
@@ -165,16 +164,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left|center_vertical"
-                android:layout_weight="10" >
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left|center_vertical"
-                    android:textSize="18sp"
                     android:layout_weight="5"
-                    android:text="Seach By And Show Song Numbers In Result:" >
+                    android:gravity="left|center_vertical"
+                    android:text="Seach By And Show Song Numbers In Result:"
+                    android:textSize="18sp" >
                 </TextView>
 
                 <CheckBox
@@ -183,35 +182,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:checked="false" >
-
                 </CheckBox>
             </LinearLayout>
-            <View style="@style/Line" />
-            
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left|center_vertical"
-                android:layout_weight="10" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="left|center_vertical"
-                    android:textSize="18sp"
-                    android:layout_weight="5"
-                    android:text="Interface Language:" >
-                </TextView>
-
-                <Spinner
-                    android:id="@+id/InterfaceLanguage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:checked="false" >
-
-                </Spinner>
-            </LinearLayout>
             <View style="@style/Line" />
 
             <LinearLayout
@@ -231,7 +204,9 @@
                 </TextView>
             </LinearLayout>
 
-            <View style="@style/Line" android:visibility="gone"/>
+            <View
+                style="@style/Line"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

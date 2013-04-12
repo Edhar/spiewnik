@@ -85,8 +85,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	EditText searchEditText, downloadFromEditText, downloadToEditText,
 			maxSongsPerPageOnResult, songTitleEditText, songContentEditText;
 
-	Spinner interfaceLanguage;
-
 	LinearLayout advanceLinearLayout;
 
 	CheckBox advanceCheckBox, seachByAndShowSongNumbersInResult;
@@ -161,29 +159,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	AppManager manager;
 
-	private void SetSelectedLanguage(Integer languageId) {
-		ArrayAdapter<Language> langAdapter = (ArrayAdapter<Language>) interfaceLanguage
-				.getAdapter();
-		if (langAdapter != null) {
-			Language curLagn = (Language) interfaceLanguage
-					.getItemAtPosition(interfaceLanguage
-							.getSelectedItemPosition());
-			Language newLang = Language.Get(languageId);
-			for (int i = 0; i < langAdapter.getCount(); i++) {
-				if (((Language) langAdapter.getItem(i)).Id() == newLang.Id()) {
-					if (curLagn.Id() != newLang.Id()) {
-						interfaceLanguage.setSelection(i);
-					}
-					break;
-				}
-			}
-		}
-	}
-
 	private void LoadSettings() {
-
-		SetSelectedLanguage(manager.settings.LanguageId());
-
 		maxSongsPerPageOnResult.setText(manager.settings.MaxSongInResultList()
 				.toString());
 		seachByAndShowSongNumbersInResult.setChecked(manager.settings
@@ -213,23 +189,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		viewPager = new ViewPager(this);
 		viewPager.setAdapter(pagerAdapter);
 		viewPager.setCurrentItem(searchViewIndex);
-		
+
 		setContentView(viewPager);
 
 		manager = new AppManager(this, viewPager);
-		
-		View title = getWindow().findViewById(android.R.id.title);
-		if (title != null) {
-			View titleBar = (View) title.getParent();
-			if (titleBar != null) {
-				titleBar.setBackgroundColor(Color.parseColor("#1F1E1F"));
-				//titleBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				titleBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 70));
-			}
-		}
-		
-		Activity activity = (Activity) manager.context;
-		activity.setTitle(getResources().getString(R.string.app_name));
 
 		viewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
@@ -337,37 +300,6 @@ public class MainActivity extends Activity implements OnClickListener {
 						manager.settings
 								.SeachByAndShowSongNumbersInResult(((CheckBox) v)
 										.isChecked());
-					}
-				});
-
-		interfaceLanguage = (Spinner) settingsView
-				.findViewById(R.id.InterfaceLanguage);
-		ArrayAdapter<Language> adapterLanguage = new ArrayAdapter<Language>(
-				this, android.R.layout.simple_spinner_item,
-				Language.GetLanguages());
-		adapterLanguage
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		interfaceLanguage.setAdapter(adapterLanguage);
-		interfaceLanguage
-				.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-					@Override
-					public void onItemSelected(AdapterView<?> parent,
-							View view, int pos, long id) {
-						if (parent != null) {
-							Language newLangualge = (Language) parent
-									.getItemAtPosition(pos);
-							if (newLangualge != null) {
-								changeAppLanguage(newLangualge);
-							}
-						}
-
-					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
-						// TODO Auto-generated method stub
-
 					}
 				});
 
@@ -492,7 +424,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.05 * 60 * 1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,
+				(long) (0.1 * 60 * 1000));
 		// licensing
 	}
 
@@ -958,22 +891,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	protected void changeAppLanguage(Language newLanguage) {
-		manager.settings.LanguageId(newLanguage.Id());
-
-		if (!manager.context.getResources().getConfiguration().locale
-				.getLanguage().equals(newLanguage.LanguageCode())) {
-			Locale newLocale = new Locale(newLanguage.LanguageCode());
-			Locale.setDefault(newLocale);
-			Configuration config = manager.context.getResources()
-					.getConfiguration();
-			config.locale = newLocale;
-			manager.context.getResources().updateConfiguration(config,
-					manager.context.getResources().getDisplayMetrics());
-			startActivity(new Intent(manager.context, MainActivity.class));
-		}
-	}
-
 	@Override
 	protected void onDestroy() {
 		manager.CloseDB();
@@ -1012,48 +929,55 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	private Boolean LicensignDialogShowed = false;
+
 	private void showLicensignDialog(Boolean isRetry) {
-		final boolean retryMode = isRetry;
+		if (!LicensignDialogShowed) {
+			final boolean retryMode = isRetry;
 
-		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
-				manager.context);
-		alertBuilder.setIcon(0);
-		alertBuilder.setTitle("License not found");
+			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
+					manager.context);
+			alertBuilder.setIcon(0);
+			alertBuilder.setTitle("License not found");
 
-		if (retryMode) {
-			alertBuilder.setMessage("Please retry to checke license");
-		} else {
-			alertBuilder.setMessage(Html.fromHtml("\""
-					+ getResources().getString(R.string.app_name)
-					+ "\" <font color=\"red\">license not found</font>,"
-					+ " please to buy"));
-		}
+			if (retryMode) {
+				alertBuilder.setMessage("Please retry to checke license");
+			} else {
+				alertBuilder.setMessage(Html.fromHtml("\""
+						+ getResources().getString(R.string.app_name)
+						+ "\" <font color=\"red\">license not found</font>,"
+						+ " please to buy"));
+			}
 
-		alertBuilder.setCancelable(false);
-		alertBuilder.setPositiveButton(retryMode ? "Retry" : "Buy",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						if (retryMode) {
-							checkLicense();
-						} else {
-							Intent marketIntent = new Intent(
-									Intent.ACTION_VIEW,
-									Uri.parse("http://market.android.com/details?id="
-											+ getPackageName()));
-							startActivity(marketIntent);
+			alertBuilder.setCancelable(false);
+			alertBuilder.setPositiveButton(retryMode ? "Retry" : "Buy",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							LicensignDialogShowed = false;
+							if (retryMode) {
+								checkLicense();
+							} else {
+								Intent marketIntent = new Intent(
+										Intent.ACTION_VIEW,
+										Uri.parse("http://market.android.com/details?id="
+												+ getPackageName()));
+								startActivity(marketIntent);
+							}
 						}
-					}
-				});
-		alertBuilder.setCancelable(false);
-		alertBuilder.setNegativeButton("Cancel",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-						// finish();
-					}
-				});
-		AlertDialog alert = alertBuilder.create();
-		alert.show();
+					});
+			alertBuilder.setCancelable(false);
+			alertBuilder.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							LicensignDialogShowed = false;
+							dialog.cancel();
+							// finish();
+						}
+					});
+			AlertDialog alert = alertBuilder.create();
+			LicensignDialogShowed = true;
+			alert.show();
+		}
 	}
 
 }
