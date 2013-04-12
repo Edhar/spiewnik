@@ -7,10 +7,12 @@ import android.content.SharedPreferences;
 //see here http://twigstechtips.blogspot.com/2010/11/android-save-and-load-settings.html
 public class SettingsHelper {
 	public static class Tags {
+		public static final String LanguageId = "LanguageId";
 		public static final String MaxSongInResultList = "MaxSongInResultList";
 		public static final String SeachByAndShowSongNumbersInResult = "SeachByAndShowSongNumbersInResult";
 	}
 	public static class DefaultValues {
+		public static Integer LanguageId = 0;
 		public static Integer MaxSongInResultList = 50;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 	}
@@ -23,6 +25,16 @@ public class SettingsHelper {
 	private SharedPreferences.Editor editor;
 
 	public Integer MinSymbolsForStartSearch = 1;
+	
+	private Integer languageId;
+	public Integer LanguageId() {
+		return languageId;
+	}
+	public void LanguageId(Integer newValue) {
+		languageId = newValue;
+		editor.putInt(Tags.LanguageId, languageId);
+		editor.commit();
+	}
 	
 	private Integer maxSongInResultList;
 	public Integer MaxSongInResultList() {
@@ -57,6 +69,9 @@ public class SettingsHelper {
 	}
 
 	private void loadAllSettings() {
+		languageId = settings.getInt(Tags.LanguageId,
+				DefaultValues.LanguageId);
+		
 		maxSongInResultList = settings.getInt(Tags.MaxSongInResultList,
 				DefaultValues.MaxSongInResultList);
 		

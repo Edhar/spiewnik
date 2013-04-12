@@ -3,6 +3,11 @@ package com.zelwise.spiewnik;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.security.auth.callback.Callback;
 
 import com.zelwise.spiewnik.AppManager;
 import com.zelwise.spiewnik.Song.Names;
@@ -12,10 +17,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings.Secure;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -39,6 +47,8 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -46,6 +56,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,11 +72,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjq+xQZIbUBTxgN0k22D78UFyqLVOkYJw8LJI/VoCl9aaD0fRm67L+a9zc2wIXrHVZBeki7gLLZ+eVO322kIbw37ebPjlc2GeRk5MdqA6+94cmQEXk8XPjOuQQki/iqEV4n6O42OW7MioE3dn4eRW5w6Xh6QDzxYAbAlMBvwlSfLDW409G10Bke3wfm8cjSnQ99PKPL5ClR5h4fPRd9frMlwcXPAVLueO8qsV8WefH7cmMdXbbijndjIiaPM9/0NO7RdkufWU51slLLqpD5mOC2D8nS99nDvrhdu9FK/gVyxnVBRgVebRyiXT99/E20aaEaEmEpGBNAO2rqzXdSFZ1QIDAQAB";
 
 	// Generate your own 20 random bytes, and put them here.
-	private static final byte[] SALT = new byte[] { 86, 45, 30, 86, -13,
-			-57, 74, -45, 51, 98, -95, -45, 45, 45, 45, -6, 78, 32, -64,
-			86 };
+	private static final byte[] SALT = new byte[] { 86, 45, 30, 86, -13, -57,
+			74, -45, 51, 98, -95, -45, 45, 45, 45, -6, 78, 32, -64, 86 };
 	private LicenseCheckerCallback licenseCheckerCallback;
-    private LicenseChecker licenseChecker;
+	private LicenseChecker licenseChecker;
 	// licensing
 
 	Button downloadButton, dropTablesButton, recentlyViewedButton,
@@ -73,6 +83,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	EditText searchEditText, downloadFromEditText, downloadToEditText,
 			maxSongsPerPageOnResult, songTitleEditText, songContentEditText;
+
+	Spinner interfaceLanguage;
 
 	LinearLayout advanceLinearLayout;
 
@@ -85,6 +97,26 @@ public class MainActivity extends Activity implements OnClickListener {
 	public Boolean IsSongEditMode() {
 		return isSongEditMode;
 	}
+
+	Timer licenseTimer;
+	final Handler licenseHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			try {
+				checkLicense();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	class licenseTimerTask extends TimerTask {
+
+		@Override
+		public void run() {
+			licenseHandler.sendEmptyMessage(0);
+		}
+	};
 
 	private OnTouchListener onTouchListenerClear = new OnTouchListener() {
 
@@ -128,7 +160,29 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	AppManager manager;
 
+	private void SetSelectedLanguage(Integer languageId) {
+		ArrayAdapter<Language> langAdapter = (ArrayAdapter<Language>) interfaceLanguage
+				.getAdapter();
+		if (langAdapter != null) {
+			Language curLagn = (Language) interfaceLanguage
+					.getItemAtPosition(interfaceLanguage
+							.getSelectedItemPosition());
+			Language newLang = Language.Get(languageId);
+			for (int i = 0; i < langAdapter.getCount(); i++) {
+				if (((Language) langAdapter.getItem(i)).Id() == newLang.Id()) {
+					if (curLagn.Id() != newLang.Id()) {
+						interfaceLanguage.setSelection(i);
+					}
+					break;
+				}
+			}
+		}
+	}
+
 	private void LoadSettings() {
+
+		SetSelectedLanguage(manager.settings.LanguageId());
+
 		maxSongsPerPageOnResult.setText(manager.settings.MaxSongInResultList()
 				.toString());
 		seachByAndShowSongNumbersInResult.setChecked(manager.settings
@@ -138,7 +192,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		LayoutInflater inflater = LayoutInflater.from(this);
 		List<View> pages = new ArrayList<View>();
 
@@ -162,6 +216,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		manager = new AppManager(this, viewPager);
 
+		Activity activity = (Activity) manager.context;		
+		
 		viewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
 			@Override
@@ -268,6 +324,37 @@ public class MainActivity extends Activity implements OnClickListener {
 						manager.settings
 								.SeachByAndShowSongNumbersInResult(((CheckBox) v)
 										.isChecked());
+					}
+				});
+
+		interfaceLanguage = (Spinner) settingsView
+				.findViewById(R.id.InterfaceLanguage);
+		ArrayAdapter<Language> adapterLanguage = new ArrayAdapter<Language>(
+				this, android.R.layout.simple_spinner_item,
+				Language.GetLanguages());
+		adapterLanguage
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		interfaceLanguage.setAdapter(adapterLanguage);
+		interfaceLanguage
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int pos, long id) {
+						if (parent != null) {
+							Language newLangualge = (Language) parent
+									.getItemAtPosition(pos);
+							if (newLangualge != null) {
+								changeAppLanguage(newLangualge);
+							}
+						}
+
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
+
 					}
 				});
 
@@ -383,15 +470,16 @@ public class MainActivity extends Activity implements OnClickListener {
 		LoadSettings();
 		LoadDefaultSongsListContent();
 		FocusedFirstSongsListViewItem();
-		
+
 		// licensing
-		String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+		String deviceId = Secure.getString(getContentResolver(),
+				Secure.ANDROID_ID);
 		licenseCheckerCallback = new MyLicenseCheckerCallback();
-		licenseChecker=new LicenseChecker(
-	            this, new ServerManagedPolicy(this,
-	                    new AESObfuscator(SALT, getPackageName(), deviceId)),
-	                BASE64_PUBLIC_KEY);
-		checkLicense();
+		licenseChecker = new LicenseChecker(this, new ServerManagedPolicy(this,
+				new AESObfuscator(SALT, getPackageName(), deviceId)),
+				BASE64_PUBLIC_KEY);
+		licenseTimer = new Timer();
+		//licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.05 * 60 * 1000));
 		// licensing
 	}
 
@@ -811,6 +899,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			viewPager.setCurrentItem(settingsViewIndex);
 			return true;
 		case R.id.menu_Exit:
+			Intent intent = new Intent(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_HOME);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
 			finish();
 			System.exit(0);
 			return true;
@@ -859,77 +951,100 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	protected void changeAppLanguage(Language newLanguage) {
+		manager.settings.LanguageId(newLanguage.Id());
+
+		if (!manager.context.getResources().getConfiguration().locale
+				.getLanguage().equals(newLanguage.LanguageCode())) {
+			Locale newLocale = new Locale(newLanguage.LanguageCode());
+			Locale.setDefault(newLocale);
+			Configuration config = manager.context.getResources().getConfiguration();
+			config.locale = newLocale;
+			manager.context.getResources().updateConfiguration(config, manager.context.getResources().getDisplayMetrics());
+			startActivity(new Intent(manager.context, MainActivity.class));
+		}
+	}
+
 	@Override
 	protected void onDestroy() {
 		manager.CloseDB();
 		licenseChecker.onDestroy();
 		super.onDestroy();
 	}
-	
+
 	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
-        public void allow(int policyReason) {
-            if (isFinishing()) {
-                return;
-            }
-        }
+		public void allow(int policyReason) {
+			if (isFinishing()) {
+				return;
+			}
+			licenseTimer.cancel();
+		}
 
-        public void dontAllow(int policyReason) {
-            if (isFinishing()) {
-                return;
-            }
-            
-            showLicensignDialog(policyReason == Policy.RETRY);
-        }
+		public void dontAllow(int policyReason) {
+			if (isFinishing()) {
+				return;
+			}
 
-        public void applicationError(int errorCode) {
-            if (isFinishing()) {
-                return;
-            }
-        }
-    }
-	
-	private void checkLicense(){
-		try{
-			licenseChecker.checkAccess(licenseCheckerCallback);
-		}catch(Exception ex){
-			
+			showLicensignDialog(policyReason == Policy.RETRY);
+		}
+
+		public void applicationError(int errorCode) {
+			if (isFinishing()) {
+				return;
+			}
 		}
 	}
-	
-	private void showLicensignDialog(Boolean isRetry){
+
+	private void checkLicense() {
+		try {
+			licenseChecker.checkAccess(licenseCheckerCallback);
+		} catch (Exception ex) {
+
+		}
+	}
+
+	private void showLicensignDialog(Boolean isRetry) {
 		final boolean retryMode = isRetry;
-		
-		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
+
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
+				manager.context);
 		alertBuilder.setIcon(0);
 		alertBuilder.setTitle("License not found");
-		
-		if(retryMode){
+
+		if (retryMode) {
 			alertBuilder.setMessage("Please retry to checke license");
-		}else{
-			alertBuilder.setMessage(Html.fromHtml("<b>\"" + getResources().getString(R.string.app_name) + "\"</b> <font color=\"red\">will be closed?</font>"));	
+		} else {
+			alertBuilder.setMessage(Html.fromHtml("\""
+					+ getResources().getString(R.string.app_name)
+					+ "\" <font color=\"red\">license not found</font>,"
+					+ " please to buy"));
 		}
-		
+
 		alertBuilder.setCancelable(false);
 		alertBuilder.setPositiveButton(retryMode ? "Retry" : "Buy",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						if (retryMode) {
 							checkLicense();
-	                    } else {
-	                        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://market.android.com/details?id=" + getPackageName()));
-	                        startActivity(marketIntent);                        
-	                    }
+						} else {
+							Intent marketIntent = new Intent(
+									Intent.ACTION_VIEW,
+									Uri.parse("http://market.android.com/details?id="
+											+ getPackageName()));
+							startActivity(marketIntent);
+						}
 					}
 				});
 		alertBuilder.setCancelable(false);
-		alertBuilder.setNegativeButton("Exit",
+		alertBuilder.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						finish();
+						dialog.cancel();
+						// finish();
 					}
 				});
 		AlertDialog alert = alertBuilder.create();
 		alert.show();
 	}
-	
+
 }
