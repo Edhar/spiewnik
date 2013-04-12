@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -192,7 +193,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		LayoutInflater inflater = LayoutInflater.from(this);
 		List<View> pages = new ArrayList<View>();
 
@@ -212,12 +213,22 @@ public class MainActivity extends Activity implements OnClickListener {
 		viewPager = new ViewPager(this);
 		viewPager.setAdapter(pagerAdapter);
 		viewPager.setCurrentItem(searchViewIndex);
+		
 		setContentView(viewPager);
+		
+		View title = getWindow().findViewById(android.R.id.title);
+		if (title != null) {
+			View titleBar = (View) title.getParent();
+			if (titleBar != null) {
+				titleBar.setBackgroundColor(Color.parseColor("#1F1E1F"));
+				//titleBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				titleBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 70));
+			}
+		}	
+			
 
 		manager = new AppManager(this, viewPager);
 
-		Activity activity = (Activity) manager.context;		
-		
 		viewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
 			@Override
@@ -479,7 +490,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		//licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.05 * 60 * 1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.05 * 60 * 1000));
 		// licensing
 	}
 
@@ -517,12 +528,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			manager.dBHelper.DropTable(manager.db, Song.Names.TableName);
 			SetDropTableButtonText();
 			manager.HideKeyboard();
-			// Toast.makeText(manager.context, "Deleted table - " +
-			// Song.Names.TableName, Toast.LENGTH_SHORT).show();
-			// manager.dBHelper.DropTables(manager.db,
-			// Category.Names.TableName);
-			// Toast.makeText(this, "Deleted table - " +
-			// Category.Names.TableName, Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.RecentlyViewedButton:
 			ClearSearchText();
@@ -958,9 +963,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				.getLanguage().equals(newLanguage.LanguageCode())) {
 			Locale newLocale = new Locale(newLanguage.LanguageCode());
 			Locale.setDefault(newLocale);
-			Configuration config = manager.context.getResources().getConfiguration();
+			Configuration config = manager.context.getResources()
+					.getConfiguration();
 			config.locale = newLocale;
-			manager.context.getResources().updateConfiguration(config, manager.context.getResources().getDisplayMetrics());
+			manager.context.getResources().updateConfiguration(config,
+					manager.context.getResources().getDisplayMetrics());
 			startActivity(new Intent(manager.context, MainActivity.class));
 		}
 	}
