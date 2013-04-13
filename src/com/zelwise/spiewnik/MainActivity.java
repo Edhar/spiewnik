@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import javax.security.auth.callback.Callback;
 
 import com.zelwise.spiewnik.AppManager;
+import com.zelwise.spiewnik.SettingsHelper.DefaultValues;
 import com.zelwise.spiewnik.Song.Names;
 import com.zelwise.spiewnik.SongArrayAdapter;
 
@@ -286,8 +287,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				manager.settings.MaxSongInResultList(maxSongsPerPageOnResult
-						.getText().toString());
+				Integer newVal = Utils.ToInt(searchText.toString(),
+						SettingsHelper.DefaultValues.SongPerPage);
+				if (newVal > 0) {
+					manager.settings.SongPerPage(newVal);
+				} else {
+					manager.settings.SongPerPage(SettingsHelper.DefaultValues.SongPerPage);
+					maxSongsPerPageOnResult
+							.setText(SettingsHelper.DefaultValues.SongPerPage.toString());
+				}
+
 			}
 		});
 
@@ -309,8 +318,15 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				manager.settings.MinSymbolsForStartSearch(minSymbolsForStartSearch
-						.getText().toString());
+				Integer newVal = Utils.ToInt(searchText.toString(),
+						SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
+				if (newVal > 0) {
+					manager.settings.MinSymbolsForStartSearch(newVal);
+				} else {
+					manager.settings.MinSymbolsForStartSearch(SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
+					minSymbolsForStartSearch
+							.setText(SettingsHelper.DefaultValues.MinSymbolsForStartSearch.toString());
+				}
 				RefreshSearchTextHint();
 			}
 		});
@@ -449,6 +465,9 @@ public class MainActivity extends Activity implements OnClickListener {
 					CreateAdapterAndSetToSongList(terms);
 					searchEditTextPrevValue = newStr.toString();
 				}
+				if (newStr.toString().length() == 0) {
+					LoadDefaultSongsListContent();
+				}
 			}
 
 			@Override
@@ -495,11 +514,29 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		// licensing
 	}
-	private void RefreshSearchTextHint(){
-		String searchHint = manager.context.getResources().getString(
-				R.string.search_searchHintStartText);
-		searchEditText.setHint(String.format(searchHint, manager.settings.MinSymbolsForStartSearch()));
+
+	private void RefreshSearchTextHint() {
+		String searchHint = "%s";
+		switch (manager.settings.MinSymbolsForStartSearch()) {
+		case 1:
+			searchHint = manager.context.getResources().getString(
+					R.string.search_searchHintStartText1);
+			break;
+		case 2:
+		case 3:
+		case 4:
+			searchHint = manager.context.getResources().getString(
+					R.string.search_searchHintStartText2to4);
+			break;
+		default:
+			searchHint = manager.context.getResources().getString(
+					R.string.search_searchHintStartText5);
+			break;
+		}
+		searchEditText.setHint(String.format(searchHint,
+				manager.settings.MinSymbolsForStartSearch()));
 	}
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -937,6 +974,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.menu_Delete:
 			DeleteSongMenuAction(GetSongFromSongView());
 			return true;
+		case R.id.menu_Share:
+			ShareSong(GetSongFromSongView());
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -958,6 +998,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			return true;
 		case R.id.menu_Delete_Context:
 			DeleteSongMenuAction(curSong);
+			return true;
+		case R.id.menu_Share_Context:
+			ShareSong(curSong);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
@@ -1051,6 +1094,26 @@ public class MainActivity extends Activity implements OnClickListener {
 			LicensignDialogShowed = true;
 			alert.show();
 		}
+	}
+	
+	private void ShareSong(Song song){
+		//create the send intent  
+		Intent shareIntent =  new Intent(android.content.Intent.ACTION_SEND);  
+		  
+		//set the type  
+		shareIntent.setType("text/plain");  
+		  
+		//add a subject  
+		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,song.Title());  
+		  
+		//build the body of the message to be shared  
+		String shareMessage = song.Content();  
+		  
+		//add the message  
+		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,shareMessage);  
+		  
+		//start the chooser for sharing  
+		startActivity(Intent.createChooser(shareIntent,manager.context.getResources().getString(R.string.app_shareDialogTitle)));  
 	}
 
 }

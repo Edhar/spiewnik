@@ -13,10 +13,10 @@ public class SettingsHelper {
 		public static final String MinSymbolsForStartSearch = "MinSymbolsForStartSearch";
 	}
 	public static class DefaultValues {
-		public static Integer MinSymbolsForStartSearch = 1;
-		public static Integer SongPerPage = 20;
+		public static Integer MinSymbolsForStartSearch = 3;
+		public static Integer SongPerPage = 15;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
-		public static Boolean DoMoreRelevantSearch = false;
+		public static Boolean DoMoreRelevantSearch = true;
 	}
 	
 	private final String sharedPreferencesName = "AppSettings";
@@ -45,12 +45,12 @@ public class SettingsHelper {
 	public Integer SongPerPage() {
 		return songPerPage;
 	}
-	public void MaxSongInResultList(Integer newValue) {
+	public void SongPerPage(Integer newValue) {
 		songPerPage = newValue;
 		editor.putInt(Tags.SongPerPage, songPerPage);
 		editor.commit();
 	}
-	public void MaxSongInResultList(String newValue) {
+	public void SongPerPage(String newValue) {
 		songPerPage = Utils.ToInt(newValue, DefaultValues.SongPerPage);
 		editor.putInt(Tags.SongPerPage, songPerPage);
 		editor.commit();

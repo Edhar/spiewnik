@@ -41,15 +41,17 @@ public final class R {
         public static final int SongsListView=0x7f070008;
         public static final int menu_Add=0x7f070019;
         public static final int menu_Delete=0x7f07001d;
-        public static final int menu_Delete_Context=0x7f070023;
+        public static final int menu_Delete_Context=0x7f070025;
         public static final int menu_Edit=0x7f07001b;
         public static final int menu_EditGroup=0x7f07001a;
-        public static final int menu_Edit_Context=0x7f070021;
-        public static final int menu_Exit=0x7f070020;
+        public static final int menu_Edit_Context=0x7f070022;
+        public static final int menu_Exit=0x7f070021;
         public static final int menu_Properties=0x7f07001e;
-        public static final int menu_Properties_Context=0x7f070022;
+        public static final int menu_Properties_Context=0x7f070023;
         public static final int menu_Save=0x7f07001c;
-        public static final int menu_settings=0x7f07001f;
+        public static final int menu_Share=0x7f07001f;
+        public static final int menu_Share_Context=0x7f070024;
+        public static final int menu_settings=0x7f070020;
     }
     public static final class layout {
         public static final int search_view=0x7f030000;
@@ -63,10 +65,18 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
-        public static final int search_searchHintStartText=0x7f040001;
-        public static final int settings_dropTablesButton=0x7f040003;
-        public static final int settings_settingsName=0x7f040002;
-        public static final int settings_totalRecods=0x7f040004;
+        public static final int app_shareDialogTitle=0x7f040001;
+        public static final int buttons_Delete=0x7f040003;
+        public static final int buttons_Edit=0x7f040005;
+        public static final int buttons_Exit=0x7f040004;
+        public static final int buttons_Properties=0x7f040006;
+        public static final int buttons_Share=0x7f040002;
+        public static final int search_searchHintStartText1=0x7f040007;
+        public static final int search_searchHintStartText2to4=0x7f040008;
+        public static final int search_searchHintStartText5=0x7f040009;
+        public static final int settings_dropTablesButton=0x7f04000b;
+        public static final int settings_settingsName=0x7f04000a;
+        public static final int settings_totalRecods=0x7f04000c;
     }
     public static final class style {
         /** 
