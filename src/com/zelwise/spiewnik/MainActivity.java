@@ -83,11 +83,13 @@ public class MainActivity extends Activity implements OnClickListener {
 			oftenViewedButton, siteRatingViewedButton, searcTextClearButton;
 
 	EditText searchEditText, downloadFromEditText, downloadToEditText,
-			maxSongsPerPageOnResult, songTitleEditText, songContentEditText;
+			maxSongsPerPageOnResult, minSymbolsForStartSearch,
+			songTitleEditText, songContentEditText;
 
 	LinearLayout advanceLinearLayout;
 
-	CheckBox advanceCheckBox, seachByAndShowSongNumbersInResult;
+	CheckBox advanceCheckBox, seachByAndShowSongNumbersInResult,
+			doMoreRelevantSearch;
 
 	ListView songsListView;
 
@@ -160,13 +162,34 @@ public class MainActivity extends Activity implements OnClickListener {
 	AppManager manager;
 
 	private void LoadSettings() {
-		maxSongsPerPageOnResult.setText(manager.settings.SongPerPage()
-				.toString());
-		seachByAndShowSongNumbersInResult.setChecked(manager.settings
-				.SeachByAndShowSongNumbersInResult());
+		// proverku ne stoit li uze
+		if (!minSymbolsForStartSearch
+				.getText()
+				.toString()
+				.equalsIgnoreCase(
+						manager.settings.MinSymbolsForStartSearch().toString())) {
+			minSymbolsForStartSearch.setText(manager.settings
+					.MinSymbolsForStartSearch().toString());
+		}
+		if (!maxSongsPerPageOnResult.getText().toString()
+				.equalsIgnoreCase(manager.settings.SongPerPage().toString())) {
+			maxSongsPerPageOnResult.setText(manager.settings.SongPerPage()
+					.toString());
+		}
+		if (seachByAndShowSongNumbersInResult.isChecked() != manager.settings
+				.SeachByAndShowSongNumbersInResult()) {
+			seachByAndShowSongNumbersInResult.setChecked(manager.settings
+					.SeachByAndShowSongNumbersInResult());
+		}
+		if (doMoreRelevantSearch.isChecked() != manager.settings
+				.DoMoreRelevantSearch()) {
+			doMoreRelevantSearch.setChecked(manager.settings
+					.DoMoreRelevantSearch());
+		}
+		RefreshSearchTextHint();
 	}
-	
-	//to fix double event
+
+	// to fix double event
 	String searchEditTextPrevValue = "";
 
 	@Override
@@ -207,7 +230,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 				if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
 					activity.setTitle(getResources().getString(
-							R.string.app_settings_name));
+							R.string.settings_settingsName));
 				} else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
 					activity.setTitle(getResources().getString(
 							R.string.app_name));
@@ -268,6 +291,30 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		});
 
+		minSymbolsForStartSearch = (EditText) settingsView
+				.findViewById(R.id.MinSymbolsForStartSearch);
+		minSymbolsForStartSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable searchText) {
+				manager.settings.MinSymbolsForStartSearch(minSymbolsForStartSearch
+						.getText().toString());
+				RefreshSearchTextHint();
+			}
+		});
+
 		downloadFromEditText = (EditText) settingsView
 				.findViewById(R.id.DownloadFromEditText);
 		downloadToEditText = (EditText) settingsView
@@ -305,6 +352,16 @@ public class MainActivity extends Activity implements OnClickListener {
 						songsArrayAdapter.notifyDataSetChanged();
 					}
 				});
+
+		doMoreRelevantSearch = (CheckBox) settingsView
+				.findViewById(R.id.DoMoreRelevantSearch);
+		doMoreRelevantSearch.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				manager.settings.DoMoreRelevantSearch(((CheckBox) v)
+						.isChecked());
+			}
+		});
 
 		siteRatingViewedButton = (Button) searchView
 				.findViewById(R.id.SiteRatingViewedButton);
@@ -376,15 +433,17 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		searchEditText = (EditText) searchView
 				.findViewById(R.id.SearchEditText);
-		
+
 		searchEditText.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void onTextChanged(CharSequence newStr, int start,
 					int before, int count) {
 				ShowHideClearSearchButton(true);
-				if (!newStr.toString().equalsIgnoreCase(searchEditTextPrevValue)
-						&& newStr.length() >= manager.settings.MinSymbolsForStartSearch) {
+				if (!newStr.toString()
+						.equalsIgnoreCase(searchEditTextPrevValue)
+						&& newStr.length() >= manager.settings
+								.MinSymbolsForStartSearch()) {
 					SearchTerms terms = new SearchTerms(manager.settings,
 							SearchBy.Text, newStr.toString(), "");
 					CreateAdapterAndSetToSongList(terms);
@@ -395,7 +454,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				
+
 			}
 
 			@Override
@@ -436,7 +495,11 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		// licensing
 	}
-
+	private void RefreshSearchTextHint(){
+		String searchHint = manager.context.getResources().getString(
+				R.string.search_searchHintStartText);
+		searchEditText.setHint(String.format(searchHint, manager.settings.MinSymbolsForStartSearch()));
+	}
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -597,7 +660,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void ShowHideClearSearchButton(Boolean show) {
 		if (searcTextClearButton.getVisibility() != View.VISIBLE && show) {
 			searcTextClearButton.setVisibility(View.VISIBLE);
-		} else if(searcTextClearButton.getVisibility() != View.GONE && !show){
+		} else if (searcTextClearButton.getVisibility() != View.GONE && !show) {
 			searcTextClearButton.setVisibility(View.GONE);
 		}
 	}

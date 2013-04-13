@@ -10,6 +10,10 @@ public class SearchTerms {
 	public Boolean SeachByAndShowSongNumbersInResult() {
 		return settings.SeachByAndShowSongNumbersInResult();
 	};
+	
+	public Boolean DoMoreRelevantSearch() {
+		return settings.DoMoreRelevantSearch();
+	};
 
 	private String orderByString = "";
 

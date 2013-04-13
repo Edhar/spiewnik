@@ -287,17 +287,21 @@ public class Song {
 
 		ArrayList<Song> list = new ArrayList<Song>();
 		String searchTextLIKE = "%" + terms.SearchText() + "%";
+		String orderByTitle = Names.Title + DBHelper.SortAscending;
 
 		String selection = Names.Title + " != ?";
 		String[] selectionArgs = new String[] { "" };
+		String orderBy = "";
+
 		if (terms.SearchText().length() > 0) {
 			selection = selection + " AND " + Names.Title + " LIKE ? ";
 			selectionArgs = new String[] { "", searchTextLIKE, };
-		}
-
-		String orderBy = Names.Title + DBHelper.SortAscending;
-		if (terms.OrderByString() != "") {
-			orderBy = terms.OrderByString() + "," + orderBy;
+			if (terms.DoMoreRelevantSearch()) {
+				orderBy = " CASE WHEN " + Names.Title + " LIKE '"
+						+ terms.SearchText() + "%' THEN 0 ELSE 1 END";
+			} else {
+				orderBy = orderByTitle;
+			}
 		}
 
 		if (terms.SeachByAndShowSongNumbersInResult()
@@ -305,7 +309,20 @@ public class Song {
 			selection = Names.Title + " != ? AND (" + Names.Id + " LIKE ? OR "
 					+ Names.Title + " LIKE ?) ";
 			selectionArgs = new String[] { "", searchTextLIKE, searchTextLIKE };
-			orderBy = Names.Id + DBHelper.SortAscending + "," + orderBy;
+
+			if (terms.DoMoreRelevantSearch()) {
+				orderBy = " CASE WHEN " + Names.Id + " LIKE '"
+						+ terms.SearchText() + "%' THEN 0 ELSE 1 END" + ","
+						+ " CASE WHEN " + Names.Title + " LIKE '"
+						+ terms.SearchText() + "%' THEN 0 ELSE 1 END";
+			} else {
+				orderBy = Names.Id + DBHelper.SortAscending + ","
+						+ orderByTitle;
+			}
+		}
+
+		if (terms.OrderByString() != "") {
+			orderBy = terms.OrderByString() + "," + orderByTitle;
 		}
 
 		String limit = ((terms.CurrentPage() - 1) * terms.SongsPerPage()) + ","

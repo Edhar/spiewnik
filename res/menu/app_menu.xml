@@ -36,7 +36,7 @@
 	<item
 	 android:id="@+id/menu_settings"
 	 android:orderInCategory="6"
-	 android:title="Settings">
+	 android:title="@string/settings_settingsName">
 	</item>
 	<item
 	 android:id="@+id/menu_Exit"
