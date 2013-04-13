@@ -353,7 +353,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItemIndex,
 					int visibleItemCountOnDisplay, int totalItemCount) {
-				if ((totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < 3) {
+				if ((totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < 2) {
 					AddDynamicallyDataToList();
 				}
 			}
@@ -531,7 +531,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void AddDynamicallyDataToList(){
 		SongArrayAdapter listAdapter = (SongArrayAdapter)songsListView.getAdapter();
-		if(listAdapter != null){
+		if(listAdapter != null && listAdapter.HasNextPage()){
 			listAdapter.AddAdditionalPage();
 		}
 	}

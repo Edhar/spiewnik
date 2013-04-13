@@ -15,16 +15,31 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 	private ArrayList<Song> songList;
 	private SearchTerms searchTerms;
 	private AppManager manager;
+	private Boolean currentPageIsLast = false;
 
 	public Boolean HasSongs() {
 		return songList.size() > 0;
 	}
+	
+	public Boolean HasNextPage() {
+		return !currentPageIsLast;
+	}
 
-	 public void AddAdditionalPage(){
-		 this.searchTerms.CurrentPage(this.searchTerms.CurrentPage() + 1);
-		 songList.addAll(GetSongData(this.manager.db,this.searchTerms));
-		 this.notifyDataSetChanged();
-	 }
+	public void AddAdditionalPage() {
+		if (!currentPageIsLast) {
+			this.searchTerms.CurrentPage(this.searchTerms.CurrentPage() + 1);
+			ArrayList<Song> addSongs = GetSongData(this.manager.db,
+					this.searchTerms);
+			if (addSongs.size() > 0) {
+				songList.addAll(addSongs);
+				this.notifyDataSetChanged();
+				currentPageIsLast = addSongs.size() < searchTerms
+						.SongsPerPage();
+			} else {
+				currentPageIsLast = true;
+			}
+		}
+	}
 
 	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms) {
 		this(manager, GetSongData(manager.db, searchTerms), searchTerms);
@@ -41,6 +56,7 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 		this.searchTerms = searchTerms;
 		this.songList = list;
 		this.manager = manager;
+		this.currentPageIsLast = list.size() < searchTerms.SongsPerPage();
 	}
 
 	private static ArrayList<Song> GetSongData(SQLiteDatabase db,
