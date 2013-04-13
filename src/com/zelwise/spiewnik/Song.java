@@ -238,12 +238,12 @@ public class Song {
 
 		return false;
 	}
-	
 
-	
-	public static String DoSongTitle(String content){
-		if(content.length() > 60){
-			return content.trim().substring(0,59).replace("\n"," ").replace("\r","").trim() + "...";
+	public static String DoSongTitle(String content) {
+		if (content.length() > 60) {
+			return content.trim().substring(0, 59).replace("\n", " ")
+					.replace("\r", "").trim()
+					+ "...";
 		}
 		return content;
 	}
@@ -282,37 +282,40 @@ public class Song {
 			db.delete(Names.TableName, Names.Id + "=" + Id, null);
 		}
 	}
-	
-	public static ArrayList<Song> GetSongs(SQLiteDatabase db, String searchText,
-			Integer maxCount, String orderByString,
-			Boolean seachByAndShowSongNumbersInResult) {
+
+	public static ArrayList<Song> GetSongs(SQLiteDatabase db, SearchTerms terms) {
 
 		ArrayList<Song> list = new ArrayList<Song>();
-		String searchTextLIKE = "%" + searchText + "%";
+		String searchTextLIKE = "%" + terms.SearchText() + "%";
 
 		String selection = Names.Title + " != ?";
 		String[] selectionArgs = new String[] { "" };
-		if (searchText.length() > 0) {
+		if (terms.SearchText().length() > 0) {
 			selection = selection + " AND " + Names.Title + " LIKE ? ";
-			selectionArgs = new String[] {"", searchTextLIKE,};
+			selectionArgs = new String[] { "", searchTextLIKE, };
 		}
-		
+
 		String orderBy = Names.Title + DBHelper.SortAscending;
-		if (orderByString != "") {
-			orderBy = orderByString + "," + orderBy;
+		if (terms.OrderByString() != "") {
+			orderBy = terms.OrderByString() + "," + orderBy;
 		}
-		
-		if (seachByAndShowSongNumbersInResult && searchText.length() > 0) {
-				selection = Names.Title + " != ? AND (" + Names.Id + " LIKE ? OR " + Names.Title	+ " LIKE ?) ";
-				selectionArgs = new String[] {"", searchTextLIKE, searchTextLIKE};
-				orderBy = Names.Id + DBHelper.SortAscending + "," + orderBy;
+
+		if (terms.SeachByAndShowSongNumbersInResult()
+				&& terms.SearchText().length() > 0) {
+			selection = Names.Title + " != ? AND (" + Names.Id + " LIKE ? OR "
+					+ Names.Title + " LIKE ?) ";
+			selectionArgs = new String[] { "", searchTextLIKE, searchTextLIKE };
+			orderBy = Names.Id + DBHelper.SortAscending + "," + orderBy;
 		}
+
+		String limit = ((terms.CurrentPage() - 1) * terms.SongsPerPage()) + ","
+				+ terms.SongsPerPage().toString();
 
 		Cursor cursor = db.query(false, Names.TableName, new String[] {
 				Names.Id, Names.SiteId, Names.CategoryId, Names.Title,
 				Names.Content, Names.Rating, Names.SiteRating,
 				Names.RecentlyViewedDate }, selection, selectionArgs, null,
-				null, orderBy, maxCount.toString());
+				null, orderBy, limit);
 
 		if (cursor.moveToFirst()) {
 			do {

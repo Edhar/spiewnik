@@ -1,7 +1,9 @@
 package com.zelwise.spiewnik;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.View;
@@ -9,16 +11,41 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class SongArrayAdapter<T> extends ArrayAdapter<T> {
-	private ArrayList<T> items;
+public class SongArrayAdapter extends ArrayAdapter<Song> {
+	private ArrayList<Song> songList;
+	private SearchTerms searchTerms;
 	private AppManager manager;
-	private String searchedText;
 
-	public SongArrayAdapter(AppManager manager,String searchedText, int layout, ArrayList<T> list) {
+	public Boolean HasSongs() {
+		return songList.size() > 0;
+	}
+
+	 public void AddAdditionalPage(){
+		 this.searchTerms.CurrentPage(this.searchTerms.CurrentPage() + 1);
+		 songList.addAll(GetSongData(this.manager.db,this.searchTerms));
+		 this.notifyDataSetChanged();
+	 }
+
+	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms) {
+		this(manager, GetSongData(manager.db, searchTerms), searchTerms);
+	}
+
+	public SongArrayAdapter(AppManager manager, ArrayList<Song> list,
+			SearchTerms searchTerms) {
+		this(manager, searchTerms, list, R.layout.song_list_item);
+	}
+
+	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms,
+			ArrayList<Song> list, int layout) {
 		super(manager.context, layout, list);
+		this.searchTerms = searchTerms;
+		this.songList = list;
 		this.manager = manager;
-		this.searchedText = searchedText.trim();
-		items = list;
+	}
+
+	private static ArrayList<Song> GetSongData(SQLiteDatabase db,
+			SearchTerms terms) {
+		return Song.GetSongs(db, terms);
 	}
 
 	@Override
@@ -26,40 +53,45 @@ public class SongArrayAdapter<T> extends ArrayAdapter<T> {
 		return position;
 	}
 
-	@Override  
+	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+
 		View view = super.getView(position, convertView, parent);
-		
-		if(position %2 == 1){
+
+		if (position % 2 == 1) {
 			view.setBackgroundColor(Color.WHITE);
-		}
-		else {
+		} else {
 			view.setBackgroundColor(Color.parseColor("#e0eaf1"));
 		}
-		
-		Song curSong = (Song) items.get(position);
-        if (curSong != null) {
-                TextView tv = (TextView)view.findViewById(R.id.SongListItemTextView);
-                if (tv != null) {
-                	String text = "";
-                	if(manager.settings.SeachByAndShowSongNumbersInResult()){ 
-                		text = String.format("%5s.", curSong.Id()).replace(" ", "o") + " " + curSong.Title();
-                	}else{
-                		text = curSong.Title();
-                	}
-                	
-                	if(searchedText.length() > 0){
-                		tv.setText(Html.fromHtml(text.replaceAll("(?i)(" + searchedText + ")", "<b>$1</b>" )));
-                	}else{
-                		tv.setText(text);
-                	}
 
-                	//SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                	//tv.setText(curSong.Title() + "; Date:" + iso8601Format.format(curSong.RecentlyViewedDate()) + "; Rating:" + curSong.Rating());
-                }
-        }
-        
+		Song curSong = (Song) songList.get(position);
+		if (curSong != null) {
+			TextView tv = (TextView) view
+					.findViewById(R.id.SongListItemTextView);
+			if (tv != null) {
+				String text = "";
+				if (searchTerms.SeachByAndShowSongNumbersInResult()) {
+					text = String.format("%5s.", curSong.Id())
+							.replace(" ", "o") + " " + curSong.Title();
+				} else {
+					text = curSong.Title();
+				}
+
+				if (searchTerms.SearchText().length() > 0) {
+					tv.setText(Html.fromHtml(text.replaceAll("(?i)("
+							+ searchTerms.SearchText() + ")", "<b>$1</b>")));
+				} else {
+					tv.setText(text);
+				}
+
+				// SimpleDateFormat iso8601Format = new
+				// SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				// tv.setText(curSong.Title() + "; Date:" +
+				// iso8601Format.format(curSong.RecentlyViewedDate()) +
+				// "; Rating:" + curSong.Rating());
+			}
+		}
+
 		return view;
-   }
+	}
 }

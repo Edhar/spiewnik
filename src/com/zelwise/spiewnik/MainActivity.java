@@ -160,7 +160,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	AppManager manager;
 
 	private void LoadSettings() {
-		maxSongsPerPageOnResult.setText(manager.settings.MaxSongInResultList()
+		maxSongsPerPageOnResult.setText(manager.settings.SongPerPage()
 				.toString());
 		seachByAndShowSongNumbersInResult.setChecked(manager.settings
 				.SeachByAndShowSongNumbersInResult());
@@ -208,7 +208,6 @@ public class MainActivity extends Activity implements OnClickListener {
 				} else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
 					activity.setTitle(getResources().getString(
 							R.string.app_name));
-					songsArrayAdapter.notifyDataSetChanged();
 				} else if (manager.viewPager.getCurrentItem() == songViewIndex) {
 					try {
 						SetSongViewViewMode();
@@ -347,13 +346,16 @@ public class MainActivity extends Activity implements OnClickListener {
 		songsListView.setOnScrollListener(new OnScrollListener() {
 
 			@Override
-			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				manager.HideKeyboard();
 			}
 
 			@Override
-			public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
-				// manager.HideKeyboard();
+			public void onScroll(AbsListView view, int firstVisibleItemIndex,
+					int visibleItemCountOnDisplay, int totalItemCount) {
+				if ((totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < 3) {
+					AddDynamicallyDataToList();
+				}
 			}
 		});
 		songsListView.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -385,14 +387,11 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				ToggleClearSearchButton(true);
+				ShowHideClearSearchButton(true);
 				if (searchText.toString().length() >= manager.settings.MinSymbolsForStartSearch) {
-					ArrayList<Song> songs = Song.GetSongs(manager.db,
-							searchText.toString(), manager.settings
-									.MaxSongInResultList(), "",
-							manager.settings
-									.SeachByAndShowSongNumbersInResult());
-					CreateAdapterAndSetToSongList(songs, searchText.toString());
+					SearchTerms terms = new SearchTerms(manager.settings,
+							SearchBy.Text, searchText.toString(), "");
+					CreateAdapterAndSetToSongList(terms);
 				}
 			}
 		});
@@ -424,8 +423,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,
-				(long) (0.1 * 60 * 1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
+
 		// licensing
 	}
 
@@ -478,7 +477,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.SearcTextClearButton:
 			ClearSearchText();
-			ToggleClearSearchButton(false);
+			ShowHideClearSearchButton(false);
 			LoadDefaultSongsListContent();
 			break;
 		}
@@ -530,11 +529,16 @@ public class MainActivity extends Activity implements OnClickListener {
 		songsListView.requestFocus();
 	}
 
-	private void CreateAdapterAndSetToSongList(ArrayList<Song> songs,
-			String searchText) {
-		if (songs.size() > 0) {
-			songsArrayAdapter = new SongArrayAdapter<Song>(manager, searchText,
-					R.layout.song_list_item, songs);
+	private void AddDynamicallyDataToList(){
+		SongArrayAdapter listAdapter = (SongArrayAdapter)songsListView.getAdapter();
+		if(listAdapter != null){
+			listAdapter.AddAdditionalPage();
+		}
+	}
+
+	private void CreateAdapterAndSetToSongList(SearchTerms terms) {
+		songsArrayAdapter = new SongArrayAdapter(manager, terms);
+		if (songsArrayAdapter.HasSongs()) {
 			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
@@ -548,27 +552,22 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void LoadOftenViewed() {
-		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
-				manager.settings.MaxSongInResultList(), Names.Rating
-						+ DBHelper.SortDescending,
-				manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs, "");
+		SearchTerms terms = new SearchTerms(manager.settings, SearchBy.Rating,
+				"", Names.Rating + DBHelper.SortDescending);
+		CreateAdapterAndSetToSongList(terms);
 	}
 
 	private void LoadSiteRatingViewed() {
-		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
-				manager.settings.MaxSongInResultList(), Names.SiteRating
-						+ DBHelper.SortDescending,
-				manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs, "");
+		SearchTerms terms = new SearchTerms(manager.settings,
+				SearchBy.SiteRating, "", Names.SiteRating
+						+ DBHelper.SortDescending);
+		CreateAdapterAndSetToSongList(terms);
 	}
 
 	private void LoadRecentlyViewed() {
-		ArrayList<Song> songs = Song.GetSongs(manager.db, "",
-				manager.settings.MaxSongInResultList(),
-				Names.RecentlyViewedDate + DBHelper.SortDescending,
-				manager.settings.SeachByAndShowSongNumbersInResult());
-		CreateAdapterAndSetToSongList(songs, "");
+		SearchTerms terms = new SearchTerms(manager.settings,
+				SearchBy.RecentlyViewedDate, "", Names.RecentlyViewedDate + DBHelper.SortDescending);
+		CreateAdapterAndSetToSongList(terms);
 	}
 
 	@Override
@@ -584,7 +583,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	private void ToggleClearSearchButton(Boolean show) {
+	private void ShowHideClearSearchButton(Boolean show) {
 		if (show) {
 			searcTextClearButton.setVisibility(View.VISIBLE);
 		} else {
@@ -725,7 +724,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		return UpdateSongFromEditMode(song);
 	}
 
-	private void AddNewSongSongView() {
+	private void AddNewSongMenuAction() {
 		View songView = manager.viewPager.findViewWithTag(songViewIndex);
 		if (manager.viewPager.getCurrentItem() != songViewIndex) {
 			manager.viewPager.setCurrentItem(songViewIndex);
@@ -847,7 +846,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			System.exit(0);
 			return true;
 		case R.id.menu_Add:
-			AddNewSongSongView();
+			AddNewSongMenuAction();
 			return true;
 		case R.id.menu_Edit:
 			SetSongEditMode();

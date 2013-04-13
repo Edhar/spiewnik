@@ -7,11 +7,11 @@ import android.content.SharedPreferences;
 //see here http://twigstechtips.blogspot.com/2010/11/android-save-and-load-settings.html
 public class SettingsHelper {
 	public static class Tags {
-		public static final String MaxSongInResultList = "MaxSongInResultList";
+		public static final String SongPerPage = "SongPerPage";
 		public static final String SeachByAndShowSongNumbersInResult = "SeachByAndShowSongNumbersInResult";
 	}
 	public static class DefaultValues {
-		public static Integer MaxSongInResultList = 50;
+		public static Integer SongPerPage = 20;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 	}
 	
@@ -24,18 +24,18 @@ public class SettingsHelper {
 
 	public Integer MinSymbolsForStartSearch = 1;
 		
-	private Integer maxSongInResultList;
-	public Integer MaxSongInResultList() {
-		return maxSongInResultList;
+	private Integer songPerPage;
+	public Integer SongPerPage() {
+		return songPerPage;
 	}
 	public void MaxSongInResultList(Integer newValue) {
-		maxSongInResultList = newValue;
-		editor.putInt(Tags.MaxSongInResultList, maxSongInResultList);
+		songPerPage = newValue;
+		editor.putInt(Tags.SongPerPage, songPerPage);
 		editor.commit();
 	}
 	public void MaxSongInResultList(String newValue) {
-		maxSongInResultList = Utils.ToInt(newValue, DefaultValues.MaxSongInResultList);
-		editor.putInt(Tags.MaxSongInResultList, maxSongInResultList);
+		songPerPage = Utils.ToInt(newValue, DefaultValues.SongPerPage);
+		editor.putInt(Tags.SongPerPage, songPerPage);
 		editor.commit();
 	}
 	
@@ -57,8 +57,8 @@ public class SettingsHelper {
 	}
 
 	private void loadAllSettings() {		
-		maxSongInResultList = settings.getInt(Tags.MaxSongInResultList,
-				DefaultValues.MaxSongInResultList);
+		songPerPage = settings.getInt(Tags.SongPerPage,
+				DefaultValues.SongPerPage);
 		
 		seachByAndShowSongNumbersInResult = settings.getBoolean(Tags.SeachByAndShowSongNumbersInResult,
 				DefaultValues.SeachByAndShowSongNumbersInResult);

@@ -57,7 +57,10 @@ public class AppManager {
 	public void HideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) context
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
+		if (!imm.isAcceptingText()) {
+			imm.hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
+	    }
+		
 	}
 
 	public void ShowKeyboard() {
