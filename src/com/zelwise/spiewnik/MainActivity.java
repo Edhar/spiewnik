@@ -299,6 +299,7 @@ public class MainActivity extends Activity implements OnClickListener {
 						manager.settings
 								.SeachByAndShowSongNumbersInResult(((CheckBox) v)
 										.isChecked());
+						songsArrayAdapter.notifyDataSetChanged();
 					}
 				});
 
@@ -353,6 +354,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItemIndex,
 					int visibleItemCountOnDisplay, int totalItemCount) {
+				manager.HideKeyboard();
 				if ((totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < 2) {
 					AddDynamicallyDataToList();
 				}
@@ -423,7 +425,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
+		//licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
 
 		// licensing
 	}
