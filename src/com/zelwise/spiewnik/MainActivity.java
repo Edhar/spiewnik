@@ -165,6 +165,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		seachByAndShowSongNumbersInResult.setChecked(manager.settings
 				.SeachByAndShowSongNumbersInResult());
 	}
+	
+	//to fix double event
+	String searchEditTextPrevValue = "";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -354,8 +357,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItemIndex,
 					int visibleItemCountOnDisplay, int totalItemCount) {
-				manager.HideKeyboard();
-				if ((totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < 2) {
+				if (totalItemCount > 0
+						&& (totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < 2) {
 					AddDynamicallyDataToList();
 				}
 			}
@@ -373,28 +376,31 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		searchEditText = (EditText) searchView
 				.findViewById(R.id.SearchEditText);
+		
 		searchEditText.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-
+			public void onTextChanged(CharSequence newStr, int start,
+					int before, int count) {
+				ShowHideClearSearchButton(true);
+				if (!newStr.toString().equalsIgnoreCase(searchEditTextPrevValue)
+						&& newStr.length() >= manager.settings.MinSymbolsForStartSearch) {
+					SearchTerms terms = new SearchTerms(manager.settings,
+							SearchBy.Text, newStr.toString(), "");
+					CreateAdapterAndSetToSongList(terms);
+					searchEditTextPrevValue = newStr.toString();
+				}
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-
+				
 			}
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				ShowHideClearSearchButton(true);
-				if (searchText.toString().length() >= manager.settings.MinSymbolsForStartSearch) {
-					SearchTerms terms = new SearchTerms(manager.settings,
-							SearchBy.Text, searchText.toString(), "");
-					CreateAdapterAndSetToSongList(terms);
-				}
+
 			}
 		});
 		searchEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -425,7 +431,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		//licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
+		// licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 *
+		// 1000));
 
 		// licensing
 	}
@@ -531,9 +538,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		songsListView.requestFocus();
 	}
 
-	private void AddDynamicallyDataToList(){
-		SongArrayAdapter listAdapter = (SongArrayAdapter)songsListView.getAdapter();
-		if(listAdapter != null && listAdapter.HasNextPage()){
+	private void AddDynamicallyDataToList() {
+		SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView
+				.getAdapter();
+		if (listAdapter != null && listAdapter.HasNextPage()) {
 			listAdapter.AddAdditionalPage();
 		}
 	}
@@ -568,7 +576,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void LoadRecentlyViewed() {
 		SearchTerms terms = new SearchTerms(manager.settings,
-				SearchBy.RecentlyViewedDate, "", Names.RecentlyViewedDate + DBHelper.SortDescending);
+				SearchBy.RecentlyViewedDate, "", Names.RecentlyViewedDate
+						+ DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
 	}
 
@@ -586,9 +595,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void ShowHideClearSearchButton(Boolean show) {
-		if (show) {
+		if (searcTextClearButton.getVisibility() != View.VISIBLE && show) {
 			searcTextClearButton.setVisibility(View.VISIBLE);
-		} else {
+		} else if(searcTextClearButton.getVisibility() != View.GONE && !show){
 			searcTextClearButton.setVisibility(View.GONE);
 		}
 	}

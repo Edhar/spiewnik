@@ -50,5 +50,6 @@ public class SearchTerms {
 		this.searchText = searchText.trim();
 		this.orderByString = orderByString;
 		this.currentPage = currentPage;
+		this.settings = settings;
 	}
 }

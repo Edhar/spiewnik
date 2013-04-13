@@ -57,7 +57,7 @@ public class AppManager {
 	public void HideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) context
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		if (!imm.isAcceptingText()) {
+		if (imm.isAcceptingText()) {
 			imm.hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
 	    }
 		
@@ -66,8 +66,9 @@ public class AppManager {
 	public void ShowKeyboard() {
 		InputMethodManager imm = (InputMethodManager) context
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(viewPager.getWindowToken(),
-				InputMethodManager.SHOW_FORCED);
+		if (!imm.isAcceptingText()) {
+			imm.hideSoftInputFromWindow(viewPager.getWindowToken(),	InputMethodManager.SHOW_FORCED);
+	    }
 	}
 
 	public void CloseDB() {
