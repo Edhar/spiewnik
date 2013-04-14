@@ -47,7 +47,7 @@
     <string name="labels_SeachByAndShowSongNumbersInResult">Pokazywać numery pieśni i wyszukiwać według nich:</string>
     <string name="labels_DoMoreRelevantSearch">Wyszukiwać najbadziej istotne (Nieco wolnej)</string>
     <string name="labels_MinSymbolsForStartSearch">Żeby zacząć wyszukiwanie trzeba wprowadzić minimalną ilość symboli</string>
-    <string name="labels_ByDefaultResultsForTab">Tytuł Piosenki</string>
+    <string name="labels_ByDefaultResultsForTab">Pokazywać domyślnie</string>
     
     
 	<string name="search_searchHintStartText1">min. %s znak</string>
