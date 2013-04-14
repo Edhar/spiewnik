@@ -20,7 +20,7 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 	public Boolean HasSongs() {
 		return songList.size() > 0;
 	}
-	
+
 	public Boolean HasNextPage() {
 		return !currentPageIsLast;
 	}
@@ -39,6 +39,19 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 				currentPageIsLast = true;
 			}
 		}
+	}
+
+	public void Reload() {
+		songList.clear();
+
+		for (int i = 0; i < this.searchTerms.CurrentPage(); i++) {
+			ArrayList<Song> addSongs = GetSongData(this.manager.db,
+					this.searchTerms);
+			currentPageIsLast = addSongs.size() < searchTerms.SongsPerPage();
+			songList.addAll(addSongs);
+		}
+
+		this.notifyDataSetChanged();
 	}
 
 	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms) {

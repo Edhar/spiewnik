@@ -11,8 +11,10 @@ public class SettingsHelper {
 		public static final String SeachByAndShowSongNumbersInResult = "SeachByAndShowSongNumbersInResult";
 		public static final String DoMoreRelevantSearch = "DoMoreRelevantSearch";
 		public static final String MinSymbolsForStartSearch = "MinSymbolsForStartSearch";
+		public static final String DefaultTabId = "DefaultTabId";
 	}
 	public static class DefaultValues {
+		public static Integer DefaultTabId = 0;
 		public static Integer MinSymbolsForStartSearch = 3;
 		public static Integer SongPerPage = 15;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
@@ -56,6 +58,16 @@ public class SettingsHelper {
 		editor.commit();
 	}
 	
+	private Integer defaultTabId;
+	public Integer DefaultTabId() {
+		return defaultTabId;
+	}
+	public void DefaultTabId(Integer newValue) {
+		defaultTabId = newValue;
+		editor.putInt(Tags.DefaultTabId, defaultTabId);
+		editor.commit();
+	}
+	
 	private Boolean seachByAndShowSongNumbersInResult;
 	public Boolean SeachByAndShowSongNumbersInResult() {
 		return seachByAndShowSongNumbersInResult;
@@ -83,7 +95,10 @@ public class SettingsHelper {
 		this.loadAllSettings();
 	}
 
-	private void loadAllSettings() {		
+	private void loadAllSettings() {
+		defaultTabId = settings.getInt(Tags.DefaultTabId,
+				DefaultValues.DefaultTabId);
+		
 		minSymbolsForStartSearch = settings.getInt(Tags.MinSymbolsForStartSearch,
 				DefaultValues.MinSymbolsForStartSearch);
 		

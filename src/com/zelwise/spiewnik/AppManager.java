@@ -1,6 +1,7 @@
 package com.zelwise.spiewnik;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.jsoup.nodes.Document;
 
@@ -20,6 +21,7 @@ public class AppManager {
 	public SQLiteDatabase db;
 	public Context context;
 	public ViewPager viewPager;
+	public TabsList tabsList;
 
 	private Handler responseHandler;
 
@@ -30,6 +32,7 @@ public class AppManager {
 		this.context = context;
 		this.viewPager = viewPager;
 		this.settings = new SettingsHelper(context);
+		this.tabsList = new TabsList(context);
 
 		if (!this.dBHelper.checkDataBase()) {
 			copyDb();

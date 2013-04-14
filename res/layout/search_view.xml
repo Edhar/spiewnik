@@ -21,7 +21,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
             android:gravity="left|center_vertical"
-            android:text="Search:"
+            android:text="@string/labels_Search"
             android:textColor="#8CF7E6"
             android:textSize="20sp" >
         </TextView>
@@ -75,7 +75,7 @@
             android:layout_weight="1"
             android:padding="4dp"
             android:background="#C1E3FC"
-            android:text="Recent"
+            android:text="@string/buttons_Recent"
             android:textColor="#A9A9A9"
             android:textSize="18sp" >
         </Button>
@@ -91,7 +91,7 @@
             android:layout_weight="1"
             android:padding="4dp"
             android:background="#C1E3FC"
-            android:text="Often"
+            android:text="@string/buttons_Often"
             android:textColor="#A9A9A9"
             android:textSize="18sp" >
         </Button>
@@ -107,7 +107,7 @@
             android:padding="4dp"
             android:layout_weight="1"
             android:background="#C1E3FC"
-            android:text="Site Rating"
+            android:text="@string/buttons_SiteRating"
             android:textColor="#A9A9A9"
             android:textSize="18sp" >
         </Button>

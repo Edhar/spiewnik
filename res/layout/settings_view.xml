@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
                     android:gravity="left|center_vertical"
-                    android:text="Max Songs Per Page On Result:"
+                    android:text="@string/labels_MaxSongsPerPageOnResult"
                     android:textSize="18sp" >
                 </TextView>
 
@@ -173,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
                     android:gravity="left|center_vertical"
-                    android:text="Seach By And Show Song Numbers In Result:"
+                    android:text="@string/labels_SeachByAndShowSongNumbersInResult"
                     android:textSize="18sp" >
                 </TextView>
 
@@ -199,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
                     android:gravity="left|center_vertical"
-                    android:text="Do More Relevant Search (A Bit Slowly, Do More Symbols To Start Search)"
+                    android:text="@string/labels_DoMoreRelevantSearch"
                     android:textSize="18sp" >
                 </TextView>
 
@@ -224,7 +224,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
                     android:gravity="left|center_vertical"
-                    android:text="Min Symbols To Start Search:"
+                    android:text="@string/labels_MinSymbolsForStartSearch"
                     android:textSize="18sp" >
                 </TextView>
 
@@ -241,7 +241,31 @@
             </LinearLayout>
 
             <View style="@style/Line" />
+            
+			<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:layout_weight="10" >
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center_vertical"
+                    android:textSize="18sp"
+                    android:layout_weight="5"
+                    android:text="@string/labels_ByDefaultResultsForTab" >
+                </TextView>
+
+                <Spinner
+                    android:id="@+id/ByDefaultResultsForTab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp">
+
+                </Spinner>
+            </LinearLayout>
+            <View style="@style/Line" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

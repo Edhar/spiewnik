@@ -89,6 +89,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	LinearLayout advanceLinearLayout;
 
+	Spinner byDefaultResultsForTab;
+
 	CheckBox advanceCheckBox, seachByAndShowSongNumbersInResult,
 			doMoreRelevantSearch;
 
@@ -162,8 +164,27 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	AppManager manager;
 
+	private void SetSelectedDefaultTab(Integer tabId) {
+		ArrayAdapter<TabsItem> tabAdapter = (ArrayAdapter<TabsItem>) byDefaultResultsForTab
+				.getAdapter();
+		if (tabAdapter != null) {
+			TabsItem curTab = (TabsItem) byDefaultResultsForTab
+					.getItemAtPosition(byDefaultResultsForTab.getSelectedItemPosition());
+			TabsItem newTab = manager.tabsList.Get(tabId);
+			for (int i = 0; i < tabAdapter.getCount(); i++) {
+				if (((TabsItem) tabAdapter.getItem(i)).Id() == newTab.Id()) {
+					if (curTab.Id() != newTab.Id()) {
+						byDefaultResultsForTab.setSelection(i);
+					}
+					break;
+				}
+			}
+		}
+	}
+
 	private void LoadSettings() {
-		// proverku ne stoit li uze
+		SetSelectedDefaultTab(manager.settings.DefaultTabId());
+
 		if (!minSymbolsForStartSearch
 				.getText()
 				.toString()
@@ -268,6 +289,33 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			}
 		});
+		byDefaultResultsForTab = (Spinner) settingsView.findViewById(R.id.ByDefaultResultsForTab);
+		ArrayAdapter<TabsItem> adapterDefaultTab = new ArrayAdapter<TabsItem>(
+				this, android.R.layout.simple_spinner_item,
+				manager.tabsList.GetTabsItems());
+		adapterDefaultTab
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		byDefaultResultsForTab.setAdapter(adapterDefaultTab);
+		byDefaultResultsForTab.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				if (parent != null) {
+					TabsItem newTab = (TabsItem) parent.getItemAtPosition(pos);
+					if (newTab != null) {
+						manager.settings.DefaultTabId(newTab.Id());
+					}
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 		maxSongsPerPageOnResult = (EditText) settingsView
 				.findViewById(R.id.MaxSongsPerPageOnResult);
@@ -292,9 +340,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				if (newVal > 0) {
 					manager.settings.SongPerPage(newVal);
 				} else {
-					manager.settings.SongPerPage(SettingsHelper.DefaultValues.SongPerPage);
+					manager.settings
+							.SongPerPage(SettingsHelper.DefaultValues.SongPerPage);
 					maxSongsPerPageOnResult
-							.setText(SettingsHelper.DefaultValues.SongPerPage.toString());
+							.setText(SettingsHelper.DefaultValues.SongPerPage
+									.toString());
 				}
 
 			}
@@ -323,9 +373,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				if (newVal > 0) {
 					manager.settings.MinSymbolsForStartSearch(newVal);
 				} else {
-					manager.settings.MinSymbolsForStartSearch(SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
+					manager.settings
+							.MinSymbolsForStartSearch(SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
 					minSymbolsForStartSearch
-							.setText(SettingsHelper.DefaultValues.MinSymbolsForStartSearch.toString());
+							.setText(SettingsHelper.DefaultValues.MinSymbolsForStartSearch
+									.toString());
 				}
 				RefreshSearchTextHint();
 			}
@@ -455,17 +507,19 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onTextChanged(CharSequence newStr, int start,
 					int before, int count) {
-				ShowHideClearSearchButton(true);
+
 				if (!newStr.toString()
 						.equalsIgnoreCase(searchEditTextPrevValue)
 						&& newStr.length() >= manager.settings
 								.MinSymbolsForStartSearch()) {
+					ShowHideClearSearchButton(true);
 					SearchTerms terms = new SearchTerms(manager.settings,
 							SearchBy.Text, newStr.toString(), "");
 					CreateAdapterAndSetToSongList(terms);
 					searchEditTextPrevValue = newStr.toString();
 				}
 				if (newStr.toString().length() == 0) {
+					ShowHideClearSearchButton(false);
 					LoadDefaultSongsListContent();
 				}
 			}
@@ -509,8 +563,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		// licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 *
-		// 1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 *1000));
 
 		// licensing
 	}
@@ -593,11 +646,23 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void ShowSongProperties(Song song) {
-		String content = Song.Names.Id + ": " + song.Id() + Utils.NewLine
-				+ Song.Names.SiteId + ": " + song.SiteId() + Utils.NewLine
-				+ Song.Names.Rating + ": " + song.Rating() + Utils.NewLine
-				+ Song.Names.SiteRating + ": " + song.SiteRating()
-				+ Utils.NewLine + Song.Names.RecentlyViewedDate + ": "
+		String content = manager.context.getResources().getString(
+				R.string.labels_Id)
+				+ song.Id()
+				+ Utils.NewLine
+				// +
+				// manager.context.getResources().getString(R.string.labels_SiteId)
+				// + song.SiteId() + Utils.NewLine
+				+ manager.context.getResources().getString(
+						R.string.labels_Rating)
+				+ song.Rating()
+				+ Utils.NewLine
+				+ manager.context.getResources().getString(
+						R.string.labels_SiteRating)
+				+ song.SiteRating()
+				+ Utils.NewLine
+				+ manager.context.getResources().getString(
+						R.string.labels_RecentlyViewedDate)
 				+ Utils.iso8601Format.format(song.RecentlyViewedDate());
 
 		// Toast.makeText(manager.context, content, Toast.LENGTH_LONG).show();
@@ -607,12 +672,17 @@ public class MainActivity extends Activity implements OnClickListener {
 		alertBuilder.setIcon(0);
 		alertBuilder.setTitle(song.Title());
 
-		alertBuilder.setMessage(content).setCancelable(false)
-				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
+		alertBuilder
+				.setMessage(content)
+				.setCancelable(false)
+				.setPositiveButton(
+						manager.context.getResources().getString(
+								R.string.buttons_Yes),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
 
 		AlertDialog alert = alertBuilder.create();
 		alert.show();
@@ -703,11 +773,25 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void LoadDefaultSongsListContent() {
-		LoadSiteRatingViewed();
+		int tabId = manager.settings.DefaultTabId();
+		if (tabId == manager.tabsList.SiteRating.Id()) {
+			LoadSiteRatingViewed();
+		}
+		if (tabId == manager.tabsList.Often.Id()) {
+			LoadOftenViewed();
+		}
+
+		if (tabId == manager.tabsList.Recent.Id()) {
+			LoadRecentlyViewed();
+		}
 	}
 
 	private void ReloadSongsListContent() {
-		LoadRecentlyViewed();
+		SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView
+				.getAdapter();
+		if (listAdapter != null) {
+			listAdapter.Reload();
+		}
 	}
 
 	private void DeleteSongMenuAction(Song song) {
@@ -717,14 +801,16 @@ public class MainActivity extends Activity implements OnClickListener {
 				manager.context);
 
 		alertBuilder.setIcon(0);
-		alertBuilder.setTitle("Are you sure you want to delete this song:");
+		alertBuilder.setTitle(manager.context.getResources().getString(
+				R.string.labels_AreYouSureYouWantToDeleteThisSong));
 		alertBuilder.setMessage("\"" + song.Title() + "\"");
 		alertBuilder.setCancelable(false);
-		alertBuilder.setPositiveButton("Ok",
+		alertBuilder.setPositiveButton(manager.context.getResources()
+				.getString(R.string.buttons_Yes),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						songToDelete.Delete(manager.db);
-						if (manager.viewPager.getCurrentItem() == searchViewIndex) {
+						if (manager.viewPager.getCurrentItem() == songViewIndex) {
 							manager.viewPager.setCurrentItem(searchViewIndex);
 						}
 						isSongEditMode = false;
@@ -732,7 +818,8 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				});
 		alertBuilder.setCancelable(false);
-		alertBuilder.setNegativeButton("No",
+		alertBuilder.setNegativeButton(manager.context.getResources()
+				.getString(R.string.buttons_No),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
@@ -785,18 +872,22 @@ public class MainActivity extends Activity implements OnClickListener {
 						manager.context);
 
 				alertBuilder.setIcon(0);
-				alertBuilder.setTitle("Would you like to save this song:");
+				alertBuilder.setTitle(manager.context.getResources().getString(
+						R.string.labels_WouldYouLikeToSaveThisSong));
 				alertBuilder.setMessage("\"" + curSong.Title() + "\"");
 				alertBuilder.setCancelable(false);
-				alertBuilder.setPositiveButton("Ok",
+				alertBuilder.setPositiveButton(manager.context.getResources()
+						.getString(R.string.buttons_Yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								curSong.SaveOrUpdate(manager.db);
 								isSongEditMode = false;
+								ReloadSongsListContent();
 							}
 						});
 				alertBuilder.setCancelable(false);
-				alertBuilder.setNegativeButton("No",
+				alertBuilder.setNegativeButton(manager.context.getResources()
+						.getString(R.string.buttons_No),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								if (curSong.Id() != 0) {
@@ -906,7 +997,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		songTitleEditText.setLayoutParams(new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		songTitleEditText.setCursorVisible(true);
-		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT
+				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
 		songContentEditText.setCursorVisible(true);
 		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT
@@ -967,6 +1059,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			newSong.SaveOrUpdate(manager.db);
 			UpdateContenSongView(newSong);
 			SetSongViewViewMode();
+			ReloadSongsListContent();
 			return true;
 		case R.id.menu_Properties:
 			ShowSongProperties(GetSongFromSongView());
@@ -1054,19 +1147,30 @@ public class MainActivity extends Activity implements OnClickListener {
 			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
 					manager.context);
 			alertBuilder.setIcon(0);
-			alertBuilder.setTitle("License not found");
+			alertBuilder.setTitle(manager.context.getResources().getString(
+					R.string.labels_title_LicenseNotFound));
 
 			if (retryMode) {
-				alertBuilder.setMessage("Please retry to checke license");
+				alertBuilder.setMessage(manager.context.getResources()
+						.getString(R.string.labels_PleaseRetryToCheckLicense));
 			} else {
 				alertBuilder.setMessage(Html.fromHtml("\""
-						+ getResources().getString(R.string.app_name)
-						+ "\" <font color=\"red\">license not found</font>,"
-						+ " please to buy"));
+						+ manager.context.getResources().getString(
+								R.string.app_name)
+						+ "\" <font color=\"red\">"
+						+ manager.context.getResources().getString(
+								R.string.labels_LicenseNotFound)
+						+ "</font>,"
+						+ " "
+						+ manager.context.getResources().getString(
+								R.string.labels_PleaseToBuy)));
 			}
 
 			alertBuilder.setCancelable(false);
-			alertBuilder.setPositiveButton(retryMode ? "Retry" : "Buy",
+			alertBuilder.setPositiveButton(
+					retryMode ? manager.context.getResources().getString(
+							R.string.buttons_Retry) : manager.context
+							.getResources().getString(R.string.buttons_Buy),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							LicensignDialogShowed = false;
@@ -1082,7 +1186,8 @@ public class MainActivity extends Activity implements OnClickListener {
 						}
 					});
 			alertBuilder.setCancelable(false);
-			alertBuilder.setNegativeButton("Cancel",
+			alertBuilder.setNegativeButton(manager.context.getResources()
+					.getString(R.string.buttons_Cancel),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							LicensignDialogShowed = false;
@@ -1095,25 +1200,27 @@ public class MainActivity extends Activity implements OnClickListener {
 			alert.show();
 		}
 	}
-	
-	private void ShareSong(Song song){
-		//create the send intent  
-		Intent shareIntent =  new Intent(android.content.Intent.ACTION_SEND);  
-		  
-		//set the type  
-		shareIntent.setType("text/plain");  
-		  
-		//add a subject  
-		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,song.Title());  
-		  
-		//build the body of the message to be shared  
-		String shareMessage = song.Content();  
-		  
-		//add the message  
-		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,shareMessage);  
-		  
-		//start the chooser for sharing  
-		startActivity(Intent.createChooser(shareIntent,manager.context.getResources().getString(R.string.app_shareDialogTitle)));  
+
+	private void ShareSong(Song song) {
+		// create the send intent
+		Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+		// set the type
+		shareIntent.setType("text/plain");
+
+		// add a subject
+		shareIntent
+				.putExtra(android.content.Intent.EXTRA_SUBJECT, song.Title());
+
+		// build the body of the message to be shared
+		String shareMessage = song.Title() + Utils.NewLine + song.Content();
+
+		// add the message
+		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+
+		// start the chooser for sharing
+		startActivity(Intent.createChooser(shareIntent, manager.context
+				.getResources().getString(R.string.app_shareDialogTitle)));
 	}
 
 }
