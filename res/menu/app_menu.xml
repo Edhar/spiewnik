@@ -4,7 +4,7 @@
 	<item
 	 android:id="@+id/menu_Add"
 	 android:orderInCategory="1"
-	 android:title="Add">
+	 android:title="@string/buttons_Add">
 	</item>
 	<group
 	 android:id="@+id/menu_EditGroup"
@@ -18,7 +18,7 @@
 		<item
 		 android:id="@+id/menu_Save"
 		 android:orderInCategory="3"
-		 android:title="Save">
+		 android:title="@string/buttons_Save">
 		</item>
 		<item
 		 android:id="@+id/menu_Delete"

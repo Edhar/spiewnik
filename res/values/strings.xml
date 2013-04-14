@@ -9,6 +9,12 @@
     <string name="buttons_Exit">Wyjść</string>
     <string name="buttons_Edit">Edytuj</string>
     <string name="buttons_Properties">Informacja</string>
+    <string name="buttons_Add">Dodać</string>
+    <string name="buttons_Save">Zapicz</string>
+    
+    <string name="buttons_Often">Częste</string>
+    <string name="buttons_Recent">Niedawnie</string>
+    <string name="buttons_AppRating">App Rating</string>
     
 	<string name="search_searchHintStartText1">min %s znak</string>
 	<string name="search_searchHintStartText2to4">min %s znaki</string>

@@ -66,17 +66,22 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f040000;
         public static final int app_shareDialogTitle=0x7f040001;
+        public static final int buttons_Add=0x7f040007;
+        public static final int buttons_AppRating=0x7f04000b;
         public static final int buttons_Delete=0x7f040003;
         public static final int buttons_Edit=0x7f040005;
         public static final int buttons_Exit=0x7f040004;
+        public static final int buttons_Often=0x7f040009;
         public static final int buttons_Properties=0x7f040006;
+        public static final int buttons_Recent=0x7f04000a;
+        public static final int buttons_Save=0x7f040008;
         public static final int buttons_Share=0x7f040002;
-        public static final int search_searchHintStartText1=0x7f040007;
-        public static final int search_searchHintStartText2to4=0x7f040008;
-        public static final int search_searchHintStartText5=0x7f040009;
-        public static final int settings_dropTablesButton=0x7f04000b;
-        public static final int settings_settingsName=0x7f04000a;
-        public static final int settings_totalRecods=0x7f04000c;
+        public static final int search_searchHintStartText1=0x7f04000c;
+        public static final int search_searchHintStartText2to4=0x7f04000d;
+        public static final int search_searchHintStartText5=0x7f04000e;
+        public static final int settings_dropTablesButton=0x7f040010;
+        public static final int settings_settingsName=0x7f04000f;
+        public static final int settings_totalRecods=0x7f040011;
     }
     public static final class style {
         /** 
