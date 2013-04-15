@@ -12,12 +12,14 @@ public class TabsList {
 	public TabsItem SiteRating;
 	public TabsItem Recent;
 	public TabsItem Often;
+	public TabsItem Favorite;
 
 	public ArrayList<TabsItem> GetTabsItems() {
 		ArrayList<TabsItem> list = new ArrayList<TabsItem>();
 		list.add(SiteRating);
 		list.add(Recent);
 		list.add(Often);
+		list.add(Favorite);
 		return list;
 	}
 
@@ -39,6 +41,8 @@ public class TabsList {
 				R.string.buttons_Recent));
 		Often = new TabsItem(2, this.context.getResources().getString(
 				R.string.buttons_Often));
+		Favorite = new TabsItem(3, this.context.getResources().getString(
+				R.string.buttons_Favorite));
 	}
 }
 

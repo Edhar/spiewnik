@@ -81,7 +81,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	// licensing
 
 	Button downloadButton, dropTablesButton, recentlyViewedButton,
-			oftenViewedButton, siteRatingViewedButton, searcTextClearButton;
+			oftenViewedButton, siteRatingViewedButton, searcTextClearButton,
+			favoriteButton;
 
 	EditText searchEditText, downloadFromEditText, downloadToEditText,
 			maxSongsPerPageOnResult, minSymbolsForStartSearch,
@@ -169,7 +170,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				.getAdapter();
 		if (tabAdapter != null) {
 			TabsItem curTab = (TabsItem) byDefaultResultsForTab
-					.getItemAtPosition(byDefaultResultsForTab.getSelectedItemPosition());
+					.getItemAtPosition(byDefaultResultsForTab
+							.getSelectedItemPosition());
 			TabsItem newTab = manager.tabsList.Get(tabId);
 			for (int i = 0; i < tabAdapter.getCount(); i++) {
 				if (((TabsItem) tabAdapter.getItem(i)).Id() == newTab.Id()) {
@@ -289,33 +291,36 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			}
 		});
-		byDefaultResultsForTab = (Spinner) settingsView.findViewById(R.id.ByDefaultResultsForTab);
+		byDefaultResultsForTab = (Spinner) settingsView
+				.findViewById(R.id.ByDefaultResultsForTab);
 		ArrayAdapter<TabsItem> adapterDefaultTab = new ArrayAdapter<TabsItem>(
 				this, android.R.layout.simple_spinner_item,
 				manager.tabsList.GetTabsItems());
 		adapterDefaultTab
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		byDefaultResultsForTab.setAdapter(adapterDefaultTab);
-		byDefaultResultsForTab.setOnItemSelectedListener(new OnItemSelectedListener() {
+		byDefaultResultsForTab
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int pos, long id) {
-				if (parent != null) {
-					TabsItem newTab = (TabsItem) parent.getItemAtPosition(pos);
-					if (newTab != null) {
-						manager.settings.DefaultTabId(newTab.Id());
+					@Override
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int pos, long id) {
+						if (parent != null) {
+							TabsItem newTab = (TabsItem) parent
+									.getItemAtPosition(pos);
+							if (newTab != null) {
+								manager.settings.DefaultTabId(newTab.Id());
+							}
+						}
+
 					}
-				}
 
-			}
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-
-			}
-		});
+					}
+				});
 
 		maxSongsPerPageOnResult = (EditText) settingsView
 				.findViewById(R.id.MaxSongsPerPageOnResult);
@@ -434,6 +439,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		siteRatingViewedButton = (Button) searchView
 				.findViewById(R.id.SiteRatingViewedButton);
 		siteRatingViewedButton.setOnClickListener(this);
+
+		favoriteButton = (Button) searchView.findViewById(R.id.FavoriteButton);
+		favoriteButton.setOnClickListener(this);
+
 		recentlyViewedButton = (Button) searchView
 				.findViewById(R.id.RecentlyViewedButton);
 		recentlyViewedButton.setOnClickListener(this);
@@ -549,6 +558,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		recentlyViewedButton.setOnTouchListener(onTouchListener);
 		oftenViewedButton.setOnTouchListener(onTouchListener);
 		siteRatingViewedButton.setOnTouchListener(onTouchListener);
+		favoriteButton.setOnTouchListener(onTouchListener);
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
 
 		LoadSettings();
@@ -563,7 +573,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 *1000));
+		// licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60
+		// *1000));
 
 		// licensing
 	}
@@ -637,6 +648,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			ClearSearchText();
 			LoadSiteRatingViewed();
 			break;
+		case R.id.FavoriteButton:
+			ClearSearchText();
+			LoadFavorite();
+			break;
 		case R.id.SearcTextClearButton:
 			ClearSearchText();
 			ShowHideClearSearchButton(false);
@@ -660,6 +675,12 @@ public class MainActivity extends Activity implements OnClickListener {
 				+ manager.context.getResources().getString(
 						R.string.labels_SiteRating)
 				+ song.SiteRating()
+				+ Utils.NewLine
+				+ manager.context.getResources().getString(
+						R.string.labels_Favorite)
+				+ (song.Favorite() ? manager.context.getResources().getString(
+						R.string.buttons_Yes) : manager.context.getResources()
+						.getString(R.string.buttons_No))
 				+ Utils.NewLine
 				+ manager.context.getResources().getString(
 						R.string.labels_RecentlyViewedDate)
@@ -751,6 +772,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		CreateAdapterAndSetToSongList(terms);
 	}
 
+	private void LoadFavorite() {
+		SearchTerms terms = new SearchTerms(manager.settings,
+				SearchBy.Favorite, "", Names.Favorite + DBHelper.SortDescending
+						+ "," + Names.Rating + DBHelper.SortDescending);
+		CreateAdapterAndSetToSongList(terms);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.app_menu, menu);
@@ -774,15 +802,15 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void LoadDefaultSongsListContent() {
 		int tabId = manager.settings.DefaultTabId();
+
 		if (tabId == manager.tabsList.SiteRating.Id()) {
 			LoadSiteRatingViewed();
-		}
-		if (tabId == manager.tabsList.Often.Id()) {
+		} else if (tabId == manager.tabsList.Often.Id()) {
 			LoadOftenViewed();
-		}
-
-		if (tabId == manager.tabsList.Recent.Id()) {
+		} else if (tabId == manager.tabsList.Recent.Id()) {
 			LoadRecentlyViewed();
+		} else if (tabId == manager.tabsList.Favorite.Id()) {
+			LoadFavorite();
 		}
 	}
 

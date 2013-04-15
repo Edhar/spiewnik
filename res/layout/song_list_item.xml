@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/SongListItemTextView"
-    android:layout_width="fill_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:gravity="left|center_vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:textColor="#609"
-    android:textSize="18sp" />
+    android:paddingLeft="10dp">
+
+    <TextView
+        android:id="@+id/SongListItemTextView"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_alignParentLeft="true"
+        android:gravity="left|center_vertical"
+        android:layout_alignLeft="@+id/StarImageView"
+        android:text="How do i make the position position of TextView in the left of Linear and ImageView in the right of LinearL"
+        android:textColor="#609"
+        android:paddingRight="48dp"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/SongListItemImageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:padding="6dp"
+        android:src="@drawable/star0" />
+
+</RelativeLayout>

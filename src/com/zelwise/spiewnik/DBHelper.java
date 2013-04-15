@@ -54,14 +54,15 @@ public class DBHelper extends SQLiteOpenHelper {
     {
     	if (tableName == Song.Names.TableName) {
 	  		  db.execSQL("create table " + Song.Names.TableName + " ("
-                    + Song.Names.Id + " integer primary key autoincrement," 
-                    + Song.Names.CategoryId + " integer,"
-                    + Song.Names.SiteId + " integer,"
-                    + Song.Names.Title+ " text,"
-                    + Song.Names.Content+ " text,"
-                    + Song.Names.Rating+ " integer,"
-                    + Song.Names.SiteRating+ " integer,"
-                    + Song.Names.RecentlyViewedDate+ " long"
+                    + Song.Names.Id + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+                    + Song.Names.CategoryId + " INTEGER DEFAULT ( 0 ),"
+                    + Song.Names.SiteId + " INTEGER DEFAULT ( 0 ),"
+                    + Song.Names.Title+ " TEXT,"
+                    + Song.Names.Content+ " TEXT,"
+                    + Song.Names.Rating+ " INTEGER DEFAULT ( 0 ),"
+                    + Song.Names.SiteRating+ " INTEGER DEFAULT ( 0 ),"
+                    + Song.Names.RecentlyViewedDate+ " long DEFAULT ( 0 ),"
+                    + Song.Names.Favorite+ " BOOLEAN DEFAULT ( 0 )"
                     + ");");
 	  		
 	  		//id ASC
@@ -95,6 +96,13 @@ public class DBHelper extends SQLiteOpenHelper {
 	  		db.execSQL("CREATE INDEX idx_Song_SiteRating_DESC_Title_ASC ON Song (SiteRating DESC,Title ASC);");
 	  		//SiteRating_DESC_Title_ASC
 	  		db.execSQL("CREATE UNIQUE INDEX idx_Song_SiteRating_DESC_Id_ASC_Title_ASC ON Song (SiteRating DESC,Id ASC,Title ASC);");
+	  		
+	  		//Favorite_DESC
+	  		db.execSQL("CREATE INDEX idx_Song_Favorite_DESC ON Song (Favorite DESC);");
+	  		//Favorite_DESC_Rating_DESC
+	  		db.execSQL("CREATE INDEX idx_Song_Favorite_DESC_Rating_DESC ON Song (Favorite DESC,Rating   DESC);");
+	  		//Favorite_DESC_Rating_DESC_Title_ASC
+	  		db.execSQL("CREATE INDEX idx_Song_Favorite_DESC_Rating_DESC_Title_ASC ON Song (Favorite DESC,Rating   DESC,Title    ASC);");
     	}
     	
     	if (tableName == Category.Names.TableName) {

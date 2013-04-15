@@ -4,5 +4,6 @@ public enum SearchBy {
 	Text,
 	Rating,
 	SiteRating,
-	RecentlyViewedDate
+	RecentlyViewedDate,
+	Favorite
 }

@@ -12,10 +12,13 @@
     <string name="buttons_Properties">Wlaściwosci</string>
     <string name="buttons_Add">Dodaj</string>
     <string name="buttons_Save">Zapicz</string>
+    
     <string name="buttons_Often">Częste</string>
     <string name="buttons_Recent">Niedawnie</string>
-    <string name="buttons_SiteRating">Ranking Apl.</string>
+    <string name="buttons_SiteRating">Rank. Apl.</string>
+    <string name="buttons_Favorite">Ulubione</string>
     
+    <string name="buttons_Ok">Ok</string>
     <string name="buttons_Yes">Tak</string>
     <string name="buttons_No">Nie</string>
     <string name="buttons_Cancel">Anuluj</string>
@@ -29,6 +32,7 @@
     <string name="labels_SiteId">Site Id:&#160;</string>
     <string name="labels_Rating">Mój Ranking:&#160;</string>
     <string name="labels_SiteRating">Ranking Apl.:&#160;</string>
+    <string name="labels_Favorite">Ulubione:&#160;</string>
     <string name="labels_RecentlyViewedDate">Ostatni raz przeglądana:&#160;</string>
     
     

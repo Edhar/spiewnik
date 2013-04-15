@@ -7,9 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SongArrayAdapter extends ArrayAdapter<Song> {
 	private ArrayList<Song> songList;
@@ -60,12 +63,13 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 
 	public SongArrayAdapter(AppManager manager, ArrayList<Song> list,
 			SearchTerms searchTerms) {
-		this(manager, searchTerms, list, R.layout.song_list_item);
+		this(manager, searchTerms, list, R.layout.song_list_item,
+				R.id.SongListItemTextView);
 	}
 
 	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms,
-			ArrayList<Song> list, int layout) {
-		super(manager.context, layout, list);
+			ArrayList<Song> list, int layout, int textViewLayout) {
+		super(manager.context, layout, textViewLayout, list);
 		this.searchTerms = searchTerms;
 		this.songList = list;
 		this.manager = manager;
@@ -93,7 +97,7 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 			view.setBackgroundColor(Color.parseColor("#e0eaf1"));
 		}
 
-		Song curSong = (Song) songList.get(position);
+		final Song curSong = (Song) songList.get(position);
 		if (curSong != null) {
 			TextView tv = (TextView) view
 					.findViewById(R.id.SongListItemTextView);
@@ -118,6 +122,38 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 				// tv.setText(curSong.Title() + "; Date:" +
 				// iso8601Format.format(curSong.RecentlyViewedDate()) +
 				// "; Rating:" + curSong.Rating());
+			}
+
+			ImageView starImg = (ImageView) view
+					.findViewById(R.id.SongListItemImageView);
+			if (starImg != null) {
+				if (curSong.Favorite()) {
+					starImg.setTag(R.drawable.star1);
+					starImg.setImageResource(R.drawable.star1);
+				} else {
+					starImg.setTag(R.drawable.star0);
+					starImg.setImageResource(R.drawable.star0);
+				}
+				starImg.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						ImageView img = (ImageView) v;
+						Song song = Song.Get(manager.db, curSong.Id());
+						if ((Integer) img.getTag() == R.drawable.star0) {
+							img.setImageResource(R.drawable.star1);
+							img.setTag(R.drawable.star1);
+							song.Favorite(true);
+						} else {
+							img.setImageResource(R.drawable.star0);
+							img.setTag(R.drawable.star0);
+							song.Favorite(false);
+							
+						}
+						song.SaveOrUpdate(manager.db);
+					}
+
+				});
 			}
 		}
 

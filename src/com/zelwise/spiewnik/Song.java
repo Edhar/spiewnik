@@ -18,6 +18,7 @@ public class Song {
 		public static final String SiteId = "SiteId";
 		public static final String CategoryId = "CategoryId";
 		public static final String Title = "Title";
+		public static final String Favorite = "Favorite";
 		public static final String Content = "Content";
 		public static final String Rating = "Rating";
 		public static final String SiteRating = "SiteRating";
@@ -73,6 +74,17 @@ public class Song {
 		rating = newRatingValue;
 	}
 
+	private Boolean favorite = false;
+
+	public Boolean Favorite() {
+
+		return favorite;
+	}
+
+	public void Favorite(Boolean isFavorite) {
+		favorite = isFavorite;
+	}
+
 	private Integer siteRating = 0;
 
 	public Integer SiteRating() {
@@ -96,7 +108,7 @@ public class Song {
 
 	private Song(Integer id, Integer siteId, Integer categoryId, String title,
 			String content, Integer rating, Integer siteRating,
-			Date recentlyViewedDate) {
+			Date recentlyViewedDate, Boolean favorite) {
 		this.id = id;
 		this.siteId = siteId;
 		this.categoryId = categoryId;
@@ -105,6 +117,7 @@ public class Song {
 		this.rating = rating;
 		this.siteRating = siteRating;
 		this.recentlyViewedDate = recentlyViewedDate;
+		this.favorite = favorite;
 	}
 
 	public Song(Document doc, Integer siteID) {
@@ -154,13 +167,12 @@ public class Song {
 		cv.put(Names.Rating, this.Rating());
 		cv.put(Names.SiteRating, this.SiteRating());
 		cv.put(Names.RecentlyViewedDate, this.RecentlyViewedDate().getTime());
+		cv.put(Names.Favorite, this.Favorite() ? 1 : 0);
 
 		if (this.Id() == 0) {
 			db.insert(Names.TableName, null, cv);
-			Log.d("SaveOrUpdateSong inserted", this.toString());
 		} else {
 			db.update(Names.TableName, cv, Names.Id + "=" + this.Id(), null);
-			Log.d("SaveOrUpdateSong updated", this.toString());
 		}
 	}
 
@@ -174,14 +186,13 @@ public class Song {
 		cv.put(Names.Rating, this.Rating());
 		cv.put(Names.SiteRating, this.SiteRating());
 		cv.put(Names.RecentlyViewedDate, this.RecentlyViewedDate().getTime());
+		cv.put(Names.Favorite, this.Favorite() ? 1 : 0);
 
 		if (this.Id() == 0 && !AlreadyDownloaded(this.SiteId(), db)) {
 			db.insert(Names.TableName, null, cv);
-			Log.d("SaveOrUpdateSong inserted", this.toString());
 		} else {
 			db.update(Names.TableName, cv, Names.SiteId + "=" + this.SiteId()
 					+ " AND " + Names.Id + "=" + this.Id(), null);
-			Log.d("SaveOrUpdateSong updated", this.toString());
 		}
 	}
 
@@ -191,8 +202,8 @@ public class Song {
 			Cursor cursor = db.query(false, Names.TableName, new String[] {
 					Names.Id, Names.SiteId, Names.CategoryId, Names.Title,
 					Names.Content, Names.Rating, Names.SiteRating,
-					Names.RecentlyViewedDate }, Names.Id + "=" + Id, null,
-					null, null, null, null);
+					Names.RecentlyViewedDate, Names.Favorite }, Names.Id + "="
+					+ Id, null, null, null, null, null);
 			if (cursor != null) {
 				cursor.moveToFirst();
 				Integer id = cursor.getInt(0);
@@ -203,9 +214,10 @@ public class Song {
 				Integer rating = cursor.getInt(5);
 				Integer siteRating = cursor.getInt(6);
 				Date recentlyViewd = new Date(cursor.getLong(7));
+				Boolean favorite = cursor.getString(8).equals("1");
 
 				song = new Song(id, siteId, categoryId, title, content, rating,
-						siteRating, recentlyViewd);
+						siteRating, recentlyViewd, favorite);
 			}
 
 			if (cursor != null && !cursor.isClosed()) {
@@ -293,35 +305,36 @@ public class Song {
 		String[] selectionArgs = new String[] { "" };
 		String orderBy = "";
 
-		if (terms.SearchText().length() > 0) {
-			selection = selection + " AND " + Names.Title + " LIKE ? ";
-			selectionArgs = new String[] { "", searchTextLIKE, };
-			if (terms.DoMoreRelevantSearch()) {
-				orderBy = " CASE WHEN " + Names.Title + " LIKE '"
-						+ terms.SearchText() + "%' THEN 0 ELSE 1 END";
-			} else {
-				orderBy = orderByTitle;
+		if (terms.SearchBy() == SearchBy.Text) {
+			if (terms.SearchText().length() > 0) {
+				selection = selection + " AND " + Names.Title + " LIKE ? ";
+				selectionArgs = new String[] { "", searchTextLIKE, };
+				if (terms.DoMoreRelevantSearch()) {
+					orderBy = " CASE WHEN " + Names.Title + " LIKE '"
+							+ terms.SearchText() + "%' THEN 0 ELSE 1 END";
+				} else {
+					orderBy = orderByTitle;
+				}
 			}
-		}
 
-		if (terms.SeachByAndShowSongNumbersInResult()
-				&& terms.SearchText().length() > 0) {
-			selection = Names.Title + " != ? AND (" + Names.Id + " LIKE ? OR "
-					+ Names.Title + " LIKE ?) ";
-			selectionArgs = new String[] { "", searchTextLIKE, searchTextLIKE };
+			if (terms.SeachByAndShowSongNumbersInResult()
+					&& terms.SearchText().length() > 0) {
+				selection = Names.Title + " != ? AND (" + Names.Id
+						+ " LIKE ? OR " + Names.Title + " LIKE ?) ";
+				selectionArgs = new String[] { "", searchTextLIKE,
+						searchTextLIKE };
 
-			if (terms.DoMoreRelevantSearch()) {
-				orderBy = " CASE WHEN " + Names.Id + " LIKE '"
-						+ terms.SearchText() + "%' THEN 0 ELSE 1 END" + ","
-						+ " CASE WHEN " + Names.Title + " LIKE '"
-						+ terms.SearchText() + "%' THEN 0 ELSE 1 END";
-			} else {
-				orderBy = Names.Id + DBHelper.SortAscending + ","
-						+ orderByTitle;
+				if (terms.DoMoreRelevantSearch()) {
+					orderBy = " CASE WHEN " + Names.Id + " LIKE '"
+							+ terms.SearchText() + "%' THEN 0 ELSE 1 END" + ","
+							+ " CASE WHEN " + Names.Title + " LIKE '"
+							+ terms.SearchText() + "%' THEN 0 ELSE 1 END";
+				} else {
+					orderBy = Names.Id + DBHelper.SortAscending + ","
+							+ orderByTitle;
+				}
 			}
-		}
-
-		if (terms.OrderByString() != "") {
+		} else {
 			orderBy = terms.OrderByString() + "," + orderByTitle;
 		}
 
@@ -331,8 +344,8 @@ public class Song {
 		Cursor cursor = db.query(false, Names.TableName, new String[] {
 				Names.Id, Names.SiteId, Names.CategoryId, Names.Title,
 				Names.Content, Names.Rating, Names.SiteRating,
-				Names.RecentlyViewedDate }, selection, selectionArgs, null,
-				null, orderBy, limit);
+				Names.RecentlyViewedDate, Names.Favorite }, selection,
+				selectionArgs, null, null, orderBy, limit);
 
 		if (cursor.moveToFirst()) {
 			do {
@@ -344,9 +357,10 @@ public class Song {
 				Integer rating = cursor.getInt(5);
 				Integer siteRating = cursor.getInt(6);
 				Date recentlyViewd = new Date(cursor.getLong(7));
+				Boolean favorite = cursor.getString(8).equals("1");
 
 				Song song = new Song(id, siteId, categoryId, title, content,
-						rating, siteRating, recentlyViewd);
+						rating, siteRating, recentlyViewd, favorite);
 				list.add(song);
 			} while (cursor.moveToNext());
 		}
