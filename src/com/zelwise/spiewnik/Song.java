@@ -2,6 +2,7 @@ package com.zelwise.spiewnik;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.FormatterClosedException;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.nodes.Document;
@@ -338,6 +339,32 @@ public class Song {
 			orderBy = terms.OrderByString() + "," + orderByTitle;
 		}
 
+		if (terms.SearchBy() == SearchBy.Favorite) {
+			selection = Names.Favorite + " == ? AND " + selection;
+			String[] old = selectionArgs.clone();
+			selectionArgs = new String[old.length + 1];
+			selectionArgs[0] = "1";
+			for (int i = 0; i < old.length; i++) {
+				selectionArgs[i + 1] = old[i];
+			}
+		} else if (terms.SearchBy() == SearchBy.Rating) {
+			selection = Names.Rating + " != ? AND " + selection;
+			String[] old = selectionArgs.clone();
+			selectionArgs = new String[old.length + 1];
+			selectionArgs[0] = "0";
+			for (int i = 0; i < old.length; i++) {
+				selectionArgs[i + 1] = old[i];
+			}
+		} else if (terms.SearchBy() == SearchBy.RecentlyViewedDate) {
+			selection = Names.RecentlyViewedDate + " != ? AND " + selection;
+			String[] old = selectionArgs.clone();
+			selectionArgs = new String[old.length + 1];
+			selectionArgs[0] = "0";
+			for (int i = 0; i < old.length; i++) {
+				selectionArgs[i + 1] = old[i];
+			}
+		}
+
 		String limit = ((terms.CurrentPage() - 1) * terms.SongsPerPage()) + ","
 				+ terms.SongsPerPage().toString();
 
@@ -369,5 +396,4 @@ public class Song {
 		}
 		return list;
 	}
-
 }

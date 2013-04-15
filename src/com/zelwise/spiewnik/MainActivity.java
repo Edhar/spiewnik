@@ -573,8 +573,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		// licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60
-		// *1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 *1000));
 
 		// licensing
 	}

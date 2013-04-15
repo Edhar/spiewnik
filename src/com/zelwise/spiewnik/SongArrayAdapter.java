@@ -143,14 +143,15 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 						if ((Integer) img.getTag() == R.drawable.star0) {
 							img.setImageResource(R.drawable.star1);
 							img.setTag(R.drawable.star1);
+							curSong.Favorite(true);
 							song.Favorite(true);
 						} else {
 							img.setImageResource(R.drawable.star0);
 							img.setTag(R.drawable.star0);
+							curSong.Favorite(false);
 							song.Favorite(false);
-							
 						}
-						song.SaveOrUpdate(manager.db);
+						curSong.SaveOrUpdate(manager.db);
 					}
 
 				});
