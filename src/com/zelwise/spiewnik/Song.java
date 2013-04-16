@@ -252,15 +252,6 @@ public class Song {
 		return false;
 	}
 
-	public static String DoSongTitle(String content) {
-		if (content.length() > 60) {
-			return content.trim().substring(0, 59).replace("\n", " ")
-					.replace("\r", "").trim()
-					+ "...";
-		}
-		return content;
-	}
-
 	public static int AllSongsCount(SQLiteDatabase db) {
 		Integer count = 0;
 		String selection = Names.Title + " != ?";

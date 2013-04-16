@@ -46,6 +46,19 @@ public final class Utils {
         return result;
 	}
 	
+	public static String Trim(String content) {
+		return Trim(content, 60);
+	}
+	
+	public static String Trim(String content, int length) {
+		if (content.length() > length) {
+			return content.trim().substring(0, length - 1 ).replace("\n", " ")
+					.replace("\r", "").trim()
+					+ "...";
+		}
+		return content;
+	}
+	
 	public static String Join(String r[], String delimiter)
 	{
 		if (r.length == 0) return "";

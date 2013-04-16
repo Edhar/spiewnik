@@ -2,8 +2,10 @@
 <resources>
 
     <string name="app_name">Śpiewnik</string>
-    <string name="app_shareDialogTitle">Udostępnij piosenkę</string>
+    <string name="app_shareDialogTitle">Udostępnij \"%s\" przez</string>
     
+    
+    <string name="search_NothingFound">Nic nie znaleziono</string>
     
     <string name="buttons_Share">Udostępnij</string>
     <string name="buttons_Delete">Usuń</string>

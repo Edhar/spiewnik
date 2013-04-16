@@ -573,7 +573,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 *1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
 
 		// licensing
 	}
@@ -742,8 +742,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
-			Toast.makeText(manager.context, "Not found songs",
-					Toast.LENGTH_SHORT).show();
+			Toast toast= Toast.makeText(
+					manager.context,
+					manager.context.getResources().getString(
+							R.string.search_NothingFound), Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 50);
+			toast.show();
 		}
 	}
 
@@ -773,8 +777,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void LoadFavorite() {
 		SearchTerms terms = new SearchTerms(manager.settings,
-				SearchBy.Favorite, "", Names.Favorite + DBHelper.SortDescending
-						+ "," + Names.Rating + DBHelper.SortDescending);
+				SearchBy.Favorite, "", Names.Favorite + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
 	}
 
@@ -892,7 +895,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			if (curSong.Title().trim().length() != 0
 					|| curSong.Content().trim().length() != 0) {
 				if (curSong.Title().trim().length() == 0) {
-					curSong.Title(Song.DoSongTitle(curSong.Content()));
+					curSong.Title(Utils.Trim(curSong.Content()));
 				}
 
 				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
@@ -1245,9 +1248,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		// add the message
 		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
 
+		String shareDialogTitle = String.format(manager.context.getResources()
+				.getString(R.string.app_shareDialogTitle), Utils.Trim(
+				song.Title(), 40));
 		// start the chooser for sharing
-		startActivity(Intent.createChooser(shareIntent, manager.context
-				.getResources().getString(R.string.app_shareDialogTitle)));
+		startActivity(Intent.createChooser(shareIntent, shareDialogTitle));
 	}
-
 }
