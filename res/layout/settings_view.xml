@@ -32,7 +32,9 @@
                 </CheckBox>
             </LinearLayout>
 
-            <View style="@style/Line" />
+            <View
+                style="@style/Line"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/AdvanceLinearLayout"
@@ -133,6 +135,8 @@
                 <View style="@style/Line" />
             </LinearLayout>
 
+            <View style="@style/Line" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -213,6 +217,7 @@
             </LinearLayout>
 
             <View style="@style/Line" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -241,31 +246,32 @@
             </LinearLayout>
 
             <View style="@style/Line" />
-            
-			<LinearLayout
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left|center_vertical"
-                android:layout_weight="10" >
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left|center_vertical"
-                    android:textSize="18sp"
                     android:layout_weight="5"
-                    android:text="@string/labels_ByDefaultResultsForTab" >
+                    android:gravity="left|center_vertical"
+                    android:text="@string/labels_ByDefaultResultsForTab"
+                    android:textSize="18sp" >
                 </TextView>
 
                 <Spinner
                     android:id="@+id/ByDefaultResultsForTab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp">
-
+                    android:layout_marginRight="20dp" >
                 </Spinner>
             </LinearLayout>
-            <View style="@style/Line" />
+
+            <View style="@style/Line"  android:visibility="gone"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -283,9 +289,23 @@
                 </TextView>
             </LinearLayout>
 
-            <View
-                style="@style/Line"
-                android:visibility="gone" />
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:id="@+id/Version"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="@string/labels_Version"
+                    android:textSize="18sp" >
+                </TextView>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

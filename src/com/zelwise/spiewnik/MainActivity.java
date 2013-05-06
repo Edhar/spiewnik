@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -560,6 +561,14 @@ public class MainActivity extends Activity implements OnClickListener {
 		siteRatingViewedButton.setOnTouchListener(onTouchListener);
 		favoriteButton.setOnTouchListener(onTouchListener);
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
+		
+		TextView version = (TextView)settingsView.findViewById(R.id.Version);
+		String versionName = "";
+		try {
+			versionName = manager.context.getPackageManager().getPackageInfo(manager.context.getPackageName(), 0 ).versionName;
+		} catch (NameNotFoundException e) {
+		}
+		version.setText(manager.context.getResources().getString(R.string.labels_Version) + versionName);
 
 		LoadSettings();
 		LoadDefaultSongsListContent();
@@ -892,12 +901,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		if (this.IsSongEditMode()) {
 			final Song curSong = GetSongFromSongView();
 
-			if (curSong.Title().trim().length() != 0
-					|| curSong.Content().trim().length() != 0) {
-				if (curSong.Title().trim().length() == 0) {
-					curSong.Title(Utils.Trim(curSong.Content()));
-				}
-
+			if (curSong.Title().length() != 0
+					|| curSong.Content().length() != 0) {
 				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
 						manager.context);
 
@@ -912,6 +917,8 @@ public class MainActivity extends Activity implements OnClickListener {
 							public void onClick(DialogInterface dialog, int id) {
 								curSong.SaveOrUpdate(manager.db);
 								isSongEditMode = false;
+								UpdateContenSongView(curSong);
+								SetSongViewViewMode();
 								ReloadSongsListContent();
 							}
 						});
@@ -926,6 +933,7 @@ public class MainActivity extends Activity implements OnClickListener {
 									UpdateContenSongView(savedSong);
 								}
 								isSongEditMode = false;
+								SetSongViewViewMode();
 								dialog.cancel();
 							}
 						});
@@ -974,9 +982,16 @@ public class MainActivity extends Activity implements OnClickListener {
 					.findViewById(R.id.SongTitleEditText);
 			EditText newContent = (EditText) songView
 					.findViewById(R.id.SongContentEditText);
-
-			originalSong.Title(newTitle.getText().toString());
-			originalSong.Content(newContent.getText().toString());
+			
+			String content = newContent.getText().toString().trim();
+			String title = newTitle.getText().toString().trim();
+			if (title.length() == 0) {
+				title = Utils.Trim(content);
+			}
+			
+			
+			originalSong.Title(title);
+			originalSong.Content(content);
 		} catch (Exception e) {
 
 		}

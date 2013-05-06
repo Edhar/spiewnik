@@ -29,6 +29,7 @@
     <string name="buttons_Buy">Kupuj</string>
     
     
+    <string name="labels_Version">Wersja:&#160;</string>
     <string name="labels_Search">Szukaj:</string>
     <string name="labels_Id">Numer:&#160;</string>
     <string name="labels_SiteId">Site Id:&#160;</string>

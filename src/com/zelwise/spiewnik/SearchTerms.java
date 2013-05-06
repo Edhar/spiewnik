@@ -30,6 +30,9 @@ public class SearchTerms {
 	private String searchText = "";
 
 	public String SearchText() {
+		if(SearchBy()!=SearchBy.Text){
+			return "";
+		}
 		return searchText;
 	};
 
