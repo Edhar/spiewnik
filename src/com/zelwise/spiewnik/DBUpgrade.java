@@ -27,9 +27,9 @@ public class DBUpgrade {
 	public void UpdateDb() {
 		try {
 			
-			//if (oldVersion == 1 && newVersion > 1) {
+			if (oldVersion == 1 && newVersion > 1) {
 				From1to2();
-			//}
+			}
 			
 		} catch (Exception e) {
 
