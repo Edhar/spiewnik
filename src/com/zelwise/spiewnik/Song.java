@@ -106,6 +106,13 @@ public class Song {
 	public Song() {
 
 	}
+	
+	public Song(String title,String content,Integer siteRating,Date recentlyViewedDate) {
+		this.title = title;
+		this.content = content;
+		this.siteRating = siteRating;
+		this.recentlyViewedDate = recentlyViewedDate;
+	}
 
 	private Song(Integer id, Integer siteId, Integer categoryId, String title,
 			String content, Integer rating, Integer siteRating,
@@ -385,6 +392,39 @@ public class Song {
 		if (cursor != null && !cursor.isClosed()) {
 			cursor.close();
 		}
+		return list;
+	}
+	
+	public static ArrayList<Song> GetSongs(SQLiteDatabase db) {
+		ArrayList<Song> list = new ArrayList<Song>();
+		
+		Cursor cursor = db.query(false, Names.TableName, new String[] {
+				Names.Id, Names.SiteId, Names.CategoryId, Names.Title,
+				Names.Content, Names.Rating, Names.SiteRating,
+				Names.RecentlyViewedDate, Names.Favorite }, null,
+				null, null, null, null, null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				Integer id = cursor.getInt(0);
+				Integer siteId = cursor.getInt(1);
+				Integer categoryId = cursor.getInt(2);
+				String title = cursor.getString(3);
+				String content = cursor.getString(4);
+				Integer rating = cursor.getInt(5);
+				Integer siteRating = cursor.getInt(6);
+				Date recentlyViewd = new Date(cursor.getLong(7));
+				Boolean favorite = cursor.getString(8).equals("1");
+
+				Song song = new Song(id, siteId, categoryId, title, content,
+						rating, siteRating, recentlyViewd, favorite);
+				list.add(song);
+			} while (cursor.moveToNext());
+		}
+		if (cursor != null && !cursor.isClosed()) {
+			cursor.close();
+		}
+		
 		return list;
 	}
 }

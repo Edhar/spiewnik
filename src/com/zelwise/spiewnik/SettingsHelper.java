@@ -19,6 +19,7 @@ public class SettingsHelper {
 		public static Integer SongPerPage = 15;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 		public static Boolean DoMoreRelevantSearch = true;
+		public static Integer SiteRatingValue = 10000;
 	}
 	
 	private final String sharedPreferencesName = "AppSettings";
