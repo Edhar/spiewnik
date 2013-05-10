@@ -2,6 +2,8 @@ package com.zelwise.spiewnik;
 
 import java.text.SimpleDateFormat;
 
+import android.content.Context;
+
 public final class Utils {
 	public static final String NewLine = "\r\n";
 	public static final SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -29,6 +31,11 @@ public final class Utils {
         }
 
         return builder.toString();
+	}
+	
+	public static float pixelsToSp(Context context, Float px) {
+	    float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+	    return px/scaledDensity;
 	}
 	
 	public static int ToInt(String value, int defaultValue) {

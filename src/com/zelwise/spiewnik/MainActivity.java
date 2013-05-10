@@ -9,6 +9,8 @@ import java.util.TimerTask;
 
 import javax.security.auth.callback.Callback;
 
+import org.jsoup.select.Evaluator.IsEmpty;
+
 import com.zelwise.spiewnik.AppManager;
 import com.zelwise.spiewnik.SettingsHelper.DefaultValues;
 import com.zelwise.spiewnik.Song.Names;
@@ -33,6 +35,8 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -55,6 +59,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -89,7 +94,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			maxSongsPerPageOnResult, minSymbolsForStartSearch,
 			songTitleEditText, songContentEditText;
 
-	LinearLayout advanceLinearLayout;
+	LinearLayout advanceLinearLayout, magnifierLinearLayout;
 
 	Spinner byDefaultResultsForTab;
 
@@ -155,6 +160,22 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	};
 
+	private OnTouchListener onTouchListenerMagnifier = new OnTouchListener() {
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			ImageView btn = (ImageView) v;
+			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				btn.setBackgroundColor(Color.parseColor("#660099"));
+			}
+			if (event.getAction() == MotionEvent.ACTION_UP) {
+				btn.setBackgroundColor(Color.parseColor("#00000000"));
+				v.performClick();
+			}
+			return true;
+		}
+	};
+
 	ViewPager viewPager;
 	AppPagerAdapter pagerAdapter;
 
@@ -185,6 +206,29 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	Handler magnifierHandler = new Handler();
+	private Runnable updateMagnifierState = new Runnable() {
+		public void run() {
+			long curTime = new Date().getTime();
+			if (curTime - lastMagnifierShowTime > SettingsHelper.DefaultValues.MagnifiedShowTime) {
+				magnifierLinearLayout.setVisibility(View.GONE);
+			} else {
+				magnifierHandler.postDelayed(updateMagnifierState,
+						SettingsHelper.DefaultValues.MagnifiedShowTime);
+			}
+
+		}
+	};
+	private long lastMagnifierShowTime;
+
+	private void ShowMagnifier() {
+		magnifierLinearLayout.setVisibility(View.VISIBLE);
+		magnifierHandler.postDelayed(updateMagnifierState,
+				SettingsHelper.DefaultValues.MagnifiedShowTime);
+
+		lastMagnifierShowTime = new Date().getTime();
+	}
+
 	private void LoadSettings() {
 		SetSelectedDefaultTab(manager.settings.DefaultTabId());
 
@@ -211,6 +255,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			doMoreRelevantSearch.setChecked(manager.settings
 					.DoMoreRelevantSearch());
 		}
+
+		songContentEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP,
+				manager.settings.FontSize());
+
 		RefreshSearchTextHint();
 	}
 
@@ -458,6 +506,33 @@ public class MainActivity extends Activity implements OnClickListener {
 				.findViewById(R.id.SongTitleEditText);
 		songContentEditText = (EditText) songView
 				.findViewById(R.id.SongContentEditText);
+		songContentEditText.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (!isSongEditMode) {
+					ShowMagnifier();
+				}
+			}
+		});
+		ScrollView songContentScrollView = (ScrollView) songView
+				.findViewById(R.id.SongContentScrollView);
+		songContentScrollView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				ScrollView scrollView = (ScrollView) v;
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					if (!isSongEditMode) {
+						ShowMagnifier();
+					}
+				}
+				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+					return false;
+				}
+
+				return true;
+			}
+		});
 
 		songsListView = (ListView) searchView.findViewById(R.id.SongsListView);
 		songsListView.setOnItemClickListener(new OnItemClickListener() {
@@ -561,14 +636,40 @@ public class MainActivity extends Activity implements OnClickListener {
 		siteRatingViewedButton.setOnTouchListener(onTouchListener);
 		favoriteButton.setOnTouchListener(onTouchListener);
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
-		
-		TextView version = (TextView)settingsView.findViewById(R.id.Version);
+
+		TextView version = (TextView) settingsView.findViewById(R.id.Version);
 		String versionName = "";
 		try {
-			versionName = manager.context.getPackageManager().getPackageInfo(manager.context.getPackageName(), 0 ).versionName;
+			versionName = manager.context.getPackageManager().getPackageInfo(
+					manager.context.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 		}
-		version.setText(manager.context.getResources().getString(R.string.labels_Version) + versionName);
+		version.setText(manager.context.getResources().getString(
+				R.string.labels_Version)
+				+ versionName);
+
+		ImageView magnifierMinus = (ImageView) songView
+				.findViewById(R.id.MagnifierMinusImageView);
+		ImageView magnifierPlus = (ImageView) songView
+				.findViewById(R.id.MagnifierPlusImageView);
+		magnifierMinus.setOnTouchListener(onTouchListenerMagnifier);
+		magnifierPlus.setOnTouchListener(onTouchListenerMagnifier);
+		magnifierMinus.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ChangeFontSize(false);
+				ShowMagnifier();
+			}
+		});
+		magnifierPlus.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ChangeFontSize(true);
+				ShowMagnifier();
+			}
+		});
+		magnifierLinearLayout = (LinearLayout) songView
+				.findViewById(R.id.MagnifierLinearLayout);
 
 		LoadSettings();
 		LoadDefaultSongsListContent();
@@ -582,9 +683,44 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,
+				(long) (0.1 * 60 * 1000));
 
 		// licensing
+	}
+
+	private void ChangeFontSize(Boolean isEnlarge) {
+		float currentSize = Utils.pixelsToSp(manager.context,
+				songContentEditText.getTextSize());
+		float newSize = currentSize;
+		if (isEnlarge) {
+			newSize += SettingsHelper.DefaultValues.FontSizeMagnifierStep;
+			if (newSize > SettingsHelper.DefaultValues.FontSizeMax()) {
+				newSize = SettingsHelper.DefaultValues.FontSizeMax();
+			}
+		} else {
+			newSize -= SettingsHelper.DefaultValues.FontSizeMagnifierStep;
+			if (newSize < SettingsHelper.DefaultValues.FontSizeMin()) {
+				newSize = SettingsHelper.DefaultValues.FontSizeMin();
+			}
+		}
+
+		final Toast toast = Toast.makeText(manager.context, newSize
+				/ SettingsHelper.DefaultValues.FontSize + "x",
+				Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
+
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				toast.cancel();
+			}
+		}, 300);
+
+		manager.settings.FontSize(newSize);
+		songContentEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
 	}
 
 	private void RefreshSearchTextHint() {
@@ -751,11 +887,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
-			Toast toast= Toast.makeText(
-					manager.context,
-					manager.context.getResources().getString(
-							R.string.search_NothingFound), Toast.LENGTH_SHORT);
-			toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 50);
+			Toast toast = Toast.makeText(manager.context, manager.context
+					.getResources().getString(R.string.search_NothingFound),
+					Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50);
 			toast.show();
 		}
 	}
@@ -982,14 +1117,13 @@ public class MainActivity extends Activity implements OnClickListener {
 					.findViewById(R.id.SongTitleEditText);
 			EditText newContent = (EditText) songView
 					.findViewById(R.id.SongContentEditText);
-			
+
 			String content = newContent.getText().toString().trim();
 			String title = newTitle.getText().toString().trim();
 			if (title.length() == 0) {
 				title = Utils.Trim(content);
 			}
-			
-			
+
 			originalSong.Title(title);
 			originalSong.Content(content);
 		} catch (Exception e) {
@@ -1072,7 +1206,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		songContentEditText.setInputType(InputType.TYPE_NULL);
 		songContentEditText.setSingleLine(false);
 
-		songContentEditText.setEnabled(false);
+		songContentEditText.setEnabled(true);
 
 		isSongEditMode = false;
 	}

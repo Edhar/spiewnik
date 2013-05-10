@@ -12,6 +12,7 @@ public class SettingsHelper {
 		public static final String DoMoreRelevantSearch = "DoMoreRelevantSearch";
 		public static final String MinSymbolsForStartSearch = "MinSymbolsForStartSearch";
 		public static final String DefaultTabId = "DefaultTabId";
+		public static final String FontSize = "FontSize";
 	}
 	public static class DefaultValues {
 		public static Integer DefaultTabId = 0;
@@ -20,6 +21,15 @@ public class SettingsHelper {
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 		public static Boolean DoMoreRelevantSearch = true;
 		public static Integer SiteRatingValue = 10000;
+		public static float FontSize = 20;
+		public static float FontSizeMagnifierStep = 2;
+		public static float FontSizeMin(){
+			return 6; 
+		};
+		public static float FontSizeMax(){
+			return FontSize*2; 
+		};
+		public static long MagnifiedShowTime = 2000;
 	}
 	
 	private final String sharedPreferencesName = "AppSettings";
@@ -41,6 +51,16 @@ public class SettingsHelper {
 	public void MinSymbolsForStartSearch(String newValue) {
 		minSymbolsForStartSearch = Utils.ToInt(newValue, DefaultValues.MinSymbolsForStartSearch);
 		editor.putInt(Tags.MinSymbolsForStartSearch, minSymbolsForStartSearch);
+		editor.commit();
+	}
+	
+	private float fontSize;
+	public float FontSize() {
+		return fontSize;
+	}
+	public void FontSize(float newValue) {
+		fontSize = newValue;
+		editor.putFloat(Tags.FontSize, fontSize);
 		editor.commit();
 	}
 	
@@ -99,6 +119,9 @@ public class SettingsHelper {
 	private void loadAllSettings() {
 		defaultTabId = settings.getInt(Tags.DefaultTabId,
 				DefaultValues.DefaultTabId);
+		
+		fontSize = settings.getFloat(Tags.FontSize,
+				DefaultValues.FontSize);
 		
 		minSymbolsForStartSearch = settings.getInt(Tags.MinSymbolsForStartSearch,
 				DefaultValues.MinSymbolsForStartSearch);

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SongContentLinearLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#fff"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/SongTitleEditText"
@@ -29,8 +30,9 @@
 
     <ScrollView
         android:id="@+id/SongContentScrollView"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff" >
 
         <EditText
             android:id="@+id/SongContentEditText"
@@ -46,5 +48,28 @@
             android:textSize="20sp" >
         </EditText>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/MagnifierLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="-70dp"
+        android:layout_gravity="right"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/MagnifierMinusImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="5dp"
+            android:src="@drawable/magnifier_minus" />
+
+        <ImageView
+            android:id="@+id/MagnifierPlusImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="5dp"
+            android:src="@drawable/magnifier_plus" />
+    </LinearLayout>
 
 </LinearLayout>
