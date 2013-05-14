@@ -28,10 +28,14 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 		return !currentPageIsLast;
 	}
 
+	public SearchTerms GetSearchTerms() {
+		return searchTerms;
+	}
+
 	public void AddAdditionalPage() {
 		if (!currentPageIsLast) {
 			this.searchTerms.CurrentPage(this.searchTerms.CurrentPage() + 1);
-			ArrayList<Song> addSongs = GetSongData(this.manager.db,
+			ArrayList<Song> addSongs = GetCurrentPageSongData(this.manager.db,
 					this.searchTerms);
 			if (addSongs.size() > 0) {
 				songList.addAll(addSongs);
@@ -46,15 +50,11 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 
 	public void Reload() {
 		songList.clear();
-
-		for (int i = 0; i < this.searchTerms.CurrentPage(); i++) {
-			ArrayList<Song> addSongs = GetSongData(this.manager.db,
-					this.searchTerms);
-			currentPageIsLast = addSongs.size() < searchTerms.SongsPerPage();
-			songList.addAll(addSongs);
+		int pagesCount = this.searchTerms.CurrentPage();
+		this.searchTerms.CurrentPage(0);
+		for (int i = 0; i < pagesCount; i++) {
+			this.AddAdditionalPage();
 		}
-
-		this.notifyDataSetChanged();
 	}
 
 	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms) {
@@ -77,6 +77,19 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 	}
 
 	private static ArrayList<Song> GetSongData(SQLiteDatabase db,
+			SearchTerms terms) {
+		ArrayList<Song> list = new ArrayList<Song>();
+		SearchTerms terms2 = terms.Clone();
+		int pagesCount = terms2.CurrentPage();
+		for (int i = 0; i < pagesCount; i++) {
+			terms2.CurrentPage(i+1);
+			list.addAll(GetCurrentPageSongData(db,terms2));
+		}
+
+		return list;
+	}
+
+	private static ArrayList<Song> GetCurrentPageSongData(SQLiteDatabase db,
 			SearchTerms terms) {
 		return Song.GetSongs(db, terms);
 	}

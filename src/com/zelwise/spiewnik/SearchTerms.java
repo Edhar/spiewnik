@@ -1,6 +1,6 @@
 package com.zelwise.spiewnik;
 
-public class SearchTerms {
+public class SearchTerms implements Cloneable {
 	private SettingsHelper settings;
 
 	public Integer SongsPerPage() {
@@ -58,5 +58,17 @@ public class SearchTerms {
 		this.orderByString = orderByString;
 		this.currentPage = currentPage;
 		this.settings = settings;
+	}
+	
+	protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+	
+	public SearchTerms Clone(){
+		try {
+			return (SearchTerms)clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 }

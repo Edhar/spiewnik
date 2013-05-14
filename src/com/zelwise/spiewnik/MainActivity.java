@@ -273,15 +273,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		List<View> pages = new ArrayList<View>();
 
 		View settingsView = inflater.inflate(R.layout.settings_view, null);
-		settingsView.setTag(settingsViewIndex);
 		pages.add(settingsView);
 
 		View searchView = inflater.inflate(R.layout.search_view, null);
-		searchView.setTag(searchViewIndex);
 		pages.add(searchView);
 
 		View songView = inflater.inflate(R.layout.song_view, null);
-		songView.setTag(songViewIndex);
 		pages.add(songView);
 
 		pagerAdapter = new AppPagerAdapter(pages);
@@ -310,9 +307,9 @@ public class MainActivity extends Activity implements OnClickListener {
 				} else if (manager.viewPager.getCurrentItem() == songViewIndex) {
 					try {
 						SetSongViewViewMode();
-						EditText songTitle = (EditText) pagerAdapter.pages.get(
-								songViewIndex).findViewById(
-								R.id.SongTitleEditText);
+						EditText songTitle = (EditText) ((AppPagerAdapter) manager.viewPager
+								.getAdapter()).pages.get(songViewIndex)
+								.findViewById(R.id.SongTitleEditText);
 
 						if (songTitle != null
 								&& songTitle.getText().length() != 0) {
@@ -567,8 +564,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItemIndex,
 					int visibleItemCountOnDisplay, int totalItemCount) {
+				final int hidenSongsCount = 2;
 				if (totalItemCount > 0
-						&& (totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < 2) {
+						&& (totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < hidenSongsCount) {
 					AddDynamicallyDataToList();
 				}
 			}
@@ -672,8 +670,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				.findViewById(R.id.MagnifierLinearLayout);
 
 		LoadSettings();
-		LoadDefaultSongsListContent();
-		FocusedFirstSongsListViewItem();
+
+		RestoreState();
 
 		// licensing
 		String deviceId = Secure.getString(getContentResolver(),
@@ -868,8 +866,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				+ Song.AllSongsCountWithEmpty(manager.db) + ")");
 	}
 
-	private void FocusedFirstSongsListViewItem() {
-		songsListView.setSelection(0);
+	private void FocusedItemInSongsList(int itemIndex) {
+		songsListView.setSelection(itemIndex);
 		songsListView.requestFocus();
 	}
 
@@ -965,6 +963,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				.getAdapter();
 		if (listAdapter != null) {
 			listAdapter.Reload();
+			FocusedItemInSongsList(songsListView.getFirstVisiblePosition());
 		}
 	}
 
@@ -1086,7 +1085,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		Song song = new Song();
 
 		try {
-			View songView = manager.viewPager.findViewWithTag(songViewIndex);
+			View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
+					.get(songViewIndex);
 			TextView songId = (TextView) songView
 					.findViewById(R.id.SongIdTextView);
 			Integer id = Utils.ToInt(songId.getText().toString(), 0);
@@ -1100,7 +1100,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void AddNewSongMenuAction() {
-		View songView = manager.viewPager.findViewWithTag(songViewIndex);
+		View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
+				.get(songViewIndex);
 		if (manager.viewPager.getCurrentItem() != songViewIndex) {
 			manager.viewPager.setCurrentItem(songViewIndex);
 		}
@@ -1111,21 +1112,24 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private Song UpdateSongFromEditMode(Song originalSong) {
 		try {
-			View songView = manager.viewPager.findViewWithTag(songViewIndex);
+			if (IsSongEditMode()) {
+				View songView = ((AppPagerAdapter) manager.viewPager
+						.getAdapter()).pages.get(songViewIndex);
 
-			EditText newTitle = (EditText) songView
-					.findViewById(R.id.SongTitleEditText);
-			EditText newContent = (EditText) songView
-					.findViewById(R.id.SongContentEditText);
+				EditText newTitle = (EditText) songView
+						.findViewById(R.id.SongTitleEditText);
+				EditText newContent = (EditText) songView
+						.findViewById(R.id.SongContentEditText);
 
-			String content = newContent.getText().toString().trim();
-			String title = newTitle.getText().toString().trim();
-			if (title.length() == 0) {
-				title = Utils.Trim(content);
+				String content = newContent.getText().toString().trim();
+				String title = newTitle.getText().toString().trim();
+				if (title.length() == 0) {
+					title = Utils.Trim(content);
+				}
+
+				originalSong.Title(title);
+				originalSong.Content(content);
 			}
-
-			originalSong.Title(title);
-			originalSong.Content(content);
 		} catch (Exception e) {
 
 		}
@@ -1135,7 +1139,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void UpdateContenSongView(Song newSong) {
 		try {
-			View songView = manager.viewPager.findViewWithTag(songViewIndex);
+			View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
+					.get(songViewIndex);
 
 			TextView newId = (TextView) songView
 					.findViewById(R.id.SongIdTextView);
@@ -1191,7 +1196,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void SetSongViewViewMode() {
-		View songView = manager.viewPager.findViewWithTag(songViewIndex);
+		View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
+				.get(songViewIndex);
 		ScrollView songScroll = (ScrollView) songView
 				.findViewById(R.id.SongContentScrollView);
 		songScroll.scrollTo(0, 0);
@@ -1402,5 +1408,40 @@ public class MainActivity extends Activity implements OnClickListener {
 				song.Title(), 40));
 		// start the chooser for sharing
 		startActivity(Intent.createChooser(shareIntent, shareDialogTitle));
+	}
+
+	private AppState GetAppState() {
+		SongArrayAdapter adapter = (SongArrayAdapter) songsListView
+				.getAdapter();
+		SearchTerms terms = adapter.GetSearchTerms();
+
+		return new AppState(terms, viewPager.getCurrentItem(),
+				GetSongFromSongView(), isSongEditMode,
+				songsListView.getFirstVisiblePosition());
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		final AppState data = GetAppState();
+		return data;
+	}
+
+	private void RestoreState() {
+		final AppState state = (AppState) ((Activity) manager.context)
+				.getLastNonConfigurationInstance();
+		if (state != null) {
+			searchEditText.setText(state.Terms.SearchText());
+			viewPager.setCurrentItem(state.ViewIndex);
+			if (state.IsSongEditMode) {
+				SetSongEditMode();
+			}
+			UpdateContenSongView(state.Song);
+
+			CreateAdapterAndSetToSongList(state.Terms);
+			FocusedItemInSongsList(state.FirstVisibleSongPosition);
+		} else {
+			LoadDefaultSongsListContent();
+			FocusedItemInSongsList(0);
+		}
 	}
 }
