@@ -66,18 +66,18 @@
 	<string name="settings_dropTablesButton">Drop Tables Button</string>
 	<string name="settings_totalRecods">Total Recods</string>
 	
-	<string name="theme_violet_bg_LayoutSearch">#00992B</string>
-	<string name="theme_violet_tc_SongListItemTextView">#00992B</string>
-	<string name="theme_violet_bg_SongListItemTextView1">#ffffff</string>
-	<string name="theme_violet_bg_SongListItemTextView2">#e0eaf1</string>
-	<string name="theme_violet_tc_labels_Search">#D5F78C</string>
-	<string name="theme_violet_tc_SearchEditText">#D5F78C</string>
-	<string name="theme_violet_tc_SearcTextClearButton">#D5F78C</string>
-	<string name="theme_violet_bg_SearchEditText">#1BFC6C</string>
-	<string name="theme_violet_tc_TabsItem">#A9A9A9</string>
-	<string name="theme_violet_bg_TabsItem">#DBFCC1</string>
-	<string name="theme_TransparentColor">#00000000</string>
-	<string name="theme_violet_bg_PressedButton">#00992B</string>
-	<string name="theme_violet_bg_PressedClearButton">#DBFCC1</string>
+	<color name="theme_violet_bg_LayoutSearch">#00992B</color>
+	<color name="theme_violet_tc_SongListItemTextView">#00992B</color>
+	<color name="theme_violet_bg_SongListItemTextView1">#ffffff</color>
+	<color name="theme_violet_bg_SongListItemTextView2">#e0eaf1</color>
+	<color name="theme_violet_tc_labels_Search">#D5F78C</color>
+	<color name="theme_violet_tc_SearchEditText">#D5F78C</color>
+	<color name="theme_violet_tc_SearcTextClearButton">#D5F78C</color>
+	<color name="theme_violet_bg_SearchEditText">#1BFC6C</color>
+	<color name="theme_violet_tc_TabsItem">#A9A9A9</color>
+	<color name="theme_violet_bg_TabsItem">#DBFCC1</color>
+	<color name="theme_TransparentColor">#00000000</color>
+	<color name="theme_violet_bg_PressedButton">#00992B</color>
+	<color name="theme_violet_bg_PressedClearButton">#DBFCC1</color>
 	
 </resources>

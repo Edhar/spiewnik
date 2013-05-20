@@ -12,7 +12,7 @@
         android:gravity="left|center_vertical"
         android:layout_alignLeft="@+id/StarImageView"
         android:text=""
-        android:textColor="@string/theme_violet_tc_SongListItemTextView"
+        android:textColor="@color/theme_violet_tc_SongListItemTextView"
         android:paddingRight="48dp"
         android:textSize="18sp" />
 
