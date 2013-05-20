@@ -124,6 +124,19 @@ public final class R {
         public static final int settings_dropTablesButton=0x7f04002d;
         public static final int settings_settingsName=0x7f04002c;
         public static final int settings_totalRecods=0x7f04002e;
+        public static final int theme_TransparentColor=0x7f040039;
+        public static final int theme_violet_bg_LayoutSearch=0x7f04002f;
+        public static final int theme_violet_bg_PressedButton=0x7f04003a;
+        public static final int theme_violet_bg_PressedClearButton=0x7f04003b;
+        public static final int theme_violet_bg_SearchEditText=0x7f040036;
+        public static final int theme_violet_bg_SongListItemTextView1=0x7f040031;
+        public static final int theme_violet_bg_SongListItemTextView2=0x7f040032;
+        public static final int theme_violet_bg_TabsItem=0x7f040038;
+        public static final int theme_violet_tc_SearcTextClearButton=0x7f040035;
+        public static final int theme_violet_tc_SearchEditText=0x7f040034;
+        public static final int theme_violet_tc_SongListItemTextView=0x7f040030;
+        public static final int theme_violet_tc_TabsItem=0x7f040037;
+        public static final int theme_violet_tc_labels_Search=0x7f040033;
     }
     public static final class style {
         /** 

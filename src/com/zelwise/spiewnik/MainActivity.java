@@ -14,6 +14,7 @@ import org.jsoup.select.Evaluator.IsEmpty;
 import com.zelwise.spiewnik.AppManager;
 import com.zelwise.spiewnik.SettingsHelper.DefaultValues;
 import com.zelwise.spiewnik.Song.Names;
+import com.zelwise.spiewnik.R;
 import com.zelwise.spiewnik.SongArrayAdapter;
 
 import android.app.Activity;
@@ -135,10 +136,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		public boolean onTouch(View v, MotionEvent event) {
 			Button btn = (Button) v;
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				btn.setBackgroundColor(Color.parseColor("#C1E3FC"));
+				btn.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_violet_bg_PressedClearButton)));
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				btn.setBackgroundColor(Color.parseColor("#00000000"));
+				btn.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_TransparentColor)));
 				v.performClick();
 			}
 			return true;
@@ -150,10 +151,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		public boolean onTouch(View v, MotionEvent event) {
 			Button btn = (Button) v;
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				btn.setBackgroundColor(Color.parseColor("#660099"));
+				btn.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_violet_bg_PressedButton)));
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				btn.setBackgroundColor(Color.parseColor("#C1E3FC"));
+				btn.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_violet_bg_PressedButton)));
 				v.performClick();
 			}
 			return true;
@@ -166,10 +167,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		public boolean onTouch(View v, MotionEvent event) {
 			ImageView btn = (ImageView) v;
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				btn.setBackgroundColor(Color.parseColor("#660099"));
+				btn.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_violet_bg_PressedButton)));
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				btn.setBackgroundColor(Color.parseColor("#00000000"));
+				btn.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_TransparentColor)));
 				v.performClick();
 			}
 			return true;
