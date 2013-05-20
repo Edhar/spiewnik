@@ -1,68 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Śpiewnik</string>
-    <string name="app_shareDialogTitle">Udostępnij \"%s\" przez</string>
+    <string name="app_name">English Songs</string>
+    <string name="app_shareDialogTitle">Share \"%s\"</string>
     
     
-    <string name="search_NothingFound">Nic nie znaleziono</string>
+    <string name="search_NothingFound">Nothing Found</string>
     
-    <string name="buttons_Share">Udostępnij</string>
-    <string name="buttons_Delete">Usuń</string>
-    <string name="buttons_Exit">Wyjść</string>
-    <string name="buttons_Edit">Edytuj</string>
-    <string name="buttons_Properties">Wlaściwosci</string>
-    <string name="buttons_Add">Dodaj</string>
-    <string name="buttons_Save">Zapicz</string>
+    <string name="buttons_Share">Share</string>
+    <string name="buttons_Delete">Delete</string>
+    <string name="buttons_Exit">Exit</string>
+    <string name="buttons_Edit">Edit</string>
+    <string name="buttons_Properties">Properties</string>
+    <string name="buttons_Add">Add</string>
+    <string name="buttons_Save">Save</string>
     
-    <string name="buttons_Often">Częste</string>
-    <string name="buttons_Recent">Niedawnie</string>
-    <string name="buttons_SiteRating">Rank. Apl.</string>
-    <string name="buttons_Favorite">Ulubione</string>
+    <string name="buttons_Often">Often</string>
+    <string name="buttons_Recent">Recent</string>
+    <string name="buttons_SiteRating">App Rating</string>
+    <string name="buttons_Favorite">Favorite</string>
     
     <string name="buttons_Ok">Ok</string>
-    <string name="buttons_Yes">Tak</string>
-    <string name="buttons_No">Nie</string>
-    <string name="buttons_Cancel">Anuluj</string>
+    <string name="buttons_Yes">Yes</string>
+    <string name="buttons_No">No</string>
+    <string name="buttons_Cancel">Cancel</string>
     
-    <string name="buttons_Retry">Ponownie</string>
-    <string name="buttons_Buy">Kupuj</string>
+    <string name="buttons_Retry">Retry</string>
+    <string name="buttons_Buy">Buy</string>
     
     
-    <string name="labels_Version">Wersja:&#160;</string>
-    <string name="labels_Search">Szukaj:</string>
-    <string name="labels_Id">Numer:&#160;</string>
+    <string name="labels_Version">Version:&#160;</string>
+    <string name="labels_Search">Search:</string>
+    <string name="labels_Id">Number:&#160;</string>
     <string name="labels_SiteId">Site Id:&#160;</string>
-    <string name="labels_Rating">Mój Ranking:&#160;</string>
-    <string name="labels_SiteRating">Ranking Apl.:&#160;</string>
-    <string name="labels_Favorite">Ulubione:&#160;</string>
-    <string name="labels_RecentlyViewedDate">Ostatni raz przeglądana:&#160;</string>
+    <string name="labels_Rating">My Ranking:&#160;</string>
+    <string name="labels_SiteRating">App Rating:&#160;</string>
+    <string name="labels_Favorite">Favorite:&#160;</string>
+    <string name="labels_RecentlyViewedDate">Recently Viewed Date:&#160;</string>
     
     
-    <string name="labels_AreYouSureYouWantToDeleteThisSong">Czy na pewno chcesz usunąć tę piosenkę:</string>
-    <string name="labels_WouldYouLikeToSaveThisSong">Czy chcesz zapisać tę piosenkę:</string>
+    <string name="labels_AreYouSureYouWantToDeleteThisSong">Are You Sure You Want To Delete This Song:</string>
+    <string name="labels_WouldYouLikeToSaveThisSong">Would You Like To Save This Song:</string>
     
-    <string name="labels_title_LicenseNotFound">Licencja nie znaleziono!</string>
-    <string name="labels_LicenseNotFound">licencja nie znaleziono</string>
-    <string name="labels_PleaseToBuy">proszę kupić</string>
-    <string name="labels_PleaseRetryToCheckLicense">Proszę spróbować ponownie, aby sprawdzić licencję</string>
+    <string name="labels_title_LicenseNotFound">License Not Found!</string>
+    <string name="labels_LicenseNotFound">License Not Found</string>
+    <string name="labels_PleaseToBuy">Please To Buy</string>
+    <string name="labels_PleaseRetryToCheckLicense">Please Retry To Check License</string>
     
-    <string name="labels_SongTitle">Tytuł Piosenki</string>
-    <string name="labels_SongContent">Treść Piosenki</string>
+    <string name="labels_SongTitle">Song Title</string>
+    <string name="labels_SongContent">Song Content</string>
     
-    <string name="labels_MaxSongsPerPageOnResult">Maksymalna ilość peśni podczas wyszukiwania na stronę:</string>
-    <string name="labels_SeachByAndShowSongNumbersInResult">Pokazywać numery pieśni i wyszukiwać według nich:</string>
-    <string name="labels_DoMoreRelevantSearch">Wyszukiwać najbadziej istotne (Nieco wolnej)</string>
-    <string name="labels_MinSymbolsForStartSearch">Żeby zacząć wyszukiwanie trzeba wprowadzić minimalną ilość zkaków</string>
-    <string name="labels_ByDefaultResultsForTab">Pokazywać domyślnie</string>
+    <string name="labels_MaxSongsPerPageOnResult">Max Songs Per Page On Result:</string>
+    <string name="labels_SeachByAndShowSongNumbersInResult">Seach By And Show Song Numbers In Result:</string>
+    <string name="labels_DoMoreRelevantSearch">DoMoreRelevantSearch (More slowly)</string>
+    <string name="labels_MinSymbolsForStartSearch">Min Symbols For Start Search</string>
+    <string name="labels_ByDefaultResultsForTab">By Default Results For Tab</string>
     
     
-	<string name="search_searchHintStartText1">min. %s znak</string>
-	<string name="search_searchHintStartText2to4">min. %s znaki</string>
-	<string name="search_searchHintStartText5">min. %s znaków</string>
+	<string name="search_searchHintStartText1">min. %s symbol</string>
+	<string name="search_searchHintStartText2to4">min. %s symbols</string>
+	<string name="search_searchHintStartText5">min. %s symbols</string>
     
 	
-    <string name="settings_settingsName">Ustawienia</string>
-	<string name="settings_dropTablesButton">Usunąć wszystkie utwory</string>
-	<string name="settings_totalRecods">Wszystkich wpisów</string>
+    <string name="settings_settingsName">Settings</string>
+	<string name="settings_dropTablesButton">Drop Tables Button</string>
+	<string name="settings_totalRecods">Total Recods</string>
+	
+	<string name="theme_violet_bg_LayoutSearch">#00992B</string>
+	<string name="theme_violet_tc_SongListItemTextView">#00992B</string>
+	<string name="theme_violet_bg_SongListItemTextView1">#ffffff</string>
+	<string name="theme_violet_bg_SongListItemTextView2">#e0eaf1</string>
+	<string name="theme_violet_tc_labels_Search">#D5F78C</string>
+	<string name="theme_violet_tc_SearchEditText">#D5F78C</string>
+	<string name="theme_violet_tc_SearcTextClearButton">#D5F78C</string>
+	<string name="theme_violet_bg_SearchEditText">#1BFC6C</string>
+	<string name="theme_violet_tc_TabsItem">#A9A9A9</string>
+	<string name="theme_violet_bg_TabsItem">#DBFCC1</string>
+	<string name="theme_TransparentColor">#000000</string>
+	<string name="theme_violet_bg_PressedButton">#00992B</string>
+	<string name="theme_violet_bg_PressedClearButton">#DBFCC1</string>
+	
 </resources>
