@@ -76,7 +76,7 @@
 	<string name="theme_violet_bg_SearchEditText">#1BFC6C</string>
 	<string name="theme_violet_tc_TabsItem">#A9A9A9</string>
 	<string name="theme_violet_bg_TabsItem">#DBFCC1</string>
-	<string name="theme_TransparentColor">#000000</string>
+	<string name="theme_TransparentColor">#00000000</string>
 	<string name="theme_violet_bg_PressedButton">#00992B</string>
 	<string name="theme_violet_bg_PressedClearButton">#DBFCC1</string>
 	
