@@ -67,11 +67,11 @@
 	<string name="settings_totalRecods">Total Recods</string>
 	
 	<color name="theme_violet_bg_LayoutSearch">#00992B</color>
-	<color name="theme_violet_tc_SongListItemTextView">#00992B</color>
+	<color name="theme_violet_tc_SongListItemTextView">#035700</color>
 	<color name="theme_violet_bg_SongListItemTextView1">#ffffff</color>
 	<color name="theme_violet_bg_SongListItemTextView2">#e0eaf1</color>
 	<color name="theme_violet_tc_labels_Search">#D5F78C</color>
-	<color name="theme_violet_tc_SearchEditText">#D5F78C</color>
+	<color name="theme_violet_tc_SearchEditText">#035700</color>
 	<color name="theme_violet_tc_SearcTextClearButton">#D5F78C</color>
 	<color name="theme_violet_bg_SearchEditText">#1BFC6C</color>
 	<color name="theme_violet_tc_TabsItem">#A9A9A9</color>
