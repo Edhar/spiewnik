@@ -105,9 +105,9 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 		View view = super.getView(position, convertView, parent);
 
 		if (position % 2 == 1) {
-			view.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_violet_bg_SongListItemTextView1)));
+			view.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.color.theme_violet_bg_SongListItemTextView1)));
 		} else {
-			view.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.string.theme_violet_bg_SongListItemTextView2)));
+			view.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.color.theme_violet_bg_SongListItemTextView2)));
 		}
 
 		final Song curSong = (Song) songList.get(position);

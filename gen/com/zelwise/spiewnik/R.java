@@ -10,6 +10,21 @@ package com.zelwise.spiewnik;
 public final class R {
     public static final class attr {
     }
+    public static final class color {
+        public static final int theme_TransparentColor=0x7f05000a;
+        public static final int theme_violet_bg_LayoutSearch=0x7f050000;
+        public static final int theme_violet_bg_PressedButton=0x7f05000b;
+        public static final int theme_violet_bg_PressedClearButton=0x7f05000c;
+        public static final int theme_violet_bg_SearchEditText=0x7f050007;
+        public static final int theme_violet_bg_SongListItemTextView1=0x7f050002;
+        public static final int theme_violet_bg_SongListItemTextView2=0x7f050003;
+        public static final int theme_violet_bg_TabsItem=0x7f050009;
+        public static final int theme_violet_tc_SearcTextClearButton=0x7f050006;
+        public static final int theme_violet_tc_SearchEditText=0x7f050005;
+        public static final int theme_violet_tc_SongListItemTextView=0x7f050001;
+        public static final int theme_violet_tc_TabsItem=0x7f050008;
+        public static final int theme_violet_tc_labels_Search=0x7f050004;
+    }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int magnifier_minus=0x7f020001;
@@ -18,53 +33,53 @@ public final class R {
         public static final int star1=0x7f020004;
     }
     public static final class id {
-        public static final int AdvanceCheckBox=0x7f07000a;
-        public static final int AdvanceLinearLayout=0x7f07000b;
-        public static final int ByDefaultResultsForTab=0x7f070015;
-        public static final int DoMoreRelevantSearch=0x7f070013;
-        public static final int DownloadButton=0x7f070010;
-        public static final int DownloadFromEditText=0x7f07000d;
-        public static final int DownloadStatus=0x7f07000f;
-        public static final int DownloadToEditText=0x7f07000e;
-        public static final int DropTablesButton=0x7f07000c;
-        public static final int FavoriteButton=0x7f070007;
-        public static final int LinearLayoutButtonsGroup=0x7f070003;
-        public static final int LinearLayoutSearch=0x7f070000;
-        public static final int LinearLayoutSongList=0x7f070008;
-        public static final int MagnifierLinearLayout=0x7f07001f;
-        public static final int MagnifierMinusImageView=0x7f070020;
-        public static final int MagnifierPlusImageView=0x7f070021;
-        public static final int MaxSongsPerPageOnResult=0x7f070011;
-        public static final int MinSymbolsForStartSearch=0x7f070014;
-        public static final int OftenViewedButton=0x7f070005;
-        public static final int RecentlyViewedButton=0x7f070004;
-        public static final int SeachByAndShowSongNumbersInResult=0x7f070012;
-        public static final int SearcTextClearButton=0x7f070002;
-        public static final int SearchEditText=0x7f070001;
-        public static final int SiteRatingViewedButton=0x7f070006;
-        public static final int SongContentEditText=0x7f07001e;
-        public static final int SongContentLinearLayout=0x7f07001a;
-        public static final int SongContentScrollView=0x7f07001d;
-        public static final int SongIdTextView=0x7f07001c;
-        public static final int SongListItemImageView=0x7f070019;
-        public static final int SongListItemTextView=0x7f070017;
-        public static final int SongTitleEditText=0x7f07001b;
-        public static final int SongsListView=0x7f070009;
-        public static final int StarImageView=0x7f070018;
-        public static final int Version=0x7f070016;
-        public static final int menu_Add=0x7f070022;
-        public static final int menu_Delete=0x7f070026;
-        public static final int menu_Delete_Context=0x7f07002e;
-        public static final int menu_Edit=0x7f070024;
-        public static final int menu_EditGroup=0x7f070023;
-        public static final int menu_Edit_Context=0x7f07002b;
-        public static final int menu_Exit=0x7f07002a;
-        public static final int menu_Properties=0x7f070027;
-        public static final int menu_Properties_Context=0x7f07002c;
-        public static final int menu_Save=0x7f070025;
-        public static final int menu_Share=0x7f070028;
-        public static final int menu_Share_Context=0x7f07002d;
-        public static final int menu_settings=0x7f070029;
+        public static final int AdvanceCheckBox=0x7f08000a;
+        public static final int AdvanceLinearLayout=0x7f08000b;
+        public static final int ByDefaultResultsForTab=0x7f080015;
+        public static final int DoMoreRelevantSearch=0x7f080013;
+        public static final int DownloadButton=0x7f080010;
+        public static final int DownloadFromEditText=0x7f08000d;
+        public static final int DownloadStatus=0x7f08000f;
+        public static final int DownloadToEditText=0x7f08000e;
+        public static final int DropTablesButton=0x7f08000c;
+        public static final int FavoriteButton=0x7f080007;
+        public static final int LinearLayoutButtonsGroup=0x7f080003;
+        public static final int LinearLayoutSearch=0x7f080000;
+        public static final int LinearLayoutSongList=0x7f080008;
+        public static final int MagnifierLinearLayout=0x7f08001f;
+        public static final int MagnifierMinusImageView=0x7f080020;
+        public static final int MagnifierPlusImageView=0x7f080021;
+        public static final int MaxSongsPerPageOnResult=0x7f080011;
+        public static final int MinSymbolsForStartSearch=0x7f080014;
+        public static final int OftenViewedButton=0x7f080005;
+        public static final int RecentlyViewedButton=0x7f080004;
+        public static final int SeachByAndShowSongNumbersInResult=0x7f080012;
+        public static final int SearcTextClearButton=0x7f080002;
+        public static final int SearchEditText=0x7f080001;
+        public static final int SiteRatingViewedButton=0x7f080006;
+        public static final int SongContentEditText=0x7f08001e;
+        public static final int SongContentLinearLayout=0x7f08001a;
+        public static final int SongContentScrollView=0x7f08001d;
+        public static final int SongIdTextView=0x7f08001c;
+        public static final int SongListItemImageView=0x7f080019;
+        public static final int SongListItemTextView=0x7f080017;
+        public static final int SongTitleEditText=0x7f08001b;
+        public static final int SongsListView=0x7f080009;
+        public static final int StarImageView=0x7f080018;
+        public static final int Version=0x7f080016;
+        public static final int menu_Add=0x7f080022;
+        public static final int menu_Delete=0x7f080026;
+        public static final int menu_Delete_Context=0x7f08002e;
+        public static final int menu_Edit=0x7f080024;
+        public static final int menu_EditGroup=0x7f080023;
+        public static final int menu_Edit_Context=0x7f08002b;
+        public static final int menu_Exit=0x7f08002a;
+        public static final int menu_Properties=0x7f080027;
+        public static final int menu_Properties_Context=0x7f08002c;
+        public static final int menu_Save=0x7f080025;
+        public static final int menu_Share=0x7f080028;
+        public static final int menu_Share_Context=0x7f08002d;
+        public static final int menu_settings=0x7f080029;
     }
     public static final class layout {
         public static final int search_view=0x7f030000;
@@ -73,8 +88,8 @@ public final class R {
         public static final int song_view=0x7f030003;
     }
     public static final class menu {
-        public static final int app_menu=0x7f060000;
-        public static final int song_item_context_menu=0x7f060001;
+        public static final int app_menu=0x7f070000;
+        public static final int song_item_context_menu=0x7f070001;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
@@ -124,19 +139,6 @@ public final class R {
         public static final int settings_dropTablesButton=0x7f04002d;
         public static final int settings_settingsName=0x7f04002c;
         public static final int settings_totalRecods=0x7f04002e;
-        public static final int theme_TransparentColor=0x7f040039;
-        public static final int theme_violet_bg_LayoutSearch=0x7f04002f;
-        public static final int theme_violet_bg_PressedButton=0x7f04003a;
-        public static final int theme_violet_bg_PressedClearButton=0x7f04003b;
-        public static final int theme_violet_bg_SearchEditText=0x7f040036;
-        public static final int theme_violet_bg_SongListItemTextView1=0x7f040031;
-        public static final int theme_violet_bg_SongListItemTextView2=0x7f040032;
-        public static final int theme_violet_bg_TabsItem=0x7f040038;
-        public static final int theme_violet_tc_SearcTextClearButton=0x7f040035;
-        public static final int theme_violet_tc_SearchEditText=0x7f040034;
-        public static final int theme_violet_tc_SongListItemTextView=0x7f040030;
-        public static final int theme_violet_tc_TabsItem=0x7f040037;
-        public static final int theme_violet_tc_labels_Search=0x7f040033;
     }
     public static final class style {
         /** 
@@ -149,7 +151,7 @@ public final class R {
             backward-compatibility can go here.
         
          */
-        public static final int AppBaseTheme=0x7f050000;
+        public static final int AppBaseTheme=0x7f060000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
 
@@ -164,7 +166,7 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppTheme=0x7f050001;
-        public static final int Line=0x7f050002;
+        public static final int AppTheme=0x7f060001;
+        public static final int Line=0x7f060002;
     }
 }
