@@ -3,6 +3,8 @@ package com.zelwise.spiewnik;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.zelwise.spiewnik.R;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.text.Html;
@@ -105,9 +107,9 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 		View view = super.getView(position, convertView, parent);
 
 		if (position % 2 == 1) {
-			view.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.color.theme_violet_bg_SongListItemTextView1)));
+			view.setBackgroundColor(manager.context.getResources().getColor(R.color.theme_violet_bg_SongListItemTextView1));
 		} else {
-			view.setBackgroundColor(Color.parseColor(manager.context.getResources().getString(R.color.theme_violet_bg_SongListItemTextView2)));
+			view.setBackgroundColor(manager.context.getResources().getColor(R.color.theme_violet_bg_SongListItemTextView2));
 		}
 
 		final Song curSong = (Song) songList.get(position);
