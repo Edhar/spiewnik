@@ -241,6 +241,30 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		lastMagnifierShowTime = new Date().getTime();
 	}
+	
+	Handler startSearchHandler = new Handler();
+	private Runnable runSearchRunnable = new Runnable() {
+		public void run() {
+			long curTime = new Date().getTime();
+			if (curTime - lastStartSearchTime > SettingsHelper.DefaultValues.StartSearchDelay) {
+				SearchTerms terms = new SearchTerms(manager.settings,
+						SearchBy.Text, searchEditText.getText().toString(), "");
+				CreateAdapterAndSetToSongList(terms);
+			} else {
+				startSearchHandler.postDelayed(runSearchRunnable,
+						SettingsHelper.DefaultValues.StartSearchDelay);
+			}
+
+		}
+	};
+	private long lastStartSearchTime;
+
+	private void StartSearch() {
+		startSearchHandler.postDelayed(runSearchRunnable,
+				SettingsHelper.DefaultValues.StartSearchDelay);
+
+		lastStartSearchTime = new Date().getTime();
+	}
 
 	private void LoadSettings() {
 		SetSelectedDefaultTab(manager.settings.DefaultTabId());
@@ -609,9 +633,7 @@ public class MainActivity extends Activity implements OnClickListener {
 						&& newStr.length() >= manager.settings
 								.MinSymbolsForStartSearch()) {
 					ShowHideClearSearchButton(true);
-					SearchTerms terms = new SearchTerms(manager.settings,
-							SearchBy.Text, newStr.toString(), "");
-					CreateAdapterAndSetToSongList(terms);
+					StartSearch();
 					searchEditTextPrevValue = newStr.toString();
 				}
 				if (newStr.toString().length() == 0) {
@@ -694,8 +716,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,
-				(long) (0.1 * 60 * 1000));
+		//licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
 
 		// licensing
 	}
