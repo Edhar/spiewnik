@@ -17,7 +17,7 @@ public class SettingsHelper {
 	public static class DefaultValues {
 		public static Integer DefaultTabId = 0;
 		public static Integer MinSymbolsForStartSearch = 3;
-		public static long StartSearchDelay = 200;
+		public static long StartSearchDelay = 400;
 		public static Integer SongPerPage = 15;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 		public static Boolean DoMoreRelevantSearch = true;
