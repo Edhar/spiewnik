@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dip"
+                android:gravity="center"
+                android:visibility="gone" >
+
+                <CheckBox
+                    android:id="@+id/AdvanceCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Advance"
+                    android:textSize="18sp" >
+                </CheckBox>
+            </LinearLayout>
+
+            <View
+                style="@style/Line"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/AdvanceLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <Button
+                        android:id="@+id/DropTablesButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Clear All Songs"
+                        android:textSize="18sp" >
+                    </Button>
+                </LinearLayout>
+
+                <View style="@style/Line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:gravity="left|center_vertical"
+                        android:text="From:"
+                        android:textSize="18sp" >
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/DownloadFromEditText"
+                        android:layout_width="100dip"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:text="1"
+                        android:textSize="18sp" >
+                    </EditText>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:gravity="left|center_vertical"
+                        android:text="To:"
+                        android:textSize="18sp" >
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/DownloadToEditText"
+                        android:layout_width="100dip"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:text="15000"
+                        android:textSize="18sp" >
+                    </EditText>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/DownloadStatus"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Download Status"
+                        android:textSize="20sp" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <Button
+                        android:id="@+id/DownloadButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Download Content" >
+                    </Button>
+                </LinearLayout>
+
+                <View style="@style/Line" />
+            </LinearLayout>
+
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/labels_MaxSongsPerPageOnResult"
+                    android:textSize="18sp" >
+                </TextView>
+
+                <EditText
+                    android:id="@+id/MaxSongsPerPageOnResult"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:digits="1234567890"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:text="30" >
+                </EditText>
+            </LinearLayout>
+
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/labels_SeachByAndShowSongNumbersInResult"
+                    android:textSize="18sp" >
+                </TextView>
+
+                <CheckBox
+                    android:id="@+id/SeachByAndShowSongNumbersInResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:checked="false" >
+                </CheckBox>
+            </LinearLayout>
+
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/labels_DoMoreRelevantSearch"
+                    android:textSize="18sp" >
+                </TextView>
+
+                <CheckBox
+                    android:id="@+id/DoMoreRelevantSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:checked="false" >
+                </CheckBox>
+            </LinearLayout>
+
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/labels_MinSymbolsForStartSearch"
+                    android:textSize="18sp" >
+                </TextView>
+
+                <EditText
+                    android:id="@+id/MinSymbolsForStartSearch"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:digits="1234567890"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:text="1" >
+                </EditText>
+            </LinearLayout>
+
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/labels_ByDefaultResultsForTab"
+                    android:textSize="18sp" >
+                </TextView>
+
+                <Spinner
+                    android:id="@+id/ByDefaultResultsForTab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp" >
+                </Spinner>
+            </LinearLayout>
+
+            <View style="@style/Line"  android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="zelwise@gmail.com"
+                    android:textColor="#609"
+                    android:textSize="30sp"
+                    android:textStyle="bold|italic" >
+                </TextView>
+            </LinearLayout>
+
+            <View style="@style/Line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:id="@+id/Version"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="@string/labels_Version"
+                    android:textSize="18sp" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

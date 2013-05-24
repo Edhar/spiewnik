@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	 xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+	 android:id="@+id/menu_Add"
+	 android:orderInCategory="1"
+	 android:title="@string/buttons_Add">
+	</item>
+	<group
+	 android:id="@+id/menu_EditGroup"
+	 android:visible="false"
+	 >
+		<item
+		 android:id="@+id/menu_Edit"
+		 android:orderInCategory="2"
+		 android:title="@string/buttons_Edit">
+		</item>	
+		<item
+		 android:id="@+id/menu_Save"
+		 android:orderInCategory="3"
+		 android:title="@string/buttons_Save">
+		</item>
+		<item
+		 android:id="@+id/menu_Delete"
+		 android:orderInCategory="4"
+		 android:title="@string/buttons_Delete">
+		</item>	
+		
+		<item
+		 android:id="@+id/menu_Properties"
+		 android:orderInCategory="5"
+		 android:title="@string/buttons_Properties">
+		</item>	
+		<item
+		 android:id="@+id/menu_Share"
+		 android:orderInCategory="6"
+		 android:title="@string/buttons_Share">
+		</item>
+	</group>
+	<item
+	 android:id="@+id/menu_settings"
+	 android:orderInCategory="7"
+	 android:title="@string/settings_settingsName">
+	</item>
+	<item
+	 android:id="@+id/menu_Exit"
+	 android:orderInCategory="8"
+	 android:title="@string/buttons_Exit">
+	</item>
+</menu>

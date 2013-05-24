@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Śpiewnik</string>
+    <string name="app_shareDialogTitle">Udostępnij \"%s\" przez</string>
+    
+    
+    <string name="search_NothingFound">Nic nie znaleziono</string>
+    
+    <string name="buttons_Share">Udostępnij</string>
+    <string name="buttons_Delete">Usuń</string>
+    <string name="buttons_Exit">Wyjść</string>
+    <string name="buttons_Edit">Edytuj</string>
+    <string name="buttons_Properties">Wlaściwosci</string>
+    <string name="buttons_Add">Dodaj</string>
+    <string name="buttons_Save">Zapicz</string>
+    
+    <string name="buttons_Often">Częste</string>
+    <string name="buttons_Recent">Niedawnie</string>
+    <string name="buttons_SiteRating">Rank. Apl.</string>
+    <string name="buttons_Favorite">Ulubione</string>
+    
+    <string name="buttons_Ok">Ok</string>
+    <string name="buttons_Yes">Tak</string>
+    <string name="buttons_No">Nie</string>
+    <string name="buttons_Cancel">Anuluj</string>
+    
+    <string name="buttons_Retry">Ponownie</string>
+    <string name="buttons_Buy">Kupuj</string>
+    
+    
+    <string name="labels_Version">Wersja:&#160;</string>
+    <string name="labels_Search">Szukaj:</string>
+    <string name="labels_Id">Numer:&#160;</string>
+    <string name="labels_SiteId">Site Id:&#160;</string>
+    <string name="labels_Rating">Mój Ranking:&#160;</string>
+    <string name="labels_SiteRating">Ranking Apl.:&#160;</string>
+    <string name="labels_Favorite">Ulubione:&#160;</string>
+    <string name="labels_RecentlyViewedDate">Ostatni raz przeglądana:&#160;</string>
+    
+    
+    <string name="labels_AreYouSureYouWantToDeleteThisSong">Czy na pewno chcesz usunąć tę piosenkę:</string>
+    <string name="labels_WouldYouLikeToSaveThisSong">Czy chcesz zapisać tę piosenkę:</string>
+    
+    <string name="labels_title_LicenseNotFound">Licencja nie znaleziono!</string>
+    <string name="labels_LicenseNotFound">licencja nie znaleziono</string>
+    <string name="labels_PleaseToBuy">proszę kupić</string>
+    <string name="labels_PleaseRetryToCheckLicense">Proszę spróbować ponownie, aby sprawdzić licencję</string>
+    
+    <string name="labels_SongTitle">Tytuł Piosenki</string>
+    <string name="labels_SongContent">Treść Piosenki</string>
+    
+    <string name="labels_MaxSongsPerPageOnResult">Maksymalna ilość peśni podczas wyszukiwania na stronę:</string>
+    <string name="labels_SeachByAndShowSongNumbersInResult">Pokazywać numery pieśni i wyszukiwać według nich:</string>
+    <string name="labels_DoMoreRelevantSearch">Wyszukiwać najbadziej istotne (Nieco wolnej)</string>
+    <string name="labels_MinSymbolsForStartSearch">Żeby zacząć wyszukiwanie trzeba wprowadzić minimalną ilość zkaków</string>
+    <string name="labels_ByDefaultResultsForTab">Pokazywać domyślnie</string>
+    
+    
+	<string name="search_searchHintStartText1">min. %s znak</string>
+	<string name="search_searchHintStartText2to4">min. %s znaki</string>
+	<string name="search_searchHintStartText5">min. %s znaków</string>
+    
+	
+    <string name="settings_settingsName">Ustawienia</string>
+	<string name="settings_dropTablesButton">Usunąć wszystkie utwory</string>
+	<string name="settings_totalRecods">Wszystkich wpisów</string>
+	
+	<color name="theme_violet_bg_LayoutSearch">#609</color>
+	<color name="theme_violet_tc_SongListItemTextView">#609</color>
+	<color name="theme_violet_bg_SongListItemTextView1">#fff</color>
+	<color name="theme_violet_bg_SongListItemTextView2">#e0eaf1</color>
+	<color name="theme_violet_tc_labels_Search">#8CF7E6</color>
+	<color name="theme_violet_tc_SearchEditText">#8CF7E6</color>
+	<color name="theme_violet_tc_SearcTextClearButton">#8CF7E6</color>
+	<color name="theme_violet_bg_SearchEditText">#B11BFC</color>
+	<color name="theme_violet_tc_TabsItem">#A9A9A9</color>
+	<color name="theme_violet_bg_TabsItem">#C1E3FC</color>
+	<color name="theme_TransparentColor">#00000000</color>
+	<color name="theme_violet_bg_PressedButton">#660099</color>
+	<color name="theme_violet_bg_PressedClearButton">#C1E3FC</color>
+	
+</resources>

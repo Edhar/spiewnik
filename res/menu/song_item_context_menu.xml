@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+		 android:id="@+id/menu_Edit_Context"
+		 android:orderInCategory="1"
+		 android:title="@string/buttons_Edit">
+		</item>
+	<item
+	 android:id="@+id/menu_Properties_Context"
+	 android:orderInCategory="2"
+	 android:title="@string/buttons_Properties">
+	</item>
+	<item
+		 android:id="@+id/menu_Share_Context"
+		 android:orderInCategory="3"
+		 android:title="@string/buttons_Share">
+		</item>
+	<item
+	 android:id="@+id/menu_Delete_Context"
+	 android:orderInCategory="4"
+	 android:title="@string/buttons_Delete">
+	</item>
+</menu>

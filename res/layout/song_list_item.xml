@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:paddingLeft="10dp">
+
+    <TextView
+        android:id="@+id/SongListItemTextView"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_alignParentLeft="true"
+        android:gravity="left|center_vertical"
+        android:layout_alignLeft="@+id/StarImageView"
+        android:text=""
+        android:textColor="@color/theme_violet_tc_SongListItemTextView"
+        android:paddingRight="48dp"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/SongListItemImageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:padding="6dp"
+        android:src="@drawable/star0" />
+
+</RelativeLayout>

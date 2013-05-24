@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SongContentLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/SongTitleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:hint="@string/labels_SongTitle"
+        android:inputType="none"
+        android:singleLine="false"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/SongIdTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:visibility="gone" >
+    </TextView>
+
+    <ScrollView
+        android:id="@+id/SongContentScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff" >
+
+        <EditText
+            android:id="@+id/SongContentEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:gravity="left|top"
+            android:hint="@string/labels_SongContent"
+            android:inputType="none"
+            android:padding="10dp"
+            android:text=""
+            android:textColor="#000"
+            android:textSize="20sp" >
+        </EditText>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/MagnifierLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="-70dp"
+        android:layout_gravity="right"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/MagnifierMinusImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="5dp"
+            android:src="@drawable/magnifier_minus" />
+
+        <ImageView
+            android:id="@+id/MagnifierPlusImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="5dp"
+            android:src="@drawable/magnifier_plus" />
+    </LinearLayout>
+
+</LinearLayout>

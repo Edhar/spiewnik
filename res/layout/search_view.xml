@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/LinearLayoutSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/theme_violet_bg_LayoutSearch"
+        android:paddingBottom="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:gravity="left|center_vertical"
+            android:text="@string/labels_Search"
+            android:textColor="@color/theme_violet_tc_labels_Search"
+            android:textSize="20sp" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/SearchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dip"
+            android:layout_weight="1"
+            android:background="@color/theme_violet_bg_SearchEditText"
+            android:gravity="left|center_vertical"
+            android:paddingRight="0dip"
+            android:textColor="@color/theme_violet_tc_SearchEditText"
+            android:textCursorDrawable="@null"
+            android:textSize="25sp" >
+        </EditText>
+
+        <Button
+            android:id="@+id/SearcTextClearButton"
+            android:layout_width="45dp"
+            android:layout_height="32dp"
+            android:background="@color/theme_TransparentColor"
+            android:text="X"
+            android:textColor="@color/theme_violet_tc_SearcTextClearButton"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:visibility="gone" >
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayoutButtonsGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:weightSum="100" >
+
+        <Button
+            android:id="@+id/RecentlyViewedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/theme_violet_bg_TabsItem"
+            android:padding="4dp"
+            android:layout_weight="28"
+            android:text="@string/buttons_Recent"
+            android:textColor="@color/theme_violet_tc_TabsItem"
+            android:textSize="18sp" >
+        </Button>
+
+        <Button
+            android:id="@+id/OftenViewedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/theme_violet_bg_TabsItem"
+            android:padding="4dp"
+            android:layout_weight="20"
+            android:text="@string/buttons_Often"
+            android:textColor="@color/theme_violet_tc_TabsItem"
+            android:textSize="18sp" >
+        </Button>
+
+        <Button
+            android:id="@+id/SiteRatingViewedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/theme_violet_bg_TabsItem"
+            android:padding="4dp"
+            android:layout_weight="28"
+            android:text="@string/buttons_SiteRating"
+            android:textColor="@color/theme_violet_tc_TabsItem"
+            android:textSize="18sp" >
+        </Button>
+
+        <Button
+            android:id="@+id/FavoriteButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/theme_violet_bg_TabsItem"
+            android:padding="4dp"
+            android:layout_weight="24"
+            android:text="@string/buttons_Favorite"
+            android:textColor="@color/theme_violet_tc_TabsItem"
+            android:textSize="18sp" >
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayoutSongList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/LinearLayoutButtonsGroup"
+        android:layout_below="@id/LinearLayoutSearch" >
+
+        <ListView
+            android:id="@+id/SongsListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/theme_TransparentColor" >
+        </ListView>
+    </LinearLayout>
+
+</RelativeLayout>
