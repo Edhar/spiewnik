@@ -136,14 +136,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		public boolean onTouch(View v, MotionEvent event) {
 			Button btn = (Button) v;
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				btn.setBackgroundColor(manager.context
-						.getResources().getColor(
-								R.color.theme_violet_bg_PressedClearButton));
+				btn.setBackgroundColor(manager.context.getResources().getColor(
+						R.color.theme_violet_bg_PressedClearButton));
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				btn.setBackgroundColor(manager.context
-						.getResources().getColor(
-								R.color.theme_TransparentColor));
+				btn.setBackgroundColor(manager.context.getResources().getColor(
+						R.color.theme_TransparentColor));
 				v.performClick();
 			}
 			return true;
@@ -155,14 +153,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		public boolean onTouch(View v, MotionEvent event) {
 			Button btn = (Button) v;
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				btn.setBackgroundColor(manager.context
-						.getResources().getColor(
-								R.color.theme_violet_bg_PressedButton));
+				btn.setBackgroundColor(manager.context.getResources().getColor(
+						R.color.theme_violet_bg_PressedButton));
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				btn.setBackgroundColor(manager.context
-						.getResources().getColor(
-								R.color.theme_violet_bg_TabsItem));
+				btn.setBackgroundColor(manager.context.getResources().getColor(
+						R.color.theme_violet_bg_TabsItem));
 				v.performClick();
 			}
 			return true;
@@ -175,14 +171,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		public boolean onTouch(View v, MotionEvent event) {
 			ImageView btn = (ImageView) v;
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				btn.setBackgroundColor(manager.context
-						.getResources().getColor(
-								R.color.theme_violet_bg_PressedButton));
+				btn.setBackgroundColor(manager.context.getResources().getColor(
+						R.color.theme_violet_bg_PressedButton));
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				btn.setBackgroundColor(manager.context
-						.getResources().getColor(
-								R.color.theme_TransparentColor));
+				btn.setBackgroundColor(manager.context.getResources().getColor(
+						R.color.theme_TransparentColor));
 				v.performClick();
 			}
 			return true;
@@ -241,7 +235,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		lastMagnifierShowTime = new Date().getTime();
 	}
-	
+
 	Handler startSearchHandler = new Handler();
 	private Runnable runSearchRunnable = new Runnable() {
 		public void run() {
@@ -716,7 +710,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				new AESObfuscator(SALT, getPackageName(), deviceId)),
 				BASE64_PUBLIC_KEY);
 		licenseTimer = new Timer();
-		//licenseTimer.schedule(new licenseTimerTask(), 0,(long) (0.1 * 60 * 1000));
+		licenseTimer.schedule(new licenseTimerTask(), 0,
+				(long) (0.1 * 60 * 1000));
 
 		// licensing
 	}
