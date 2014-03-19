@@ -13,6 +13,7 @@ public class SettingsHelper {
 		public static final String MinSymbolsForStartSearch = "MinSymbolsForStartSearch";
 		public static final String DefaultTabId = "DefaultTabId";
 		public static final String FontSize = "FontSize";
+		public static final String DoNotTurnOffScreen = "DoNotTurnOffScreen";
 	}
 	public static class DefaultValues {
 		public static Integer DefaultTabId = 0;
@@ -21,6 +22,7 @@ public class SettingsHelper {
 		public static Integer SongPerPage = 15;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 		public static Boolean DoMoreRelevantSearch = true;
+		public static Boolean DoNotTurnOffScreen = true;
 		public static Integer SiteRatingValue = 10000;
 		public static float FontSize = 20;
 		public static float FontSizeMagnifierStep = 2;
@@ -109,6 +111,16 @@ public class SettingsHelper {
 		editor.putBoolean(Tags.DoMoreRelevantSearch, doMoreRelevantSearch);
 		editor.commit();
 	}
+	
+	private Boolean doNotTurnOffScreen;
+	public Boolean DoNotTurnOffScreen() {
+		return doNotTurnOffScreen;
+	}
+	public void DoNotTurnOffScreen(Boolean newValue) {
+		doNotTurnOffScreen = newValue;
+		editor.putBoolean(Tags.DoNotTurnOffScreen, doNotTurnOffScreen);
+		editor.commit();
+	}
 
 	public SettingsHelper(Context context) {
 		this.context = context;
@@ -130,9 +142,10 @@ public class SettingsHelper {
 		songPerPage = settings.getInt(Tags.SongPerPage,
 				DefaultValues.SongPerPage);
 		
-		seachByAndShowSongNumbersInResult = settings.getBoolean(Tags.SeachByAndShowSongNumbersInResult,
-				DefaultValues.SeachByAndShowSongNumbersInResult);
-		doMoreRelevantSearch = settings.getBoolean(Tags.DoMoreRelevantSearch,
-				DefaultValues.DoMoreRelevantSearch);
+		seachByAndShowSongNumbersInResult = settings.getBoolean(Tags.SeachByAndShowSongNumbersInResult,DefaultValues.SeachByAndShowSongNumbersInResult);
+		
+		doMoreRelevantSearch = settings.getBoolean(Tags.DoMoreRelevantSearch,DefaultValues.DoMoreRelevantSearch);
+		
+		doNotTurnOffScreen = settings.getBoolean(Tags.DoNotTurnOffScreen,DefaultValues.DoNotTurnOffScreen);
 	}
 }

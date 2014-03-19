@@ -27,8 +27,13 @@ public class DBUpgrade {
 	public void UpdateDb() {
 		try {
 			
-			if (oldVersion == 1 && newVersion > 1) {
+			if (oldVersion == 1) {
 				From1to2();
+				//From2to3();
+			}
+			
+			if (oldVersion == 2) {
+				//From2to3();
 			}
 			
 		} catch (Exception e) {
@@ -40,7 +45,52 @@ public class DBUpgrade {
 		new Song(title, content, SettingsHelper.DefaultValues.SiteRatingValue,
 				new Date(0)).SaveOrUpdate(db);
 	}
+	private void From2to3() {
+		try {
+			// copy update db
+			String Update1To2Name = "Update2To3.db";
+			InputStream myInput = context.getAssets().open(Update1To2Name);
 
+			String outFileName = DBHelper.DB_PATH + Update1To2Name;
+
+			OutputStream myOutput = new FileOutputStream(outFileName);
+
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = myInput.read(buffer)) > 0) {
+				myOutput.write(buffer, 0, length);
+			}
+
+			myOutput.flush();
+			myOutput.close();
+			myInput.close();
+			
+			//
+			SQLiteDatabase updateDB = null;
+
+			try {
+				updateDB = SQLiteDatabase.openDatabase(outFileName, null,SQLiteDatabase.OPEN_READONLY);
+/*
+				ArrayList<Song> songs = Song.GetSongs(updateDB);
+				for (Song song : songs) {
+					Song newSong = new Song(song.Title(),song.Content(),SettingsHelper.DefaultValues.SiteRatingValue, song.RecentlyViewedDate());
+					newSong.SaveOrUpdate(db);
+				}*/
+
+			} catch (SQLiteException e) {
+				// database does't exist yet.
+			}
+			
+			File tempFile = new File(outFileName);
+			tempFile.delete();
+
+			if (updateDB != null) {
+				updateDB.close();
+			}
+		} catch (Exception e) {
+
+		}
+	}
 	private void From1to2() {
 		try {
 			// copy update db

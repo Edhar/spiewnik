@@ -33,11 +33,9 @@ public class DBHelper extends SQLiteOpenHelper {
 		this.context = context;
 	}
 
-	public void DropTable(SQLiteDatabase db, String tableName) {
+	public static void DropTable(SQLiteDatabase db, String tableName) {
 
 		db.execSQL("DROP TABLE IF EXISTS " + tableName);
-
-		CreateTable(db, tableName);
 	}
 
 	@Override
@@ -52,8 +50,10 @@ public class DBHelper extends SQLiteOpenHelper {
 		updater.UpdateDb();
 	}
 
-	private static void CreateTable(SQLiteDatabase db, String tableName) {
+	public static void CreateTable(SQLiteDatabase db, String tableName) {
+		DropTable(db, tableName);
 		if (tableName == Song.Names.TableName) {
+			
 			db.execSQL("create table " + Song.Names.TableName + " ("
 					+ Song.Names.Id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ Song.Names.CategoryId + " INTEGER DEFAULT ( 0 ),"
@@ -104,8 +104,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
 		if (tableName == Category.Names.TableName) {
 			db.execSQL("create table " + Category.Names.TableName + " ("
-					+ Category.Names.Id + " integer primary key autoincrement,"
-					+ Category.Names.Title + " text" + ");");
+					+ Category.Names.Id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ Category.Names.Title + " TEXT NOT NULL DEFAULT ( '' ),"
+					+ Category.Names.SiteCode + " CHAR NOT NULL DEFAULT ( '' )," 
+					+ Category.Names.MenuOrder + " INTEGER NOT NULL DEFAULT ( 0 )," 
+					+ Category.Names.Internal + " text BOOLEAN DEFAULT ( 1 )" 
+					+ ");");
 		}
 	}
 

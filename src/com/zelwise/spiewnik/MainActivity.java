@@ -3,16 +3,8 @@ package com.zelwise.spiewnik;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.security.auth.callback.Callback;
-
-import org.jsoup.select.Evaluator.IsEmpty;
 
 import com.zelwise.spiewnik.AppManager;
-import com.zelwise.spiewnik.SettingsHelper.DefaultValues;
 import com.zelwise.spiewnik.Song.Names;
 import com.zelwise.spiewnik.R;
 import com.zelwise.spiewnik.SongArrayAdapter;
@@ -22,21 +14,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.provider.Settings.Secure;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -51,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -69,24 +56,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.vending.licensing.AESObfuscator;
-import com.google.android.vending.licensing.LicenseChecker;
-import com.google.android.vending.licensing.LicenseCheckerCallback;
-import com.google.android.vending.licensing.Policy;
-import com.google.android.vending.licensing.ServerManagedPolicy;
-
 public class MainActivity extends Activity implements OnClickListener {
-
-	// licensing
-	private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjq+xQZIbUBTxgN0k22D78UFyqLVOkYJw8LJI/VoCl9aaD0fRm67L+a9zc2wIXrHVZBeki7gLLZ+eVO322kIbw37ebPjlc2GeRk5MdqA6+94cmQEXk8XPjOuQQki/iqEV4n6O42OW7MioE3dn4eRW5w6Xh6QDzxYAbAlMBvwlSfLDW409G10Bke3wfm8cjSnQ99PKPL5ClR5h4fPRd9frMlwcXPAVLueO8qsV8WefH7cmMdXbbijndjIiaPM9/0NO7RdkufWU51slLLqpD5mOC2D8nS99nDvrhdu9FK/gVyxnVBRgVebRyiXT99/E20aaEaEmEpGBNAO2rqzXdSFZ1QIDAQAB";
-
-	// Generate your own 20 random bytes, and put them here.
-	private static final byte[] SALT = new byte[] { 86, 45, 30, 86, -13, -57,
-			74, -45, 51, 98, -95, -45, 45, 45, 45, -6, 78, 32, -64, 86 };
-	private LicenseCheckerCallback licenseCheckerCallback;
-	private LicenseChecker licenseChecker;
-	// licensing
-
 	Button downloadButton, dropTablesButton, recentlyViewedButton,
 			oftenViewedButton, siteRatingViewedButton, searcTextClearButton,
 			favoriteButton;
@@ -100,7 +70,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	Spinner byDefaultResultsForTab;
 
 	CheckBox advanceCheckBox, seachByAndShowSongNumbersInResult,
-			doMoreRelevantSearch;
+			doMoreRelevantSearch,doNotTurnOffScreen;
 
 	ListView songsListView;
 
@@ -109,26 +79,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	public Boolean IsSongEditMode() {
 		return isSongEditMode;
 	}
-
-	Timer licenseTimer;
-	final Handler licenseHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			try {
-				checkLicense();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	};
-
-	class licenseTimerTask extends TimerTask {
-
-		@Override
-		public void run() {
-			licenseHandler.sendEmptyMessage(0);
-		}
-	};
 
 	private OnTouchListener onTouchListenerClear = new OnTouchListener() {
 
@@ -195,8 +145,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	AppManager manager;
 
 	private void SetSelectedDefaultTab(Integer tabId) {
-		ArrayAdapter<TabsItem> tabAdapter = (ArrayAdapter<TabsItem>) byDefaultResultsForTab
-				.getAdapter();
+		ArrayAdapter<TabsItem> tabAdapter = (ArrayAdapter<TabsItem>) byDefaultResultsForTab.getAdapter();
 		if (tabAdapter != null) {
 			TabsItem curTab = (TabsItem) byDefaultResultsForTab
 					.getItemAtPosition(byDefaultResultsForTab
@@ -241,22 +190,22 @@ public class MainActivity extends Activity implements OnClickListener {
 		public void run() {
 			long curTime = new Date().getTime();
 			if (curTime - lastStartSearchTime > SettingsHelper.DefaultValues.StartSearchDelay) {
-				SearchTerms terms = new SearchTerms(manager.settings,
-						SearchBy.Text, searchEditText.getText().toString(), "");
-				CreateAdapterAndSetToSongList(terms);
+				StartSearchImmediately();
 			} else {
-				startSearchHandler.postDelayed(runSearchRunnable,
-						SettingsHelper.DefaultValues.StartSearchDelay);
+				startSearchHandler.postDelayed(runSearchRunnable,SettingsHelper.DefaultValues.StartSearchDelay);
 			}
 
 		}
 	};
 	private long lastStartSearchTime;
+	
+	private void StartSearchImmediately(){
+		SearchTerms terms = new SearchTerms(manager.settings,SearchBy.Text, searchEditText.getText().toString(), "");
+		CreateAdapterAndSetToSongList(terms);
+	}
 
-	private void StartSearch() {
-		startSearchHandler.postDelayed(runSearchRunnable,
-				SettingsHelper.DefaultValues.StartSearchDelay);
-
+	private void StartSearchWithDelay() {
+		startSearchHandler.postDelayed(runSearchRunnable,SettingsHelper.DefaultValues.StartSearchDelay);
 		lastStartSearchTime = new Date().getTime();
 	}
 
@@ -286,11 +235,25 @@ public class MainActivity extends Activity implements OnClickListener {
 			doMoreRelevantSearch.setChecked(manager.settings
 					.DoMoreRelevantSearch());
 		}
+		
+		if (doNotTurnOffScreen.isChecked() != manager.settings.DoNotTurnOffScreen()) {
+			doNotTurnOffScreen.setChecked(manager.settings.DoNotTurnOffScreen());
+		}
+		
+		ToggleKeepScreenOn(manager.settings.DoNotTurnOffScreen());
 
 		songContentEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP,
 				manager.settings.FontSize());
 
 		RefreshSearchTextHint();
+	}
+	
+	private void ToggleKeepScreenOn(Boolean keepScreenOn){
+		if(keepScreenOn){
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}else{
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
 	}
 
 	// to fix double event
@@ -368,8 +331,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			}
 		});
-		byDefaultResultsForTab = (Spinner) settingsView
-				.findViewById(R.id.ByDefaultResultsForTab);
+		byDefaultResultsForTab = (Spinner) settingsView.findViewById(R.id.ByDefaultResultsForTab);
 		ArrayAdapter<TabsItem> adapterDefaultTab = new ArrayAdapter<TabsItem>(
 				this, android.R.layout.simple_spinner_item,
 				manager.tabsList.GetTabsItems());
@@ -503,13 +465,21 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				});
 
-		doMoreRelevantSearch = (CheckBox) settingsView
-				.findViewById(R.id.DoMoreRelevantSearch);
+		doMoreRelevantSearch = (CheckBox) settingsView.findViewById(R.id.DoMoreRelevantSearch);
 		doMoreRelevantSearch.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				manager.settings.DoMoreRelevantSearch(((CheckBox) v)
-						.isChecked());
+				manager.settings.DoMoreRelevantSearch(((CheckBox) v).isChecked());
+			}
+		});
+		
+		doNotTurnOffScreen = (CheckBox) settingsView.findViewById(R.id.DoNotTurnOffScreen);
+		doNotTurnOffScreen.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Boolean keepScreenOn = ((CheckBox) v).isChecked();
+				manager.settings.DoNotTurnOffScreen(keepScreenOn);
+				ToggleKeepScreenOn(keepScreenOn);
 			}
 		});
 
@@ -548,7 +518,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				ScrollView scrollView = (ScrollView) v;
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					if (!isSongEditMode) {
 						ShowMagnifier();
@@ -627,7 +596,13 @@ public class MainActivity extends Activity implements OnClickListener {
 						&& newStr.length() >= manager.settings
 								.MinSymbolsForStartSearch()) {
 					ShowHideClearSearchButton(true);
-					StartSearch();
+					
+					if(manager.settings.DoMoreRelevantSearch()){
+						StartSearchWithDelay();
+					}else{
+						StartSearchImmediately();
+					}
+					
 					searchEditTextPrevValue = newStr.toString();
 				}
 				if (newStr.toString().length() == 0) {
@@ -701,19 +676,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		LoadSettings();
 
 		RestoreState();
-
-		// licensing
-		String deviceId = Secure.getString(getContentResolver(),
-				Secure.ANDROID_ID);
-		licenseCheckerCallback = new MyLicenseCheckerCallback();
-		licenseChecker = new LicenseChecker(this, new ServerManagedPolicy(this,
-				new AESObfuscator(SALT, getPackageName(), deviceId)),
-				BASE64_PUBLIC_KEY);
-		licenseTimer = new Timer();
-		licenseTimer.schedule(new licenseTimerTask(), 0,
-				(long) (0.1 * 60 * 1000));
-
-		// licensing
 	}
 
 	private void ChangeFontSize(Boolean isEnlarge) {
@@ -803,7 +765,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			manager.DownloadAndSaveContent(url, startSiteId, endSiteId);
 			break;
 		case R.id.DropTablesButton:
-			manager.dBHelper.DropTable(manager.db, Song.Names.TableName);
+			DBHelper.DropTable(manager.db, Song.Names.TableName);
+			DBHelper.CreateTable(manager.db, Song.Names.TableName);
 			SetDropTableButtonText();
 			manager.HideKeyboard();
 			break;
@@ -1129,8 +1092,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void AddNewSongMenuAction() {
-		View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
-				.get(songViewIndex);
 		if (manager.viewPager.getCurrentItem() != songViewIndex) {
 			manager.viewPager.setCurrentItem(songViewIndex);
 		}
@@ -1248,8 +1209,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.menu_settings:
 			viewPager.setCurrentItem(settingsViewIndex);
@@ -1317,102 +1276,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		manager.CloseDB();
-		licenseChecker.onDestroy();
 		super.onDestroy();
-	}
-
-	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
-		public void allow(int policyReason) {
-			if (isFinishing()) {
-				return;
-			}
-			licenseTimer.cancel();
-		}
-
-		public void dontAllow(int policyReason) {
-			if (isFinishing()) {
-				return;
-			}
-
-			showLicensignDialog(policyReason == Policy.RETRY);
-		}
-
-		public void applicationError(int errorCode) {
-			if (isFinishing()) {
-				return;
-			}
-		}
-	}
-
-	private void checkLicense() {
-		try {
-			licenseChecker.checkAccess(licenseCheckerCallback);
-		} catch (Exception ex) {
-
-		}
-	}
-
-	private Boolean LicensignDialogShowed = false;
-
-	private void showLicensignDialog(Boolean isRetry) {
-		if (!LicensignDialogShowed) {
-			final boolean retryMode = isRetry;
-
-			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
-					manager.context);
-			alertBuilder.setIcon(0);
-			alertBuilder.setTitle(manager.context.getResources().getString(
-					R.string.labels_title_LicenseNotFound));
-
-			if (retryMode) {
-				alertBuilder.setMessage(manager.context.getResources()
-						.getString(R.string.labels_PleaseRetryToCheckLicense));
-			} else {
-				alertBuilder.setMessage(Html.fromHtml("\""
-						+ manager.context.getResources().getString(
-								R.string.app_name)
-						+ "\" <font color=\"red\">"
-						+ manager.context.getResources().getString(
-								R.string.labels_LicenseNotFound)
-						+ "</font>,"
-						+ " "
-						+ manager.context.getResources().getString(
-								R.string.labels_PleaseToBuy)));
-			}
-
-			alertBuilder.setCancelable(false);
-			alertBuilder.setPositiveButton(
-					retryMode ? manager.context.getResources().getString(
-							R.string.buttons_Retry) : manager.context
-							.getResources().getString(R.string.buttons_Buy),
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							LicensignDialogShowed = false;
-							if (retryMode) {
-								checkLicense();
-							} else {
-								Intent marketIntent = new Intent(
-										Intent.ACTION_VIEW,
-										Uri.parse("http://market.android.com/details?id="
-												+ getPackageName()));
-								startActivity(marketIntent);
-							}
-						}
-					});
-			alertBuilder.setCancelable(false);
-			alertBuilder.setNegativeButton(manager.context.getResources()
-					.getString(R.string.buttons_Cancel),
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							LicensignDialogShowed = false;
-							dialog.cancel();
-							// finish();
-						}
-					});
-			AlertDialog alert = alertBuilder.create();
-			LicensignDialogShowed = true;
-			alert.show();
-		}
 	}
 
 	private void ShareSong(Song song) {
@@ -1440,8 +1304,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private AppState GetAppState() {
-		SongArrayAdapter adapter = (SongArrayAdapter) songsListView
-				.getAdapter();
+		SongArrayAdapter adapter = (SongArrayAdapter) songsListView.getAdapter();
 		SearchTerms terms = adapter.GetSearchTerms();
 
 		return new AppState(terms, viewPager.getCurrentItem(),
@@ -1451,13 +1314,12 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		final AppState data = GetAppState();
-		return data;
+		final AppState state = GetAppState();
+		return state;
 	}
 
 	private void RestoreState() {
-		final AppState state = (AppState) ((Activity) manager.context)
-				.getLastNonConfigurationInstance();
+		final AppState state = (AppState) ((Activity) manager.context).getLastNonConfigurationInstance();
 		if (state != null) {
 			searchEditText.setText(state.Terms.SearchText());
 			viewPager.setCurrentItem(state.ViewIndex);
