@@ -147,9 +147,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void SetSelectedDefaultTab(Integer tabId) {
 		ArrayAdapter<TabsItem> tabAdapter = (ArrayAdapter<TabsItem>) byDefaultResultsForTab.getAdapter();
 		if (tabAdapter != null) {
-			TabsItem curTab = (TabsItem) byDefaultResultsForTab
-					.getItemAtPosition(byDefaultResultsForTab
-							.getSelectedItemPosition());
+			TabsItem curTab = (TabsItem) byDefaultResultsForTab.getItemAtPosition(byDefaultResultsForTab.getSelectedItemPosition());
 			TabsItem newTab = manager.tabsList.Get(tabId);
 			for (int i = 0; i < tabAdapter.getCount(); i++) {
 				if (((TabsItem) tabAdapter.getItem(i)).Id() == newTab.Id()) {
@@ -169,8 +167,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			if (curTime - lastMagnifierShowTime > SettingsHelper.DefaultValues.MagnifiedShowTime) {
 				magnifierLinearLayout.setVisibility(View.GONE);
 			} else {
-				magnifierHandler.postDelayed(updateMagnifierState,
-						SettingsHelper.DefaultValues.MagnifiedShowTime);
+				magnifierHandler.postDelayed(updateMagnifierState,SettingsHelper.DefaultValues.MagnifiedShowTime);
 			}
 
 		}
@@ -179,8 +176,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void ShowMagnifier() {
 		magnifierLinearLayout.setVisibility(View.VISIBLE);
-		magnifierHandler.postDelayed(updateMagnifierState,
-				SettingsHelper.DefaultValues.MagnifiedShowTime);
+		magnifierHandler.postDelayed(updateMagnifierState,SettingsHelper.DefaultValues.MagnifiedShowTime);
 
 		lastMagnifierShowTime = new Date().getTime();
 	}
@@ -212,28 +208,17 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void LoadSettings() {
 		SetSelectedDefaultTab(manager.settings.DefaultTabId());
 
-		if (!minSymbolsForStartSearch
-				.getText()
-				.toString()
-				.equalsIgnoreCase(
-						manager.settings.MinSymbolsForStartSearch().toString())) {
-			minSymbolsForStartSearch.setText(manager.settings
-					.MinSymbolsForStartSearch().toString());
+		if (!minSymbolsForStartSearch.getText().toString().equalsIgnoreCase(manager.settings.MinSymbolsForStartSearch().toString())) {
+			minSymbolsForStartSearch.setText(manager.settings.MinSymbolsForStartSearch().toString());
 		}
-		if (!maxSongsPerPageOnResult.getText().toString()
-				.equalsIgnoreCase(manager.settings.SongPerPage().toString())) {
-			maxSongsPerPageOnResult.setText(manager.settings.SongPerPage()
-					.toString());
+		if (!maxSongsPerPageOnResult.getText().toString().equalsIgnoreCase(manager.settings.SongPerPage().toString())) {
+			maxSongsPerPageOnResult.setText(manager.settings.SongPerPage().toString());
 		}
-		if (seachByAndShowSongNumbersInResult.isChecked() != manager.settings
-				.SeachByAndShowSongNumbersInResult()) {
-			seachByAndShowSongNumbersInResult.setChecked(manager.settings
-					.SeachByAndShowSongNumbersInResult());
+		if (seachByAndShowSongNumbersInResult.isChecked() != manager.settings.SeachByAndShowSongNumbersInResult()) {
+			seachByAndShowSongNumbersInResult.setChecked(manager.settings.SeachByAndShowSongNumbersInResult());
 		}
-		if (doMoreRelevantSearch.isChecked() != manager.settings
-				.DoMoreRelevantSearch()) {
-			doMoreRelevantSearch.setChecked(manager.settings
-					.DoMoreRelevantSearch());
+		if (doMoreRelevantSearch.isChecked() != manager.settings.DoMoreRelevantSearch()) {
+			doMoreRelevantSearch.setChecked(manager.settings.DoMoreRelevantSearch());
 		}
 		
 		if (doNotTurnOffScreen.isChecked() != manager.settings.DoNotTurnOffScreen()) {
@@ -242,8 +227,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		ToggleKeepScreenOn(manager.settings.DoNotTurnOffScreen());
 
-		songContentEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP,
-				manager.settings.FontSize());
+		songContentEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP,manager.settings.FontSize());
 
 		RefreshSearchTextHint();
 	}
@@ -293,29 +277,22 @@ public class MainActivity extends Activity implements OnClickListener {
 				Activity activity = (Activity) manager.context;
 
 				if (manager.viewPager.getCurrentItem() == settingsViewIndex) {
-					activity.setTitle(getResources().getString(
-							R.string.settings_settingsName));
+					activity.setTitle(getResources().getString(R.string.settings_settingsName));
 				} else if (manager.viewPager.getCurrentItem() == searchViewIndex) {
-					activity.setTitle(getResources().getString(
-							R.string.app_name));
+					activity.setTitle(getResources().getString(R.string.app_name));
 				} else if (manager.viewPager.getCurrentItem() == songViewIndex) {
 					try {
 						SetSongViewViewMode();
-						EditText songTitle = (EditText) ((AppPagerAdapter) manager.viewPager
-								.getAdapter()).pages.get(songViewIndex)
-								.findViewById(R.id.SongTitleEditText);
+						EditText songTitle = (EditText) ((AppPagerAdapter) manager.viewPager.getAdapter()).pages.get(songViewIndex).findViewById(R.id.SongTitleEditText);
 
-						if (songTitle != null
-								&& songTitle.getText().length() != 0) {
+						if (songTitle != null && songTitle.getText().length() != 0) {
 							activity.setTitle(songTitle.getText());
 						} else {
-							activity.setTitle(getResources().getString(
-									R.string.app_name));
+							activity.setTitle(getResources().getString(R.string.app_name));
 						}
 						;
 					} catch (Exception e) {
-						activity.setTitle(getResources().getString(
-								R.string.app_name));
+						activity.setTitle(getResources().getString(R.string.app_name));
 					}
 				}
 				manager.HideKeyboard();
@@ -332,14 +309,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		});
 		byDefaultResultsForTab = (Spinner) settingsView.findViewById(R.id.ByDefaultResultsForTab);
-		ArrayAdapter<TabsItem> adapterDefaultTab = new ArrayAdapter<TabsItem>(
-				this, android.R.layout.simple_spinner_item,
-				manager.tabsList.GetTabsItems());
-		adapterDefaultTab
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<TabsItem> adapterDefaultTab = new ArrayAdapter<TabsItem>(this, android.R.layout.simple_spinner_item,manager.tabsList.GetTabsItems());
+		adapterDefaultTab.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		byDefaultResultsForTab.setAdapter(adapterDefaultTab);
-		byDefaultResultsForTab
-				.setOnItemSelectedListener(new OnItemSelectedListener() {
+		byDefaultResultsForTab.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 					@Override
 					public void onItemSelected(AdapterView<?> parent,
@@ -361,86 +334,66 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				});
 
-		maxSongsPerPageOnResult = (EditText) settingsView
-				.findViewById(R.id.MaxSongsPerPageOnResult);
+		maxSongsPerPageOnResult = (EditText) settingsView.findViewById(R.id.MaxSongsPerPageOnResult);
 		maxSongsPerPageOnResult.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
 			}
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				Integer newVal = Utils.ToInt(searchText.toString(),
-						SettingsHelper.DefaultValues.SongPerPage);
+				Integer newVal = Utils.ToInt(searchText.toString(),SettingsHelper.DefaultValues.SongPerPage);
 				if (newVal > 0) {
 					manager.settings.SongPerPage(newVal);
 				} else {
-					manager.settings
-							.SongPerPage(SettingsHelper.DefaultValues.SongPerPage);
-					maxSongsPerPageOnResult
-							.setText(SettingsHelper.DefaultValues.SongPerPage
-									.toString());
+					manager.settings.SongPerPage(SettingsHelper.DefaultValues.SongPerPage);
+					maxSongsPerPageOnResult.setText(SettingsHelper.DefaultValues.SongPerPage.toString());
 				}
 
 			}
 		});
 
-		minSymbolsForStartSearch = (EditText) settingsView
-				.findViewById(R.id.MinSymbolsForStartSearch);
+		minSymbolsForStartSearch = (EditText) settingsView.findViewById(R.id.MinSymbolsForStartSearch);
 		minSymbolsForStartSearch.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
 			}
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				Integer newVal = Utils.ToInt(searchText.toString(),
-						SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
+				Integer newVal = Utils.ToInt(searchText.toString(),SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
 				if (newVal > 0) {
 					manager.settings.MinSymbolsForStartSearch(newVal);
 				} else {
-					manager.settings
-							.MinSymbolsForStartSearch(SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
-					minSymbolsForStartSearch
-							.setText(SettingsHelper.DefaultValues.MinSymbolsForStartSearch
-									.toString());
+					manager.settings.MinSymbolsForStartSearch(SettingsHelper.DefaultValues.MinSymbolsForStartSearch);
+					minSymbolsForStartSearch.setText(SettingsHelper.DefaultValues.MinSymbolsForStartSearch.toString());
 				}
 				RefreshSearchTextHint();
 			}
 		});
 
-		downloadFromEditText = (EditText) settingsView
-				.findViewById(R.id.DownloadFromEditText);
-		downloadToEditText = (EditText) settingsView
-				.findViewById(R.id.DownloadToEditText);
-		downloadButton = (Button) settingsView
-				.findViewById(R.id.DownloadButton);
+		downloadFromEditText = (EditText) settingsView.findViewById(R.id.DownloadFromEditText);
+		downloadToEditText = (EditText) settingsView.findViewById(R.id.DownloadToEditText);
+		downloadButton = (Button) settingsView.findViewById(R.id.DownloadButton);
 		downloadButton.setOnClickListener(this);
-		dropTablesButton = (Button) settingsView
-				.findViewById(R.id.DropTablesButton);
+		dropTablesButton = (Button) settingsView.findViewById(R.id.DropTablesButton);
 		dropTablesButton.setOnClickListener(this);
-		advanceLinearLayout = (LinearLayout) settingsView
-				.findViewById(R.id.AdvanceLinearLayout);
-		advanceCheckBox = (CheckBox) settingsView
-				.findViewById(R.id.AdvanceCheckBox);
+		advanceLinearLayout = (LinearLayout) settingsView.findViewById(R.id.AdvanceLinearLayout);
+		advanceCheckBox = (CheckBox) settingsView.findViewById(R.id.AdvanceCheckBox);
 		advanceCheckBox.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -452,15 +405,12 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 			}
 		});
-		seachByAndShowSongNumbersInResult = (CheckBox) settingsView
-				.findViewById(R.id.SeachByAndShowSongNumbersInResult);
+		seachByAndShowSongNumbersInResult = (CheckBox) settingsView.findViewById(R.id.SeachByAndShowSongNumbersInResult);
 		seachByAndShowSongNumbersInResult
 				.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						manager.settings
-								.SeachByAndShowSongNumbersInResult(((CheckBox) v)
-										.isChecked());
+						manager.settings.SeachByAndShowSongNumbersInResult(((CheckBox) v).isChecked());
 						songsArrayAdapter.notifyDataSetChanged();
 					}
 				});
@@ -483,27 +433,21 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		});
 
-		siteRatingViewedButton = (Button) searchView
-				.findViewById(R.id.SiteRatingViewedButton);
+		siteRatingViewedButton = (Button) searchView.findViewById(R.id.SiteRatingViewedButton);
 		siteRatingViewedButton.setOnClickListener(this);
 
 		favoriteButton = (Button) searchView.findViewById(R.id.FavoriteButton);
 		favoriteButton.setOnClickListener(this);
 
-		recentlyViewedButton = (Button) searchView
-				.findViewById(R.id.RecentlyViewedButton);
+		recentlyViewedButton = (Button) searchView.findViewById(R.id.RecentlyViewedButton);
 		recentlyViewedButton.setOnClickListener(this);
-		oftenViewedButton = (Button) searchView
-				.findViewById(R.id.OftenViewedButton);
+		oftenViewedButton = (Button) searchView.findViewById(R.id.OftenViewedButton);
 		oftenViewedButton.setOnClickListener(this);
-		searcTextClearButton = (Button) searchView
-				.findViewById(R.id.SearcTextClearButton);
+		searcTextClearButton = (Button) searchView.findViewById(R.id.SearcTextClearButton);
 		searcTextClearButton.setOnClickListener(this);
 
-		songTitleEditText = (EditText) songView
-				.findViewById(R.id.SongTitleEditText);
-		songContentEditText = (EditText) songView
-				.findViewById(R.id.SongContentEditText);
+		songTitleEditText = (EditText) songView.findViewById(R.id.SongTitleEditText);
+		songContentEditText = (EditText) songView.findViewById(R.id.SongContentEditText);
 		songContentEditText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -512,8 +456,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 			}
 		});
-		ScrollView songContentScrollView = (ScrollView) songView
-				.findViewById(R.id.SongContentScrollView);
+		ScrollView songContentScrollView = (ScrollView) songView.findViewById(R.id.SongContentScrollView);
 		songContentScrollView.setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -534,15 +477,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		songsListView = (ListView) searchView.findViewById(R.id.SongsListView);
 		songsListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> a, View view, int position,
-					long id) {
+			public void onItemClick(AdapterView<?> a, View view, int position, long id) {
 				viewPager.setCurrentItem(songViewIndex);
 
 				manager.HideKeyboard();
 				SetSongViewViewMode();
 
-				Song curSong = (Song) (songsListView
-						.getItemAtPosition(position));
+				Song curSong = (Song) (songsListView.getItemAtPosition(position));
 
 				// TODO update adapter
 				curSong = Song.Get(manager.db, curSong.Id());
@@ -562,11 +503,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItemIndex,
-					int visibleItemCountOnDisplay, int totalItemCount) {
+			public void onScroll(AbsListView view, int firstVisibleItemIndex,int visibleItemCountOnDisplay, int totalItemCount) {
 				final int hidenSongsCount = 2;
-				if (totalItemCount > 0
-						&& (totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < hidenSongsCount) {
+				if (totalItemCount > 0 && (totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < hidenSongsCount) {
 					AddDynamicallyDataToList();
 				}
 			}
@@ -582,19 +521,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		registerForContextMenu(songsListView);
 
-		searchEditText = (EditText) searchView
-				.findViewById(R.id.SearchEditText);
+		searchEditText = (EditText) searchView.findViewById(R.id.SearchEditText);
 
 		searchEditText.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence newStr, int start,
-					int before, int count) {
+			public void onTextChanged(CharSequence newStr, int start, int before, int count) {
 
-				if (!newStr.toString()
-						.equalsIgnoreCase(searchEditTextPrevValue)
-						&& newStr.length() >= manager.settings
-								.MinSymbolsForStartSearch()) {
+				if (!newStr.toString().equalsIgnoreCase(searchEditTextPrevValue) && newStr.length() >= manager.settings.MinSymbolsForStartSearch()) {
 					ShowHideClearSearchButton(true);
 					
 					if(manager.settings.DoMoreRelevantSearch()){
@@ -642,18 +576,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		TextView version = (TextView) settingsView.findViewById(R.id.Version);
 		String versionName = "";
 		try {
-			versionName = manager.context.getPackageManager().getPackageInfo(
-					manager.context.getPackageName(), 0).versionName;
+			versionName = manager.context.getPackageManager().getPackageInfo(manager.context.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 		}
-		version.setText(manager.context.getResources().getString(
-				R.string.labels_Version)
-				+ versionName);
+		version.setText(manager.context.getResources().getString(R.string.labels_Version) + versionName);
 
-		ImageView magnifierMinus = (ImageView) songView
-				.findViewById(R.id.MagnifierMinusImageView);
-		ImageView magnifierPlus = (ImageView) songView
-				.findViewById(R.id.MagnifierPlusImageView);
+		ImageView magnifierMinus = (ImageView) songView.findViewById(R.id.MagnifierMinusImageView);
+		ImageView magnifierPlus = (ImageView) songView.findViewById(R.id.MagnifierPlusImageView);
 		magnifierMinus.setOnTouchListener(onTouchListenerMagnifier);
 		magnifierPlus.setOnTouchListener(onTouchListenerMagnifier);
 		magnifierMinus.setOnClickListener(new OnClickListener() {
@@ -670,8 +599,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				ShowMagnifier();
 			}
 		});
-		magnifierLinearLayout = (LinearLayout) songView
-				.findViewById(R.id.MagnifierLinearLayout);
+		magnifierLinearLayout = (LinearLayout) songView.findViewById(R.id.MagnifierLinearLayout);
 
 		LoadSettings();
 
@@ -679,8 +607,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void ChangeFontSize(Boolean isEnlarge) {
-		float currentSize = Utils.pixelsToSp(manager.context,
-				songContentEditText.getTextSize());
+		float currentSize = Utils.pixelsToSp(manager.context,songContentEditText.getTextSize());
 		float newSize = currentSize;
 		if (isEnlarge) {
 			newSize += SettingsHelper.DefaultValues.FontSizeMagnifierStep;
@@ -694,9 +621,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		final Toast toast = Toast.makeText(manager.context, newSize
-				/ SettingsHelper.DefaultValues.FontSize + "x",
-				Toast.LENGTH_SHORT);
+		final Toast toast = Toast.makeText(manager.context, newSize / SettingsHelper.DefaultValues.FontSize + "x", Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
 
@@ -716,31 +641,25 @@ public class MainActivity extends Activity implements OnClickListener {
 		String searchHint = "%s";
 		switch (manager.settings.MinSymbolsForStartSearch()) {
 		case 1:
-			searchHint = manager.context.getResources().getString(
-					R.string.search_searchHintStartText1);
+			searchHint = manager.context.getResources().getString(R.string.search_searchHintStartText1);
 			break;
 		case 2:
 		case 3:
 		case 4:
-			searchHint = manager.context.getResources().getString(
-					R.string.search_searchHintStartText2to4);
+			searchHint = manager.context.getResources().getString(R.string.search_searchHintStartText2to4);
 			break;
 		default:
-			searchHint = manager.context.getResources().getString(
-					R.string.search_searchHintStartText5);
+			searchHint = manager.context.getResources().getString(R.string.search_searchHintStartText5);
 			break;
 		}
-		searchEditText.setHint(String.format(searchHint,
-				manager.settings.MinSymbolsForStartSearch()));
+		searchEditText.setHint(String.format(searchHint,manager.settings.MinSymbolsForStartSearch()));
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.SongsListView) {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-			menu.setHeaderTitle(((Song) songsListView
-					.getItemAtPosition(info.position)).Title());
+			menu.setHeaderTitle(((Song) songsListView.getItemAtPosition(info.position)).Title());
 			MenuInflater inflater = getMenuInflater();
 			inflater.inflate(R.menu.song_item_context_menu, menu);
 		}
@@ -752,14 +671,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.DownloadButton:
 			String url = "http://www.spiewnik.com/wyswietl.php?numer=";
-			Integer startSiteId = Utils.ToInt(downloadFromEditText.getText()
-					.toString(), 1);
-			Integer endSiteId = Utils.ToInt(downloadToEditText.getText()
-					.toString(), 15000);
+			Integer startSiteId = Utils.ToInt(downloadFromEditText.getText().toString(), 1);
+			Integer endSiteId = Utils.ToInt(downloadToEditText.getText().toString(), 15000);
 			if (endSiteId < startSiteId) {
-				Toast.makeText(manager.context,
-						"'To' must be higher then 'From'", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(manager.context, "'To' must be higher then 'From'", Toast.LENGTH_SHORT).show();
 			}
 			manager.HideKeyboard();
 			manager.DownloadAndSaveContent(url, startSiteId, endSiteId);
@@ -795,44 +710,27 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void ShowSongProperties(Song song) {
-		String content = manager.context.getResources().getString(
-				R.string.labels_Id)
-				+ song.Id()
+		String content = manager.context.getResources().getString(R.string.labels_Id) + song.Id()
 				+ Utils.NewLine
 				// +
 				// manager.context.getResources().getString(R.string.labels_SiteId)
 				// + song.SiteId() + Utils.NewLine
-				+ manager.context.getResources().getString(
-						R.string.labels_Rating)
-				+ song.Rating()
+				+ manager.context.getResources().getString(R.string.labels_Rating) + song.Rating()
 				+ Utils.NewLine
-				+ manager.context.getResources().getString(
-						R.string.labels_SiteRating)
-				+ song.SiteRating()
+				+ manager.context.getResources().getString(R.string.labels_SiteRating) + song.SiteRating()
 				+ Utils.NewLine
-				+ manager.context.getResources().getString(
-						R.string.labels_Favorite)
-				+ (song.Favorite() ? manager.context.getResources().getString(
-						R.string.buttons_Yes) : manager.context.getResources()
-						.getString(R.string.buttons_No))
+				+ manager.context.getResources().getString(R.string.labels_Favorite)
+				+ (song.Favorite() ? manager.context.getResources().getString(R.string.buttons_Yes) : manager.context.getResources().getString(R.string.buttons_No))
 				+ Utils.NewLine
-				+ manager.context.getResources().getString(
-						R.string.labels_RecentlyViewedDate)
-				+ Utils.iso8601Format.format(song.RecentlyViewedDate());
+				+ manager.context.getResources().getString(R.string.labels_RecentlyViewedDate) + Utils.iso8601Format.format(song.RecentlyViewedDate());
 
 		// Toast.makeText(manager.context, content, Toast.LENGTH_LONG).show();
 
-		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
-				manager.context);
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
 		alertBuilder.setIcon(0);
 		alertBuilder.setTitle(song.Title());
 
-		alertBuilder
-				.setMessage(content)
-				.setCancelable(false)
-				.setPositiveButton(
-						manager.context.getResources().getString(
-								R.string.buttons_Yes),
+		alertBuilder.setMessage(content).setCancelable(false).setPositiveButton(manager.context.getResources().getString(R.string.buttons_Yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
@@ -844,13 +742,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	public void ShowInFutureToast() {
-		Toast.makeText(manager.context, "Only In Future", Toast.LENGTH_SHORT)
-				.show();
+		Toast.makeText(manager.context, "Only In Future", Toast.LENGTH_SHORT).show();
 	}
 
 	private void SetDropTableButtonText() {
-		dropTablesButton.setText(getResources().getString(
-				R.string.settings_dropTablesButton)
+		dropTablesButton.setText(getResources().getString(R.string.settings_dropTablesButton)
 				+ Song.AllSongsCount(manager.db)
 				+ " ("
 				+ getResources().getString(R.string.settings_totalRecods)
@@ -864,8 +760,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void AddDynamicallyDataToList() {
-		SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView
-				.getAdapter();
+		SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView.getAdapter();
 		if (listAdapter != null && listAdapter.HasNextPage()) {
 			listAdapter.AddAdditionalPage();
 		}
@@ -877,9 +772,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			songsListView.setAdapter(songsArrayAdapter);
 		} else {
 			songsListView.setAdapter(null);
-			Toast toast = Toast.makeText(manager.context, manager.context
-					.getResources().getString(R.string.search_NothingFound),
-					Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(manager.context, manager.context.getResources().getString(R.string.search_NothingFound),Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50);
 			toast.show();
 		}
@@ -890,28 +783,22 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void LoadOftenViewed() {
-		SearchTerms terms = new SearchTerms(manager.settings, SearchBy.Rating,
-				"", Names.Rating + DBHelper.SortDescending);
+		SearchTerms terms = new SearchTerms(manager.settings, SearchBy.Rating, "", Names.Rating + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
 	}
 
 	private void LoadSiteRatingViewed() {
-		SearchTerms terms = new SearchTerms(manager.settings,
-				SearchBy.SiteRating, "", Names.SiteRating
-						+ DBHelper.SortDescending);
+		SearchTerms terms = new SearchTerms(manager.settings,SearchBy.SiteRating, "", Names.SiteRating + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
 	}
 
 	private void LoadRecentlyViewed() {
-		SearchTerms terms = new SearchTerms(manager.settings,
-				SearchBy.RecentlyViewedDate, "", Names.RecentlyViewedDate
-						+ DBHelper.SortDescending);
+		SearchTerms terms = new SearchTerms(manager.settings,SearchBy.RecentlyViewedDate, "", Names.RecentlyViewedDate + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
 	}
 
 	private void LoadFavorite() {
-		SearchTerms terms = new SearchTerms(manager.settings,
-				SearchBy.Favorite, "", Names.Favorite + DBHelper.SortDescending);
+		SearchTerms terms = new SearchTerms(manager.settings,SearchBy.Favorite, "", Names.Favorite + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
 	}
 
@@ -923,8 +810,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.setGroupVisible(R.id.menu_EditGroup,
-				manager.viewPager.getCurrentItem() == songViewIndex);
+		menu.setGroupVisible(R.id.menu_EditGroup,manager.viewPager.getCurrentItem() == songViewIndex);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -951,8 +837,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void ReloadSongsListContent() {
-		SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView
-				.getAdapter();
+		SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView.getAdapter();
 		if (listAdapter != null) {
 			listAdapter.Reload();
 			FocusedItemInSongsList(songsListView.getFirstVisiblePosition());
@@ -962,16 +847,13 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void DeleteSongMenuAction(Song song) {
 		final Song songToDelete = song;
 
-		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
-				manager.context);
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
 
 		alertBuilder.setIcon(0);
-		alertBuilder.setTitle(manager.context.getResources().getString(
-				R.string.labels_AreYouSureYouWantToDeleteThisSong));
+		alertBuilder.setTitle(manager.context.getResources().getString(R.string.labels_AreYouSureYouWantToDeleteThisSong));
 		alertBuilder.setMessage("\"" + song.Title() + "\"");
 		alertBuilder.setCancelable(false);
-		alertBuilder.setPositiveButton(manager.context.getResources()
-				.getString(R.string.buttons_Yes),
+		alertBuilder.setPositiveButton(manager.context.getResources().getString(R.string.buttons_Yes),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						songToDelete.Delete(manager.db);
@@ -983,16 +865,14 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				});
 		alertBuilder.setCancelable(false);
-		alertBuilder.setNegativeButton(manager.context.getResources()
-				.getString(R.string.buttons_No),
+		alertBuilder.setNegativeButton(manager.context.getResources().getString(R.string.buttons_No),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
 					}
 				});
 		AlertDialog alert = alertBuilder.show();
-		TextView messageText = (TextView) alert
-				.findViewById(android.R.id.message);
+		TextView messageText = (TextView) alert.findViewById(android.R.id.message);
 		messageText.setGravity(Gravity.CENTER);
 		messageText.setTypeface(Typeface.DEFAULT_BOLD);
 		messageText.setTextColor(Color.RED);
@@ -1027,18 +907,14 @@ public class MainActivity extends Activity implements OnClickListener {
 		if (this.IsSongEditMode()) {
 			final Song curSong = GetSongFromSongView();
 
-			if (curSong.Title().length() != 0
-					|| curSong.Content().length() != 0) {
-				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(
-						manager.context);
+			if (curSong.Title().length() != 0 || curSong.Content().length() != 0) {
+				AlertDialog.Builder alertBuilder = new AlertDialog.Builder(manager.context);
 
 				alertBuilder.setIcon(0);
-				alertBuilder.setTitle(manager.context.getResources().getString(
-						R.string.labels_WouldYouLikeToSaveThisSong));
+				alertBuilder.setTitle(manager.context.getResources().getString(R.string.labels_WouldYouLikeToSaveThisSong));
 				alertBuilder.setMessage("\"" + curSong.Title() + "\"");
 				alertBuilder.setCancelable(false);
-				alertBuilder.setPositiveButton(manager.context.getResources()
-						.getString(R.string.buttons_Yes),
+				alertBuilder.setPositiveButton(manager.context.getResources().getString(R.string.buttons_Yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								curSong.SaveOrUpdate(manager.db);
@@ -1049,13 +925,11 @@ public class MainActivity extends Activity implements OnClickListener {
 							}
 						});
 				alertBuilder.setCancelable(false);
-				alertBuilder.setNegativeButton(manager.context.getResources()
-						.getString(R.string.buttons_No),
+				alertBuilder.setNegativeButton(manager.context.getResources().getString(R.string.buttons_No),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								if (curSong.Id() != 0) {
-									Song savedSong = Song.Get(manager.db,
-											curSong.Id());
+									Song savedSong = Song.Get(manager.db,curSong.Id());
 									UpdateContenSongView(savedSong);
 								}
 								isSongEditMode = false;
@@ -1064,8 +938,7 @@ public class MainActivity extends Activity implements OnClickListener {
 							}
 						});
 				AlertDialog alert = alertBuilder.show();
-				TextView messageText = (TextView) alert
-						.findViewById(android.R.id.message);
+				TextView messageText = (TextView) alert.findViewById(android.R.id.message);
 				messageText.setGravity(Gravity.CENTER);
 				messageText.setTypeface(Typeface.DEFAULT_BOLD);
 				alert.show();
@@ -1077,10 +950,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		Song song = new Song();
 
 		try {
-			View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
-					.get(songViewIndex);
-			TextView songId = (TextView) songView
-					.findViewById(R.id.SongIdTextView);
+			View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages.get(songViewIndex);
+			TextView songId = (TextView) songView.findViewById(R.id.SongIdTextView);
 			Integer id = Utils.ToInt(songId.getText().toString(), 0);
 			if (id != 0) {
 				song = Song.Get(manager.db, id);
@@ -1103,13 +974,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Song UpdateSongFromEditMode(Song originalSong) {
 		try {
 			if (IsSongEditMode()) {
-				View songView = ((AppPagerAdapter) manager.viewPager
-						.getAdapter()).pages.get(songViewIndex);
+				View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages.get(songViewIndex);
 
-				EditText newTitle = (EditText) songView
-						.findViewById(R.id.SongTitleEditText);
-				EditText newContent = (EditText) songView
-						.findViewById(R.id.SongContentEditText);
+				EditText newTitle = (EditText) songView.findViewById(R.id.SongTitleEditText);
+				EditText newContent = (EditText) songView.findViewById(R.id.SongContentEditText);
 
 				String content = newContent.getText().toString().trim();
 				String title = newTitle.getText().toString().trim();
@@ -1129,15 +997,11 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void UpdateContenSongView(Song newSong) {
 		try {
-			View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
-					.get(songViewIndex);
+			View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages.get(songViewIndex);
 
-			TextView newId = (TextView) songView
-					.findViewById(R.id.SongIdTextView);
-			EditText newTitle = (EditText) songView
-					.findViewById(R.id.SongTitleEditText);
-			EditText newContent = (EditText) songView
-					.findViewById(R.id.SongContentEditText);
+			TextView newId = (TextView) songView.findViewById(R.id.SongIdTextView);
+			EditText newTitle = (EditText) songView.findViewById(R.id.SongTitleEditText);
+			EditText newContent = (EditText) songView.findViewById(R.id.SongContentEditText);
 
 			newId.setText(newSong.Id().toString());
 			newTitle.setText(newSong.Title());
@@ -1150,13 +1014,11 @@ public class MainActivity extends Activity implements OnClickListener {
 					if (newSong.Title().length() != 0) {
 						activity.setTitle(newSong.Title());
 					} else {
-						activity.setTitle(getResources().getString(
-								R.string.app_name));
+						activity.setTitle(getResources().getString(R.string.app_name));
 					}
 					;
 				} catch (Exception e) {
-					activity.setTitle(getResources().getString(
-							R.string.app_name));
+					activity.setTitle(getResources().getString(R.string.app_name));
 				}
 			}
 
@@ -1168,15 +1030,12 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void SetSongEditMode() {
 		songTitleEditText.setVisibility(View.VISIBLE);
-		songTitleEditText.setLayoutParams(new LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		songTitleEditText.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		songTitleEditText.setCursorVisible(true);
-		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT
-				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+		songTitleEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
 		songContentEditText.setCursorVisible(true);
-		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT
-				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+		songContentEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		songContentEditText.setSingleLine(false);
 
 		songContentEditText.setEnabled(true);
@@ -1186,15 +1045,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void SetSongViewViewMode() {
-		View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages
-				.get(songViewIndex);
-		ScrollView songScroll = (ScrollView) songView
-				.findViewById(R.id.SongContentScrollView);
+		View songView = ((AppPagerAdapter) manager.viewPager.getAdapter()).pages.get(songViewIndex);
+		ScrollView songScroll = (ScrollView) songView.findViewById(R.id.SongContentScrollView);
 		songScroll.scrollTo(0, 0);
 
 		songTitleEditText.setVisibility(View.GONE);
-		songTitleEditText.setLayoutParams(new LayoutParams(
-				LayoutParams.MATCH_PARENT, 0));
+		songTitleEditText.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0));
 		songTitleEditText.setCursorVisible(false);
 		songTitleEditText.setInputType(InputType.TYPE_NULL);
 
@@ -1250,8 +1106,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		Song curSong = (Song) songsListView.getItemAtPosition(info.position);
 		switch (item.getItemId()) {
 		case R.id.menu_Edit_Context:
@@ -1287,8 +1142,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		shareIntent.setType("text/plain");
 
 		// add a subject
-		shareIntent
-				.putExtra(android.content.Intent.EXTRA_SUBJECT, song.Title());
+		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, song.Title());
 
 		// build the body of the message to be shared
 		String shareMessage = song.Title() + Utils.NewLine + song.Content();
@@ -1296,9 +1150,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		// add the message
 		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
 
-		String shareDialogTitle = String.format(manager.context.getResources()
-				.getString(R.string.app_shareDialogTitle), Utils.Trim(
-				song.Title(), 40));
+		String shareDialogTitle = String.format(manager.context.getResources().getString(R.string.app_shareDialogTitle), Utils.Trim(song.Title(), 40));
 		// start the chooser for sharing
 		startActivity(Intent.createChooser(shareIntent, shareDialogTitle));
 	}
@@ -1307,9 +1159,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		SongArrayAdapter adapter = (SongArrayAdapter) songsListView.getAdapter();
 		SearchTerms terms = adapter.GetSearchTerms();
 
-		return new AppState(terms, viewPager.getCurrentItem(),
-				GetSongFromSongView(), isSongEditMode,
-				songsListView.getFirstVisiblePosition());
+		return new AppState(terms, viewPager.getCurrentItem(),GetSongFromSongView(), isSongEditMode,songsListView.getFirstVisiblePosition());
 	}
 
 	@Override
