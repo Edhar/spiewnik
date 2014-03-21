@@ -146,12 +146,10 @@ public class MainActivity_SongView extends MainActivity_Ext {
 			View songView = MainAct.manager.GetViewPage(MainActivity_SongView.SongViewIndex);
 
 			TextView newId = (TextView) songView.findViewById(R.id.SongIdTextView);
-			EditText newTitle = (EditText) songView.findViewById(R.id.SongTitleEditText);
-			EditText newContent = (EditText) songView.findViewById(R.id.SongContentEditText);
 
 			newId.setText(newSong.Id().toString());
-			newTitle.setText(newSong.Title());
-			newContent.setText(newSong.Content());
+			songTitleEditText.setText(newSong.Title());
+			songContentEditText.setText(newSong.Content());
 
 			Activity activity = (Activity) MainAct.manager.context;
 
@@ -178,13 +176,8 @@ public class MainActivity_SongView extends MainActivity_Ext {
 	protected Song UpdateSongFromEditMode(Song originalSong) {
 		try {
 			if (IsSongEditMode()) {
-				View songView = MainAct.manager.GetViewPage(MainActivity_SongView.SongViewIndex);
-
-				EditText newTitle = (EditText) songView.findViewById(R.id.SongTitleEditText);
-				EditText newContent = (EditText) songView.findViewById(R.id.SongContentEditText);
-
-				String content = newContent.getText().toString().trim();
-				String title = newTitle.getText().toString().trim();
+				String content = songContentEditText.getText().toString().trim();
+				String title = songTitleEditText.getText().toString().trim();
 				if (title.length() == 0) {
 					title = Utils.Trim(content);
 				}

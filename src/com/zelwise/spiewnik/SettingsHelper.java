@@ -27,10 +27,10 @@ public class SettingsHelper {
 		public static float FontSize = 20;
 		public static float FontSizeMagnifierStep = 2;
 		public static float FontSizeMin(){
-			return 6; 
+			return 4; 
 		};
 		public static float FontSizeMax(){
-			return FontSize*2; 
+			return FontSize*3; 
 		};
 		public static long MagnifiedShowTime = 2000;
 	}
