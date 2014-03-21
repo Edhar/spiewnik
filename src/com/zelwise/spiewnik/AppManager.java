@@ -22,10 +22,12 @@ public class AppManager {
 	public Context context;
 	public ViewPager viewPager;
 	public TabsList tabsList;
-
 	private Handler responseHandler;
-
 	public SettingsHelper settings;
+	
+	public View GetViewPage(int pageViewIndex){
+		return ((AppPagerAdapter) viewPager.getAdapter()).pages.get(pageViewIndex);
+	}
 
 	public AppManager(Context context, ViewPager viewPager) {
 		this.dBHelper = new DBHelper(context);

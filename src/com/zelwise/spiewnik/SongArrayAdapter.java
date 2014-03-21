@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.zelwise.spiewnik.R;
 
+import android.R.bool;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.text.Html;
@@ -37,13 +38,11 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 	public void AddAdditionalPage() {
 		if (!currentPageIsLast) {
 			this.searchTerms.CurrentPage(this.searchTerms.CurrentPage() + 1);
-			ArrayList<Song> addSongs = GetCurrentPageSongData(this.manager.db,
-					this.searchTerms);
+			ArrayList<Song> addSongs = GetCurrentPageSongData(this.manager.db, this.searchTerms);
 			if (addSongs.size() > 0) {
 				songList.addAll(addSongs);
 				this.notifyDataSetChanged();
-				currentPageIsLast = addSongs.size() < searchTerms
-						.SongsPerPage();
+				currentPageIsLast = addSongs.size() < searchTerms.SongsPerPage();
 			} else {
 				currentPageIsLast = true;
 			}
@@ -53,24 +52,26 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 	public void Reload() {
 		songList.clear();
 		int pagesCount = this.searchTerms.CurrentPage();
+		Boolean currentPageIsLastOrigin = currentPageIsLast;
+		
+		currentPageIsLast = false;
 		this.searchTerms.CurrentPage(0);
 		for (int i = 0; i < pagesCount; i++) {
 			this.AddAdditionalPage();
 		}
+		
+		currentPageIsLast = currentPageIsLastOrigin;
 	}
 
 	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms) {
 		this(manager, GetSongData(manager.db, searchTerms), searchTerms);
 	}
 
-	public SongArrayAdapter(AppManager manager, ArrayList<Song> list,
-			SearchTerms searchTerms) {
-		this(manager, searchTerms, list, R.layout.song_list_item,
-				R.id.SongListItemTextView);
+	public SongArrayAdapter(AppManager manager, ArrayList<Song> list, SearchTerms searchTerms) {
+		this(manager, searchTerms, list, R.layout.song_list_item, R.id.SongListItemTextView);
 	}
 
-	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms,
-			ArrayList<Song> list, int layout, int textViewLayout) {
+	public SongArrayAdapter(AppManager manager, SearchTerms searchTerms, ArrayList<Song> list, int layout, int textViewLayout) {
 		super(manager.context, layout, textViewLayout, list);
 		this.searchTerms = searchTerms;
 		this.songList = list;
@@ -78,21 +79,19 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 		this.currentPageIsLast = list.size() < searchTerms.SongsPerPage();
 	}
 
-	private static ArrayList<Song> GetSongData(SQLiteDatabase db,
-			SearchTerms terms) {
+	private static ArrayList<Song> GetSongData(SQLiteDatabase db, SearchTerms terms) {
 		ArrayList<Song> list = new ArrayList<Song>();
 		SearchTerms terms2 = terms.Clone();
 		int pagesCount = terms2.CurrentPage();
 		for (int i = 0; i < pagesCount; i++) {
-			terms2.CurrentPage(i+1);
-			list.addAll(GetCurrentPageSongData(db,terms2));
+			terms2.CurrentPage(i + 1);
+			list.addAll(GetCurrentPageSongData(db, terms2));
 		}
 
 		return list;
 	}
 
-	private static ArrayList<Song> GetCurrentPageSongData(SQLiteDatabase db,
-			SearchTerms terms) {
+	private static ArrayList<Song> GetCurrentPageSongData(SQLiteDatabase db, SearchTerms terms) {
 		return Song.GetSongs(db, terms);
 	}
 
@@ -114,20 +113,17 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 
 		final Song curSong = (Song) songList.get(position);
 		if (curSong != null) {
-			TextView tv = (TextView) view
-					.findViewById(R.id.SongListItemTextView);
+			TextView tv = (TextView) view.findViewById(R.id.SongListItemTextView);
 			if (tv != null) {
 				String text = "";
 				if (searchTerms.SeachByAndShowSongNumbersInResult()) {
-					text = String.format("%5s.", curSong.Id())
-							.replace(" ", "o") + " " + curSong.Title();
+					text = String.format("%5s.", curSong.Id()).replace(" ", "o") + " " + curSong.Title();
 				} else {
 					text = curSong.Title();
 				}
 
 				if (searchTerms.SearchText().length() > 0) {
-					tv.setText(Html.fromHtml(text.replaceAll("(?i)("
-							+ searchTerms.SearchText() + ")", "<b>$1</b>")));
+					tv.setText(Html.fromHtml(text.replaceAll("(?i)(" + searchTerms.SearchText() + ")", "<b>$1</b>")));
 				} else {
 					tv.setText(text);
 				}
@@ -139,8 +135,7 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 				// "; Rating:" + curSong.Rating());
 			}
 
-			ImageView starImg = (ImageView) view
-					.findViewById(R.id.SongListItemImageView);
+			ImageView starImg = (ImageView) view.findViewById(R.id.SongListItemImageView);
 			if (starImg != null) {
 				if (curSong.Favorite()) {
 					starImg.setTag(R.drawable.star1);
