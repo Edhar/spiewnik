@@ -12,6 +12,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/theme_violet_bg_LayoutSearch"
         android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="8dp" >
 
@@ -23,9 +24,10 @@
             android:gravity="left|center_vertical"
             android:text="@string/labels_Search"
             android:textColor="@color/theme_violet_tc_labels_Search"
-            android:textSize="20sp" >
+            android:textSize="20sp" 
+            android:visibility="gone">
         </TextView>
-
+        
         <EditText
             android:id="@+id/SearchEditText"
             android:layout_width="match_parent"

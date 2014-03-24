@@ -6,8 +6,11 @@ import com.zelwise.spiewnik.Song.Names;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,18 +31,18 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity_SearchView extends MainActivity_Ext {
-    public MainActivity_SearchView(MainActivity mainActivity) {
-        super(mainActivity);
-    }
-    
-    public static final Integer SearchViewIndex = 1;
-    
-    Button recentlyViewedButton, oftenViewedButton, siteRatingViewedButton, searcTextClearButton, favoriteButton;
+	public MainActivity_SearchView(MainActivity mainActivity) {
+		super(mainActivity);
+	}
+
+	public static final Integer SearchViewIndex = 1;
+
+	Button recentlyViewedButton, oftenViewedButton, siteRatingViewedButton, searcTextClearButton, favoriteButton;
 
 	EditText searchEditText;
 
 	ListView songsListView;
-	
+
 	protected OnTouchListener onTouchListenerClear = new OnTouchListener() {
 
 		@Override
@@ -70,9 +73,9 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			return true;
 		}
 	};
-	
+
 	protected void SetSelectedDefaultTab(Integer tabId) {
-		ArrayAdapter<TabsItem> tabAdapter = (ArrayAdapter<TabsItem>)MainAct.mainActivity_SettingsView.byDefaultResultsForTab.getAdapter();
+		ArrayAdapter<TabsItem> tabAdapter = (ArrayAdapter<TabsItem>) MainAct.mainActivity_SettingsView.byDefaultResultsForTab.getAdapter();
 		if (tabAdapter != null) {
 			TabsItem curTab = (TabsItem) MainAct.mainActivity_SettingsView.byDefaultResultsForTab.getItemAtPosition(MainAct.mainActivity_SettingsView.byDefaultResultsForTab.getSelectedItemPosition());
 			TabsItem newTab = MainAct.manager.tabsList.Get(tabId);
@@ -99,11 +102,12 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 
 		}
 	};
-	
+
 	// to fix double event
 	String searchEditTextPrevValue = "";
-	
+
 	protected long lastStartSearchTime;
+
 	protected void StartSearchImmediately() {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.Text, searchEditText.getText().toString(), "");
 		CreateAdapterAndSetToSongList(terms);
@@ -113,7 +117,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		startSearchHandler.postDelayed(runSearchRunnable, SettingsHelper.DefaultValues.StartSearchDelay);
 		lastStartSearchTime = new Date().getTime();
 	}
-	
+
 	protected void RefreshSearchTextHint() {
 		String searchHint = "%s";
 		switch (MainAct.manager.settings.MinSymbolsForStartSearch()) {
@@ -129,9 +133,10 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			searchHint = MainAct.manager.context.getResources().getString(R.string.search_searchHintStartText5);
 			break;
 		}
-		searchEditText.setHint(String.format(searchHint, MainAct.manager.settings.MinSymbolsForStartSearch()));
+		String searchLabel = MainAct.manager.context.getResources().getString(R.string.labels_Search);
+		searchEditText.setHint(searchLabel + String.format(searchHint, MainAct.manager.settings.MinSymbolsForStartSearch()));
 	}
-	
+
 	protected void ShowSongProperties(Song song) {
 		String content = MainAct.manager.context.getResources().getString(R.string.labels_Id)
 				+ song.Id()
@@ -139,12 +144,14 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 				// +
 				// MainAct.manager.context.getResources().getString(R.string.labels_SiteId)
 				// + song.SiteId() + Utils.NewLine
-				+ MainAct.manager.context.getResources().getString(R.string.labels_Rating) + song.Rating() + Utils.NewLine + MainAct.manager.context.getResources().getString(R.string.labels_SiteRating)
-				+ song.SiteRating() + Utils.NewLine + MainAct.manager.context.getResources().getString(R.string.labels_Favorite)
+				+ MainAct.manager.context.getResources().getString(R.string.labels_Rating) + song.Rating() + Utils.NewLine
+				+ MainAct.manager.context.getResources().getString(R.string.labels_SiteRating) + song.SiteRating() + Utils.NewLine
+				+ MainAct.manager.context.getResources().getString(R.string.labels_Favorite)
 				+ (song.Favorite() ? MainAct.manager.context.getResources().getString(R.string.buttons_Yes) : MainAct.manager.context.getResources().getString(R.string.buttons_No)) + Utils.NewLine
 				+ MainAct.manager.context.getResources().getString(R.string.labels_RecentlyViewedDate) + Utils.iso8601Format.format(song.RecentlyViewedDate());
 
-		// Toast.makeText(MainAct.manager.context, content, Toast.LENGTH_LONG).show();
+		// Toast.makeText(MainAct.manager.context, content,
+		// Toast.LENGTH_LONG).show();
 
 		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainAct.manager.context);
 		alertBuilder.setIcon(0);
@@ -159,7 +166,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		AlertDialog alert = alertBuilder.create();
 		alert.show();
 	}
-	
+
 	protected void FocusedItemInSongsList(int itemIndex) {
 		songsListView.setSelection(itemIndex);
 		songsListView.requestFocus();
@@ -207,7 +214,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.Favorite, "", Names.Favorite + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
 	}
-	
+
 	protected void ShowHideClearSearchButton(Boolean show) {
 		if (searcTextClearButton.getVisibility() != View.VISIBLE && show) {
 			searcTextClearButton.setVisibility(View.VISIBLE);
@@ -271,12 +278,12 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		alert.show();
 
 	}
-    
-    @Override
+
+	@Override
 	public void onCreate() {
-    	View searchView = MainAct.manager.GetViewPage(SearchViewIndex);
-    	
-    	siteRatingViewedButton = (Button) searchView.findViewById(R.id.SiteRatingViewedButton);
+		View searchView = MainAct.manager.GetViewPage(SearchViewIndex);
+
+		siteRatingViewedButton = (Button) searchView.findViewById(R.id.SiteRatingViewedButton);
 		siteRatingViewedButton.setOnClickListener(MainAct);
 
 		favoriteButton = (Button) searchView.findViewById(R.id.FavoriteButton);
@@ -334,9 +341,8 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 				}
 			}
 		});
-		
-		searchEditText = (EditText) searchView.findViewById(R.id.SearchEditText);
 
+		searchEditText = (EditText) searchView.findViewById(R.id.SearchEditText);
 		searchEditText.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -380,11 +386,18 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			}
 		});
 
+		ImageHelper imgHelper = new ImageHelper(MainAct.manager.context);
+		int sizeInPx = (int) imgHelper.ConvertDipToPixel(20);
+		Drawable resizedDrawable = imgHelper.getResizedDrawable(R.drawable.ic_action_search, sizeInPx, sizeInPx);
+		searchEditText.setCompoundDrawablesWithIntrinsicBounds(resizedDrawable, null, null, null);
+		searchEditText.setCompoundDrawablePadding(15);
+		searchEditText.setPadding(15, 0, 0, 0);
+
 		recentlyViewedButton.setOnTouchListener(onTouchListener);
 		oftenViewedButton.setOnTouchListener(onTouchListener);
 		siteRatingViewedButton.setOnTouchListener(onTouchListener);
 		favoriteButton.setOnTouchListener(onTouchListener);
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
 
-    }
+	}
 }

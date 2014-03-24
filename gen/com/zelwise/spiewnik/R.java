@@ -26,11 +26,12 @@ public final class R {
         public static final int theme_violet_tc_labels_Search=0x7f050004;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
-        public static final int magnifier_minus=0x7f020001;
-        public static final int magnifier_plus=0x7f020002;
-        public static final int star0=0x7f020003;
-        public static final int star1=0x7f020004;
+        public static final int ic_action_search=0x7f020000;
+        public static final int ic_launcher=0x7f020001;
+        public static final int magnifier_minus=0x7f020002;
+        public static final int magnifier_plus=0x7f020003;
+        public static final int star0=0x7f020004;
+        public static final int star1=0x7f020005;
     }
     public static final class id {
         public static final int AdvanceCheckBox=0x7f08000a;

@@ -1,12 +1,9 @@
 package com.zelwise.spiewnik;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 import org.jsoup.nodes.Document;
 
 import android.content.Context;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;

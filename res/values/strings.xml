@@ -28,7 +28,7 @@
     <string name="buttons_Retry">Ponownie</string>    
     
     <string name="labels_Version">Wersja:&#160;</string>
-    <string name="labels_Search">Szukaj:</string>
+    <string name="labels_Search">Szukaj:&#160;</string>
     <string name="labels_Id">Numer:&#160;</string>
     <string name="labels_SiteId">Site Id:&#160;</string>
     <string name="labels_Rating">Mój Ranking:&#160;</string>
@@ -59,6 +59,22 @@
     <string name="settings_settingsName">Ustawienia</string>
 	<string name="settings_dropTablesButton">Usunąć wszystkie utwory</string>
 	<string name="settings_totalRecods">Wszystkich wpisów</string>
+	
+	<!--
+	<color name="theme_violet_bg_LayoutSearch">#609</color>
+	<color name="theme_violet_tc_SongListItemTextView">#609</color>
+	<color name="theme_violet_bg_SongListItemTextView1">#fff</color>
+	<color name="theme_violet_bg_SongListItemTextView2">#e0eaf1</color>
+	<color name="theme_violet_tc_labels_Search">#8CF7E6</color>
+	<color name="theme_violet_tc_SearchEditText">#8CF7E6</color>
+	<color name="theme_violet_tc_SearcTextClearButton">#8CF7E6</color>
+	<color name="theme_violet_bg_SearchEditText">#B11BFC</color>
+	<color name="theme_violet_tc_TabsItem">#A9A9A9</color>
+	<color name="theme_violet_bg_TabsItem">#C1E3FC</color>
+	<color name="theme_TransparentColor">#00000000</color>
+	<color name="theme_violet_bg_PressedButton">#660099</color>
+	<color name="theme_violet_bg_PressedClearButton">#C1E3FC</color>
+	-->
 	
 	<color name="theme_violet_bg_LayoutSearch">#609</color>
 	<color name="theme_violet_tc_SongListItemTextView">#609</color>
