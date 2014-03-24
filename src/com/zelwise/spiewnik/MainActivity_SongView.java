@@ -281,11 +281,11 @@ public class MainActivity_SongView extends MainActivity_Ext {
 						ShowMagnifier();
 					}
 				}
-				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+				/*if (event.getAction() == MotionEvent.ACTION_MOVE) {
 					return false;
-				}
+				}*/
 
-				return true;
+				return false;
 			}
 		});
 		
