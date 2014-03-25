@@ -90,8 +90,8 @@
 	<color name="theme_violet_bg_TabsItem">#F4E1A9</color>
 	<color name="theme_violet_bg_TabsItemsLayout">#916E46</color>
 	<color name="theme_TransparentColor">#00000000</color>
-	<color name="theme_violet_bg_PressedButton">#5B84C4</color>
-	<color name="theme_violet_bg_PressedClearButton">#5B84C4</color>
+	<color name="theme_violet_bg_PressedButton">#D3E0F7</color>
+	<color name="theme_violet_bg_PressedClearButton">#9EBAEE</color>
 	<color name="theme_violet_tc_labels_Settings">#2C2C2C</color>
 	<color name="theme_violet_tc_song_view">#000</color>
 	

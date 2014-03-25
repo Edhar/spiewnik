@@ -58,7 +58,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			return true;
 		}
 	};
-	protected OnTouchListener onTouchListener = new OnTouchListener() {
+	protected OnTouchListener onTouchListenerTabsItem = new OnTouchListener() {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
@@ -180,6 +180,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 	}
 
 	protected void CreateAdapterAndSetToSongList(SearchTerms terms) {
+		MarkActiveTabItem(terms);
 		SongArrayAdapter songsArrayAdapter = new SongArrayAdapter(MainAct.manager, terms);
 		if (songsArrayAdapter.HasSongs()) {
 			songsListView.setAdapter(songsArrayAdapter);
@@ -188,6 +189,39 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			Toast toast = Toast.makeText(MainAct.manager.context, MainAct.manager.context.getResources().getString(R.string.search_NothingFound), Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50);
 			toast.show();
+		}
+	}
+
+	private void MarkActiveTabItem(SearchTerms terms) {
+
+		int pressedColor = MainAct.manager.context.getResources().getColor(R.color.theme_violet_bg_PressedButton);
+		int defaultColor = MainAct.manager.context.getResources().getColor(R.color.theme_violet_bg_TabsItem);
+
+		recentlyViewedButton.setBackgroundColor(defaultColor);
+		oftenViewedButton.setBackgroundColor(defaultColor);
+		siteRatingViewedButton.setBackgroundColor(defaultColor);
+		favoriteButton.setBackgroundColor(defaultColor);
+
+		switch (terms.SearchBy()) {
+		case RecentlyViewedDate:
+			recentlyViewedButton.setBackgroundColor(pressedColor);
+			break;
+		case Rating:
+			oftenViewedButton.setBackgroundColor(pressedColor);
+			break;
+		case SiteRating:
+			siteRatingViewedButton.setBackgroundColor(pressedColor);
+			break;
+		case Favorite:
+			favoriteButton.setBackgroundColor(pressedColor);
+			break;
+		case Text:
+			siteRatingViewedButton.setBackgroundColor(pressedColor);
+			break;
+
+		default:
+			siteRatingViewedButton.setBackgroundColor(pressedColor);
+			break;
 		}
 	}
 
@@ -393,10 +427,10 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		searchEditText.setCompoundDrawablePadding(15);
 		searchEditText.setPadding(15, 0, 0, 0);
 
-		recentlyViewedButton.setOnTouchListener(onTouchListener);
-		oftenViewedButton.setOnTouchListener(onTouchListener);
-		siteRatingViewedButton.setOnTouchListener(onTouchListener);
-		favoriteButton.setOnTouchListener(onTouchListener);
+		recentlyViewedButton.setOnTouchListener(onTouchListenerTabsItem);
+		oftenViewedButton.setOnTouchListener(onTouchListenerTabsItem);
+		siteRatingViewedButton.setOnTouchListener(onTouchListenerTabsItem);
+		favoriteButton.setOnTouchListener(onTouchListenerTabsItem);
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
 
 	}
