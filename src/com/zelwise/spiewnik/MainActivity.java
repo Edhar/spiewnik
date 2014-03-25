@@ -1,62 +1,29 @@
 package com.zelwise.spiewnik;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.zelwise.spiewnik.AppManager;
-import com.zelwise.spiewnik.Song.Names;
-import com.zelwise.spiewnik.R;
-import com.zelwise.spiewnik.SongArrayAdapter;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Color;
-import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AbsListView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends ActionBarActivity  implements OnClickListener {
 
 	MainActivity_Menu mainActivity_Menu;
 	MainActivity_SettingsView mainActivity_SettingsView;
@@ -71,7 +38,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		mainActivity_SettingsView = new MainActivity_SettingsView(this);
 		mainActivity_SearchView = new MainActivity_SearchView(this);
 		mainActivity_SongView = new MainActivity_SongView(this);
-		
+
 		mainActivity_Menu = new MainActivity_Menu(this);
 		mainActivity_Click = new MainActivity_Click(this);
 	}
@@ -103,6 +70,18 @@ public class MainActivity extends Activity implements OnClickListener {
 		mainActivity_SearchView.RefreshSearchTextHint();
 	}
 
+	private void InitTitle() {
+		try {
+			
+			ActionBar actionBar = getSupportActionBar();
+			Drawable actionBarDrawable = manager.context.getResources().getDrawable(R.drawable.bg_action_bar);
+			actionBar.setBackgroundDrawable(actionBarDrawable);
+			
+			
+		} catch (Exception e) {
+		}
+	}
+
 	protected void ToggleKeepScreenOn(Boolean keepScreenOn) {
 		if (keepScreenOn) {
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -111,7 +90,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -136,6 +114,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		setContentView(viewPager);
 
 		manager = new AppManager(this, viewPager);
+		
+		InitTitle();
 
 		mainActivity_SettingsView.onCreate();
 		mainActivity_SearchView.onCreate();
@@ -148,7 +128,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				mainActivity_SongView.CheckIfSongEditModeOrContentSaved();
 
 				Activity activity = (Activity) manager.context;
-
+				
 				if (manager.viewPager.getCurrentItem() == MainActivity_SettingsView.SettingsViewIndex) {
 					activity.setTitle(getResources().getString(R.string.settings_settingsName));
 				} else if (manager.viewPager.getCurrentItem() == MainActivity_SearchView.SearchViewIndex) {
@@ -187,8 +167,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		RestoreState();
 	}
 
-	
-
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		mainActivity_Menu.onCreateContextMenu(menu, v, menuInfo);
@@ -199,8 +177,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		mainActivity_Click.onClick(v);
 	}
-
-	
 
 	public void ShowInFutureToast() {
 		Toast.makeText(manager.context, "Only In Future", Toast.LENGTH_SHORT).show();
@@ -217,7 +193,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		mainActivity_Menu.onPrepareOptionsMenu(menu);
 		return super.onPrepareOptionsMenu(menu);
 	}
-
 
 	/*
 	 * protected static final long DOUBLE_PRESS_INTERVAL = some value in ns.;
@@ -282,13 +257,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		SongArrayAdapter adapter = (SongArrayAdapter) mainActivity_SearchView.songsListView.getAdapter();
 		SearchTerms terms = adapter.GetSearchTerms();
 
-		return new AppState(terms, manager.viewPager.getCurrentItem(), mainActivity_SongView.GetSongFromSongView(), mainActivity_SongView.IsSongEditMode(), mainActivity_SearchView.songsListView.getFirstVisiblePosition());
-	}
-
-	@Override
-	public Object onRetainNonConfigurationInstance() {
-		final AppState state = GetAppState();
-		return state;
+		return new AppState(terms, manager.viewPager.getCurrentItem(), mainActivity_SongView.GetSongFromSongView(), mainActivity_SongView.IsSongEditMode(),
+				mainActivity_SearchView.songsListView.getFirstVisiblePosition());
 	}
 
 	protected void RestoreState() {

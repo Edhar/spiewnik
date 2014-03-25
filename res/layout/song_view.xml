@@ -17,7 +17,8 @@
         android:text=""
         android:textSize="20sp"
         android:textStyle="bold"
-        android:visibility="gone" >
+        android:visibility="gone"
+        android:textColor="@color/theme_violet_tc_song_view" >
     </EditText>
 
     <TextView
@@ -44,7 +45,7 @@
             android:inputType="none"
             android:padding="10dp"
             android:text=""
-            android:textColor="#000"
+            android:textColor="@color/theme_violet_tc_song_view"
             android:textSize="20sp" >
         </EditText>
     </ScrollView>

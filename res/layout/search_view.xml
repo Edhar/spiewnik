@@ -11,27 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="@color/theme_violet_bg_LayoutSearch"
-        android:paddingBottom="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="15dp"
-            android:gravity="left|center_vertical"
-            android:text="@string/labels_Search"
-            android:textColor="@color/theme_violet_tc_labels_Search"
-            android:textSize="20sp" 
-            android:visibility="gone">
-        </TextView>
+        android:paddingBottom="3dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingTop="3dp" >
         
         <EditText
             android:id="@+id/SearchEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_marginRight="0dip"
             android:layout_weight="1"
             android:background="@color/theme_violet_bg_SearchEditText"
@@ -39,17 +27,17 @@
             android:paddingRight="0dip"
             android:textColor="@color/theme_violet_tc_SearchEditText"
             android:textCursorDrawable="@null"
-            android:textSize="25sp" >
+            android:textSize="22sp" >
         </EditText>
 
         <Button
             android:id="@+id/SearcTextClearButton"
             android:layout_width="45dp"
-            android:layout_height="32dp"
-            android:background="@color/theme_TransparentColor"
+            android:layout_height="38dp"
+            android:background="@color/theme_violet_bg_SearcTextClearButton"
             android:text="X"
             android:textColor="@color/theme_violet_tc_SearcTextClearButton"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:visibility="gone" >
         </Button>
@@ -60,72 +48,93 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:weightSum="100" >
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
+        android:weightSum="100"
+        android:background="@color/theme_violet_bg_TabsItemsLayout" >
 
         <Button
             android:id="@+id/RecentlyViewedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:background="@color/theme_violet_bg_TabsItem"
-            android:padding="4dp"
+
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            
             android:layout_weight="28"
             android:text="@string/buttons_Recent"
             android:textColor="@color/theme_violet_tc_TabsItem"
-            android:textSize="18sp" >
+            android:textSize="16sp" >
         </Button>
 
         <Button
             android:id="@+id/OftenViewedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:background="@color/theme_violet_bg_TabsItem"
-            android:padding="4dp"
+            
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            
             android:layout_weight="20"
             android:text="@string/buttons_Often"
             android:textColor="@color/theme_violet_tc_TabsItem"
-            android:textSize="18sp" >
+            android:textSize="16sp" >
         </Button>
 
         <Button
             android:id="@+id/SiteRatingViewedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:background="@color/theme_violet_bg_TabsItem"
-            android:padding="4dp"
+
+			android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+
             android:layout_weight="28"
             android:text="@string/buttons_SiteRating"
             android:textColor="@color/theme_violet_tc_TabsItem"
-            android:textSize="18sp" >
+            android:textSize="16sp" >
         </Button>
 
         <Button
             android:id="@+id/FavoriteButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:background="@color/theme_violet_bg_TabsItem"
-            android:padding="4dp"
+            
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            
             android:layout_weight="24"
             android:text="@string/buttons_Favorite"
             android:textColor="@color/theme_violet_tc_TabsItem"
-            android:textSize="18sp" >
+            android:textSize="16sp" >
         </Button>
     </LinearLayout>
 
@@ -140,7 +149,8 @@
             android:id="@+id/SongsListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/theme_TransparentColor" >
+            android:divider="@layout/song_list_devider"
+            android:dividerHeight="1dp" >
         </ListView>
     </LinearLayout>
 

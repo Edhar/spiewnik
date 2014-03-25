@@ -52,7 +52,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 				btn.setBackgroundColor(MainAct.manager.context.getResources().getColor(R.color.theme_violet_bg_PressedClearButton));
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				btn.setBackgroundColor(MainAct.manager.context.getResources().getColor(R.color.theme_TransparentColor));
+				btn.setBackgroundColor(MainAct.manager.context.getResources().getColor(R.color.theme_violet_bg_SearcTextClearButton));
 				v.performClick();
 			}
 			return true;
