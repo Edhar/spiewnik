@@ -247,7 +247,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		CreateAdapterAndSetToSongList(terms);
 	}
 
-	protected void ShowHideClearSearchButton(Boolean show) {
+	protected void ToggleClearSearchButton(Boolean show) {
 		if (searcTextClearButton.getVisibility() != View.VISIBLE && show) {
 			searcTextClearButton.setVisibility(View.VISIBLE);
 		} else if (searcTextClearButton.getVisibility() != View.GONE && !show) {
@@ -381,7 +381,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			public void onTextChanged(CharSequence newStr, int start, int before, int count) {
 
 				if (!newStr.toString().equalsIgnoreCase(searchEditTextPrevValue) && newStr.length() >= MainAct.manager.settings.MinSymbolsForStartSearch()) {
-					ShowHideClearSearchButton(true);
+					ToggleClearSearchButton(true);
 
 					if (MainAct.manager.settings.DoMoreRelevantSearch()) {
 						StartSearchWithDelay();
@@ -392,7 +392,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 					searchEditTextPrevValue = newStr.toString();
 				}
 				if (newStr.toString().length() == 0) {
-					ShowHideClearSearchButton(false);
+					ToggleClearSearchButton(false);
 					LoadDefaultSongsListContent();
 				}
 			}

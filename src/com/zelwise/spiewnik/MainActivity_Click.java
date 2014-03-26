@@ -44,7 +44,7 @@ public class MainActivity_Click extends MainActivity_Ext {
 			break;
 		case R.id.SearcTextClearButton:
 			MainAct.mainActivity_SearchView.ClearSearchText();
-			MainAct.mainActivity_SearchView.ShowHideClearSearchButton(false);
+			MainAct.mainActivity_SearchView.ToggleClearSearchButton(false);
 			MainAct.mainActivity_SearchView.LoadDefaultSongsListContent();
 			break;
 		}
