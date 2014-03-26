@@ -1,6 +1,8 @@
 package com.zelwise.spiewnik;
 
-public enum SearchBy {
+import java.io.Serializable;
+
+public enum SearchBy implements Serializable{
 	Text,
 	Rating,
 	SiteRating,

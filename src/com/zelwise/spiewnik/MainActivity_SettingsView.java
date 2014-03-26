@@ -78,12 +78,12 @@ public class MainActivity_SettingsView extends MainActivity_Ext {
 
 			@Override
 			public void afterTextChanged(Editable searchText) {
-				Integer newVal = Utils.ToInt(searchText.toString(), SettingsHelper.DefaultValues.SongPerPage);
+				Integer newVal = Utils.ToInt(searchText.toString(), SettingsHelper.DefaultValues.SongsPerPage);
 				if (newVal > 0) {
-					MainAct.manager.settings.SongPerPage(newVal);
+					MainAct.manager.settings.SongsPerPage(newVal);
 				} else {
-					MainAct.manager.settings.SongPerPage(SettingsHelper.DefaultValues.SongPerPage);
-					maxSongsPerPageOnResult.setText(SettingsHelper.DefaultValues.SongPerPage.toString());
+					MainAct.manager.settings.SongsPerPage(SettingsHelper.DefaultValues.SongsPerPage);
+					maxSongsPerPageOnResult.setText(SettingsHelper.DefaultValues.SongsPerPage.toString());
 				}
 
 			}

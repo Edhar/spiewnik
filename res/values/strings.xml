@@ -83,7 +83,7 @@
 	<color name="theme_violet_bg_SongListItemTextView2">#fff</color>
 	<color name="theme_violet_tc_labels_Search">#5D5A58</color>
 	<color name="theme_violet_tc_SearchEditText">#5D5A58</color>
-	<color name="theme_violet_tc_SearcTextClearButton">#2C2C2C</color>
+	<color name="theme_violet_tc_SearcTextClearButton">#5D5A58</color>
 	<color name="theme_violet_bg_SearcTextClearButton">#E7E2DC</color>
 	<color name="theme_violet_bg_SearchEditText">#E7E2DC</color>
 	<color name="theme_violet_tc_TabsItem">#8E8A88</color>
@@ -91,7 +91,7 @@
 	<color name="theme_violet_bg_TabsItemsLayout">#916E46</color>
 	<color name="theme_TransparentColor">#00000000</color>
 	<color name="theme_violet_bg_PressedButton">#D3E0F7</color>
-	<color name="theme_violet_bg_PressedClearButton">#9EBAEE</color>
+	<color name="theme_violet_bg_PressedClearButton">#D3E0F7</color>
 	<color name="theme_violet_tc_labels_Settings">#2C2C2C</color>
 	<color name="theme_violet_tc_song_view">#000</color>
 	

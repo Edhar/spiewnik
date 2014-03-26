@@ -1,9 +1,8 @@
 package com.zelwise.spiewnik;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.FormatterClosedException;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.nodes.Document;
 
@@ -12,7 +11,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class Song {
+public class Song implements Serializable{
+	private static final long serialVersionUID = 422705449454356L;
+
 	public static class Names {
 		public static final String TableName = "Song";
 		public static final String Id = "Id";

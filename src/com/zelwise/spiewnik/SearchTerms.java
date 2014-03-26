@@ -1,18 +1,26 @@
 package com.zelwise.spiewnik;
 
-public class SearchTerms implements Cloneable {
-	private SettingsHelper settings;
+import java.io.Serializable;
+
+public class SearchTerms implements Cloneable, Serializable {
+	private static final long serialVersionUID = -6533427856451164323L;
+
+	public Integer songsPerPage = SettingsHelper.DefaultValues.SongsPerPage;
 
 	public Integer SongsPerPage() {
-		return settings.SongPerPage();
+		return songsPerPage;
 	};
 
+	public Boolean seachByAndShowSongNumbersInResult = SettingsHelper.DefaultValues.SeachByAndShowSongNumbersInResult;
+
 	public Boolean SeachByAndShowSongNumbersInResult() {
-		return settings.SeachByAndShowSongNumbersInResult();
+		return seachByAndShowSongNumbersInResult;
 	};
-	
+
+	public Boolean doMoreRelevantSearch = SettingsHelper.DefaultValues.DoMoreRelevantSearch;
+
 	public Boolean DoMoreRelevantSearch() {
-		return settings.DoMoreRelevantSearch();
+		return doMoreRelevantSearch;
 	};
 
 	private String orderByString = "";
@@ -30,7 +38,7 @@ public class SearchTerms implements Cloneable {
 	private String searchText = "";
 
 	public String SearchText() {
-		if(SearchBy()!=SearchBy.Text){
+		if (SearchBy() != SearchBy.Text) {
 			return "";
 		}
 		return searchText;
@@ -46,27 +54,38 @@ public class SearchTerms implements Cloneable {
 		currentPage = newValue;
 	};
 
-	public SearchTerms(SettingsHelper settings, SearchBy searchBy,
-			String searchText, String orderByString) {
+	public SearchTerms(SettingsHelper settings, SearchBy searchBy, String searchText, String orderByString) {
 		this(settings, searchBy, searchText, 1, orderByString);
 	}
 
-	public SearchTerms(SettingsHelper settings, SearchBy searchBy,
-			String searchText, Integer currentPage, String orderByString) {
+	public SearchTerms(SettingsHelper settings, SearchBy searchBy, String searchText, Integer currentPage, String orderByString) {
 		this.searchBy = searchBy;
 		this.searchText = searchText.trim();
 		this.orderByString = orderByString;
 		this.currentPage = currentPage;
-		this.settings = settings;
+
+		this.songsPerPage = settings.SongsPerPage();
+		this.seachByAndShowSongNumbersInResult = settings.SeachByAndShowSongNumbersInResult();
+		this.doMoreRelevantSearch = settings.DoMoreRelevantSearch();
 	}
-	
+
+	public SearchTerms(int songsPerPage, Boolean seachByAndShowSongNumbersInResult, Boolean doMoreRelevantSearch, SearchBy searchBy, String searchText, Integer currentPage, String orderByString) {
+		this.searchBy = searchBy;
+		this.searchText = searchText.trim();
+		this.orderByString = orderByString;
+		this.currentPage = currentPage;
+		this.songsPerPage = songsPerPage;
+		this.seachByAndShowSongNumbersInResult = seachByAndShowSongNumbersInResult;
+		this.doMoreRelevantSearch = doMoreRelevantSearch;
+	}
+
 	protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-	
-	public SearchTerms Clone(){
+		return super.clone();
+	}
+
+	public SearchTerms Clone() {
 		try {
-			return (SearchTerms)clone();
+			return (SearchTerms) clone();
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}

@@ -1,25 +1,25 @@
 package com.zelwise.spiewnik;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 //see here http://twigstechtips.blogspot.com/2010/11/android-save-and-load-settings.html
 public class SettingsHelper {
 	public static class Tags {
-		public static final String SongPerPage = "SongPerPage";
+		public static final String SongsPerPage = "SongPerPage";
 		public static final String SeachByAndShowSongNumbersInResult = "SeachByAndShowSongNumbersInResult";
 		public static final String DoMoreRelevantSearch = "DoMoreRelevantSearch";
 		public static final String MinSymbolsForStartSearch = "MinSymbolsForStartSearch";
 		public static final String DefaultTabId = "DefaultTabId";
 		public static final String FontSize = "FontSize";
 		public static final String DoNotTurnOffScreen = "DoNotTurnOffScreen";
+		public static final String ApplicationState = "ApplicationState";
 	}
 	public static class DefaultValues {
 		public static Integer DefaultTabId = 0;
 		public static Integer MinSymbolsForStartSearch = 1;
 		public static long StartSearchDelay = 400;
-		public static Integer SongPerPage = 15;
+		public static Integer SongsPerPage = 15;
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 		public static Boolean DoMoreRelevantSearch = true;
 		public static Boolean DoNotTurnOffScreen = true;
@@ -33,15 +33,28 @@ public class SettingsHelper {
 			return FontSize*5; 
 		};
 		public static long MagnifiedShowTime = 2000;
+		
+		public static String ApplicationState = "";
 	}
 	
 	private final String sharedPreferencesName = "AppSettings";
 	private final Integer sharedPreferencesMode = 0;
 	
-	private Context context;
 	private SharedPreferences settings;
 	private SharedPreferences.Editor editor;
-
+	
+	
+	private String applicationState;
+	public String ApplicationState() {
+		return applicationState;
+	}
+	
+	public void ApplicationState(String newValue) {
+		applicationState = newValue;
+		editor.putString(Tags.ApplicationState, applicationState);
+		editor.commit();
+	}
+	
 	private Integer minSymbolsForStartSearch;
 	public Integer MinSymbolsForStartSearch() {
 		return minSymbolsForStartSearch;
@@ -67,18 +80,18 @@ public class SettingsHelper {
 		editor.commit();
 	}
 	
-	private Integer songPerPage;
-	public Integer SongPerPage() {
-		return songPerPage;
+	private Integer songsPerPage;
+	public Integer SongsPerPage() {
+		return songsPerPage;
 	}
-	public void SongPerPage(Integer newValue) {
-		songPerPage = newValue;
-		editor.putInt(Tags.SongPerPage, songPerPage);
+	public void SongsPerPage(Integer newValue) {
+		songsPerPage = newValue;
+		editor.putInt(Tags.SongsPerPage, songsPerPage);
 		editor.commit();
 	}
 	public void SongPerPage(String newValue) {
-		songPerPage = Utils.ToInt(newValue, DefaultValues.SongPerPage);
-		editor.putInt(Tags.SongPerPage, songPerPage);
+		songsPerPage = Utils.ToInt(newValue, DefaultValues.SongsPerPage);
+		editor.putInt(Tags.SongsPerPage, songsPerPage);
 		editor.commit();
 	}
 	
@@ -123,7 +136,6 @@ public class SettingsHelper {
 	}
 
 	public SettingsHelper(Context context) {
-		this.context = context;
 		this.settings = context.getSharedPreferences(sharedPreferencesName, sharedPreferencesMode);
 		this.editor = settings.edit();
 		this.loadAllSettings();
@@ -139,13 +151,15 @@ public class SettingsHelper {
 		minSymbolsForStartSearch = settings.getInt(Tags.MinSymbolsForStartSearch,
 				DefaultValues.MinSymbolsForStartSearch);
 		
-		songPerPage = settings.getInt(Tags.SongPerPage,
-				DefaultValues.SongPerPage);
+		songsPerPage = settings.getInt(Tags.SongsPerPage,
+				DefaultValues.SongsPerPage);
 		
 		seachByAndShowSongNumbersInResult = settings.getBoolean(Tags.SeachByAndShowSongNumbersInResult,DefaultValues.SeachByAndShowSongNumbersInResult);
 		
 		doMoreRelevantSearch = settings.getBoolean(Tags.DoMoreRelevantSearch,DefaultValues.DoMoreRelevantSearch);
 		
 		doNotTurnOffScreen = settings.getBoolean(Tags.DoNotTurnOffScreen,DefaultValues.DoNotTurnOffScreen);
+		
+		applicationState = settings.getString(Tags.ApplicationState,DefaultValues.ApplicationState);
 	}
 }

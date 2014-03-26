@@ -7,12 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-import com.zelwise.spiewnik.Song;
-import com.zelwise.spiewnik.Category;
-
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -21,8 +17,6 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static String DB_PATH = "/data/data/com.zelwise.spiewnik/databases/";
 	public static final String DB_NAME = "spiewnik.db";
 	public static final int DATABASE_VERSION = 2;
-
-	private SQLiteDatabase myDataBase;
 
 	public static final String SortDescending = " DESC";
 	public static final String SortAscending = " ASC";
@@ -53,16 +47,10 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static void CreateTable(SQLiteDatabase db, String tableName) {
 		DropTable(db, tableName);
 		if (tableName == Song.Names.TableName) {
-			
-			db.execSQL("create table " + Song.Names.TableName + " ("
-					+ Song.Names.Id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ Song.Names.CategoryId + " INTEGER DEFAULT ( 0 ),"
-					+ Song.Names.SiteId + " INTEGER DEFAULT ( 0 ),"
-					+ Song.Names.Title + " TEXT," + Song.Names.Content
-					+ " TEXT," + Song.Names.Rating + " INTEGER DEFAULT ( 0 ),"
-					+ Song.Names.SiteRating + " INTEGER DEFAULT ( 0 ),"
-					+ Song.Names.RecentlyViewedDate + " long DEFAULT ( 0 ),"
-					+ Song.Names.Favorite + " BOOLEAN DEFAULT ( 0 )" + ");");
+
+			db.execSQL("create table " + Song.Names.TableName + " (" + Song.Names.Id + " INTEGER PRIMARY KEY AUTOINCREMENT," + Song.Names.CategoryId + " INTEGER DEFAULT ( 0 )," + Song.Names.SiteId
+					+ " INTEGER DEFAULT ( 0 )," + Song.Names.Title + " TEXT," + Song.Names.Content + " TEXT," + Song.Names.Rating + " INTEGER DEFAULT ( 0 )," + Song.Names.SiteRating
+					+ " INTEGER DEFAULT ( 0 )," + Song.Names.RecentlyViewedDate + " long DEFAULT ( 0 )," + Song.Names.Favorite + " BOOLEAN DEFAULT ( 0 )" + ");");
 
 			// id ASC
 			db.execSQL("CREATE UNIQUE INDEX idx_Song_Id_ASC ON Song (Id ASC);");
@@ -103,13 +91,9 @@ public class DBHelper extends SQLiteOpenHelper {
 		}
 
 		if (tableName == Category.Names.TableName) {
-			db.execSQL("create table " + Category.Names.TableName + " ("
-					+ Category.Names.Id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ Category.Names.Title + " TEXT NOT NULL DEFAULT ( '' ),"
-					+ Category.Names.SiteCode + " CHAR NOT NULL DEFAULT ( '' )," 
-					+ Category.Names.MenuOrder + " INTEGER NOT NULL DEFAULT ( 0 )," 
-					+ Category.Names.Internal + " text BOOLEAN DEFAULT ( 1 )" 
-					+ ");");
+			db.execSQL("create table " + Category.Names.TableName + " (" + Category.Names.Id + " INTEGER PRIMARY KEY AUTOINCREMENT," + Category.Names.Title + " TEXT NOT NULL DEFAULT ( '' ),"
+					+ Category.Names.SiteCode + " CHAR NOT NULL DEFAULT ( '' )," + Category.Names.MenuOrder + " INTEGER NOT NULL DEFAULT ( 0 )," + Category.Names.Internal
+					+ " text BOOLEAN DEFAULT ( 1 )" + ");");
 		}
 	}
 
@@ -161,8 +145,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 		try {
 			String myPath = DB_PATH + DB_NAME;
-			checkDB = SQLiteDatabase.openDatabase(myPath, null,
-					SQLiteDatabase.OPEN_READONLY);
+			checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 
 		} catch (SQLiteException e) {
 
@@ -178,46 +161,5 @@ public class DBHelper extends SQLiteOpenHelper {
 
 		return checkDB != null ? true : false;
 	}
-	/*
-	 * //below need for extra tancy s bubnom public void createDataBase() throws
-	 * IOException{
-	 * 
-	 * boolean dbExist = checkDataBase();
-	 * 
-	 * if(dbExist){ //do nothing - database already exist }else{ //By calling
-	 * this method and empty database will be created into the default system
-	 * path //of your application so we are gonna be able to overwrite that
-	 * database with our database.
-	 * 
-	 * this.getReadableDatabase();
-	 * 
-	 * try {
-	 * 
-	 * copyDataBase();
-	 * 
-	 * } catch (IOException e) {
-	 * 
-	 * throw new Error("Error copying database");
-	 * 
-	 * } }
-	 * 
-	 * }
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * public void OpenDataBase() throws SQLException{ String myPath = DB_PATH +
-	 * DB_NAME; myDataBase = SQLiteDatabase.openDatabase(myPath, null,
-	 * SQLiteDatabase.OPEN_READWRITE); }
-	 * 
-	 * @Override public synchronized void close() {
-	 * 
-	 * if(myDataBase != null) myDataBase.close();
-	 * 
-	 * super.close();
-	 * 
-	 * }
-	 */
 
 }

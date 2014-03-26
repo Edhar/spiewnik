@@ -1,7 +1,6 @@
 package com.zelwise.spiewnik;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.io.*;
 
@@ -16,8 +15,7 @@ public class DBUpgrade {
 	private int oldVersion;
 	private int newVersion;
 
-	public DBUpgrade(Context context, SQLiteDatabase db, int oldVersion,
-			int newVersion) {
+	public DBUpgrade(Context context, SQLiteDatabase db, int oldVersion, int newVersion) {
 		this.context = context;
 		this.db = db;
 		this.oldVersion = oldVersion;
@@ -26,25 +24,21 @@ public class DBUpgrade {
 
 	public void UpdateDb() {
 		try {
-			
+
 			if (oldVersion == 1) {
 				From1to2();
-				//From2to3();
+				// From2to3();
 			}
-			
+
 			if (oldVersion == 2) {
-				//From2to3();
+				// From2to3();
 			}
-			
+
 		} catch (Exception e) {
 
 		}
 	}
 
-	private void SaveSong(String title, String content) {
-		new Song(title, content, SettingsHelper.DefaultValues.SiteRatingValue,
-				new Date(0)).SaveOrUpdate(db);
-	}
 	private void From2to3() {
 		try {
 			// copy update db
@@ -64,23 +58,24 @@ public class DBUpgrade {
 			myOutput.flush();
 			myOutput.close();
 			myInput.close();
-			
+
 			//
 			SQLiteDatabase updateDB = null;
 
 			try {
-				updateDB = SQLiteDatabase.openDatabase(outFileName, null,SQLiteDatabase.OPEN_READONLY);
-/*
-				ArrayList<Song> songs = Song.GetSongs(updateDB);
-				for (Song song : songs) {
-					Song newSong = new Song(song.Title(),song.Content(),SettingsHelper.DefaultValues.SiteRatingValue, song.RecentlyViewedDate());
-					newSong.SaveOrUpdate(db);
-				}*/
+				updateDB = SQLiteDatabase.openDatabase(outFileName, null, SQLiteDatabase.OPEN_READONLY);
+				/*
+				 * ArrayList<Song> songs = Song.GetSongs(updateDB); for (Song
+				 * song : songs) { Song newSong = new
+				 * Song(song.Title(),song.Content
+				 * (),SettingsHelper.DefaultValues.SiteRatingValue,
+				 * song.RecentlyViewedDate()); newSong.SaveOrUpdate(db); }
+				 */
 
 			} catch (SQLiteException e) {
 				// database does't exist yet.
 			}
-			
+
 			File tempFile = new File(outFileName);
 			tempFile.delete();
 
@@ -91,6 +86,7 @@ public class DBUpgrade {
 
 		}
 	}
+
 	private void From1to2() {
 		try {
 			// copy update db
@@ -110,23 +106,23 @@ public class DBUpgrade {
 			myOutput.flush();
 			myOutput.close();
 			myInput.close();
-			
+
 			//
 			SQLiteDatabase updateDB = null;
 
 			try {
-				updateDB = SQLiteDatabase.openDatabase(outFileName, null,SQLiteDatabase.OPEN_READONLY);
+				updateDB = SQLiteDatabase.openDatabase(outFileName, null, SQLiteDatabase.OPEN_READONLY);
 
 				ArrayList<Song> songs = Song.GetSongs(updateDB);
 				for (Song song : songs) {
-					Song newSong = new Song(song.Title(),song.Content(),SettingsHelper.DefaultValues.SiteRatingValue, song.RecentlyViewedDate());
+					Song newSong = new Song(song.Title(), song.Content(), SettingsHelper.DefaultValues.SiteRatingValue, song.RecentlyViewedDate());
 					newSong.SaveOrUpdate(db);
 				}
 
 			} catch (SQLiteException e) {
 				// database does't exist yet.
 			}
-			
+
 			File tempFile = new File(outFileName);
 			tempFile.delete();
 

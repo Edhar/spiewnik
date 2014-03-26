@@ -1,15 +1,8 @@
 package com.zelwise.spiewnik;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.nodes.Document;
-
-import android.util.Log;
-
-import com.zelwise.spiewnik.Song.Names;
 
 public class Category {
 	public static class Names {
@@ -67,15 +60,6 @@ public class Category {
 
 	}
 
-	private Category(Integer id, String title, String siteCode,
-			Integer menuOrder, Boolean internal) {
-		this.id = id;
-		this.title = title;
-		this.siteCode = siteCode;
-		this.menuOrder = menuOrder;
-		this.internal = internal;
-	}
-	
 	public static ArrayList<Integer> GetSiteIds(Document document) {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 			

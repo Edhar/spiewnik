@@ -1,5 +1,6 @@
 package com.zelwise.spiewnik;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity  implements OnClickListener {
+public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	MainActivity_Menu mainActivity_Menu;
 	MainActivity_SettingsView mainActivity_SettingsView;
@@ -49,8 +50,8 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener 
 		if (!mainActivity_SettingsView.minSymbolsForStartSearch.getText().toString().equalsIgnoreCase(manager.settings.MinSymbolsForStartSearch().toString())) {
 			mainActivity_SettingsView.minSymbolsForStartSearch.setText(manager.settings.MinSymbolsForStartSearch().toString());
 		}
-		if (!mainActivity_SettingsView.maxSongsPerPageOnResult.getText().toString().equalsIgnoreCase(manager.settings.SongPerPage().toString())) {
-			mainActivity_SettingsView.maxSongsPerPageOnResult.setText(manager.settings.SongPerPage().toString());
+		if (!mainActivity_SettingsView.maxSongsPerPageOnResult.getText().toString().equalsIgnoreCase(manager.settings.SongsPerPage().toString())) {
+			mainActivity_SettingsView.maxSongsPerPageOnResult.setText(manager.settings.SongsPerPage().toString());
 		}
 		if (mainActivity_SettingsView.seachByAndShowSongNumbersInResult.isChecked() != manager.settings.SeachByAndShowSongNumbersInResult()) {
 			mainActivity_SettingsView.seachByAndShowSongNumbersInResult.setChecked(manager.settings.SeachByAndShowSongNumbersInResult());
@@ -72,12 +73,11 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener 
 
 	private void InitTitle() {
 		try {
-			
+
 			ActionBar actionBar = getSupportActionBar();
-			Drawable actionBarDrawable = manager.context.getResources().getDrawable(R.drawable.bg_action_bar);
+			Drawable actionBarDrawable = getResources().getDrawable(R.drawable.bg_action_bar);
 			actionBar.setBackgroundDrawable(actionBarDrawable);
-			
-			
+
 		} catch (Exception e) {
 		}
 	}
@@ -94,6 +94,8 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		InitTitle();
+		
 		LayoutInflater inflater = LayoutInflater.from(this);
 		List<View> pages = new ArrayList<View>();
 
@@ -114,9 +116,8 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener 
 		setContentView(viewPager);
 
 		manager = new AppManager(this, viewPager);
-		
-		InitTitle();
 
+		
 		mainActivity_SettingsView.onCreate();
 		mainActivity_SearchView.onCreate();
 		mainActivity_SongView.onCreate();
@@ -128,7 +129,7 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener 
 				mainActivity_SongView.CheckIfSongEditModeOrContentSaved();
 
 				Activity activity = (Activity) manager.context;
-				
+
 				if (manager.viewPager.getCurrentItem() == MainActivity_SettingsView.SettingsViewIndex) {
 					activity.setTitle(getResources().getString(R.string.settings_settingsName));
 				} else if (manager.viewPager.getCurrentItem() == MainActivity_SearchView.SearchViewIndex) {
@@ -164,7 +165,8 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener 
 
 		LoadSettings();
 
-		RestoreState();
+		RestoreState(savedInstanceState);
+
 	}
 
 	@Override
@@ -261,21 +263,39 @@ public class MainActivity extends ActionBarActivity  implements OnClickListener 
 				mainActivity_SearchView.songsListView.getFirstVisiblePosition());
 	}
 
-	protected void RestoreState() {
-		final AppState state = (AppState) ((Activity) manager.context).getLastNonConfigurationInstance();
-		if (state != null) {
-			mainActivity_SearchView.searchEditText.setText(state.Terms.SearchText());
-			manager.viewPager.setCurrentItem(state.ViewIndex);
-			if (state.IsSongEditMode) {
-				mainActivity_SongView.SetSongEditMode();
-			}
-			mainActivity_SongView.UpdateContenSongView(state.Song);
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("AppState", GetAppState());
+		manager.settings.ApplicationState(SerializeHelper.serializeObjectToString(GetAppState()));
+		super.onSaveInstanceState(outState);
+	}
 
-			mainActivity_SearchView.CreateAdapterAndSetToSongList(state.Terms);
-			mainActivity_SearchView.FocusedItemInSongsList(state.FirstVisibleSongPosition);
-		} else {
-			mainActivity_SearchView.LoadDefaultSongsListContent();
-			mainActivity_SearchView.FocusedItemInSongsList(0);
+	protected void RestoreState(Bundle savedInstanceState) {
+		try {
+			AppState state = null;
+			if (savedInstanceState != null) {
+				state = (AppState) savedInstanceState.getSerializable("AppState");
+			} else {
+				state = (AppState) SerializeHelper.deserializeObjectFromString(manager.settings.ApplicationState());
+			}
+
+			if (state != null) {
+				mainActivity_SearchView.searchEditText.setText(state.Terms.SearchText());
+				manager.viewPager.setCurrentItem(state.ViewIndex);
+				if (state.IsSongEditMode) {
+					mainActivity_SongView.SetSongEditMode();
+				}
+
+				mainActivity_SongView.UpdateContenSongView(state.SongViewSong);
+
+				mainActivity_SearchView.CreateAdapterAndSetToSongList(state.Terms);
+				mainActivity_SearchView.FocusedItemInSongsList(state.FirstVisibleSongPosition);
+			} else {
+				mainActivity_SearchView.LoadDefaultSongsListContent();
+				mainActivity_SearchView.FocusedItemInSongsList(0);
+			}
+		} catch (Exception ex) {
 		}
 	}
+
 }

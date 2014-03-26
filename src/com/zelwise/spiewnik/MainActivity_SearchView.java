@@ -2,14 +2,10 @@ package com.zelwise.spiewnik;
 
 import java.util.Date;
 
-import com.zelwise.spiewnik.Song.Names;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.text.Editable;
@@ -20,15 +16,17 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.zelwise.spiewnik.Song.Names;
 
 public class MainActivity_SearchView extends MainActivity_Ext {
 	public MainActivity_SearchView(MainActivity mainActivity) {
@@ -216,11 +214,11 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			favoriteButton.setBackgroundColor(pressedColor);
 			break;
 		case Text:
-			siteRatingViewedButton.setBackgroundColor(pressedColor);
+			//siteRatingViewedButton.setBackgroundColor(pressedColor);
 			break;
 
 		default:
-			siteRatingViewedButton.setBackgroundColor(pressedColor);
+			//siteRatingViewedButton.setBackgroundColor(pressedColor);
 			break;
 		}
 	}
