@@ -4,6 +4,9 @@ import java.io.IOException;
 import org.jsoup.nodes.Document;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,22 +25,38 @@ public class AppManager {
 	private Handler responseHandler;
 	public SettingsHelper settings;
 	
+
+	public String GetAppDataDirectory(){
+		PackageManager m = context.getPackageManager();
+		String s = context.getPackageName();
+		PackageInfo p;
+		try {
+			p = m.getPackageInfo(s, 0);
+			s = p.applicationInfo.dataDir;
+		} catch (NameNotFoundException e) {
+			return "";
+		}
+		
+		return s;		
+	}
+	
 	public View GetViewPage(int pageViewIndex){
 		return ((AppPagerAdapter) viewPager.getAdapter()).pages.get(pageViewIndex);
 	}
 
 	public AppManager(Context context, ViewPager viewPager) {
-		this.dBHelper = new DBHelper(context);
 		this.context = context;
+		String appDataDir = GetAppDataDirectory();
+		this.dBHelper = new DBHelper(context,appDataDir);		
 		this.viewPager = viewPager;
 		this.settings = new SettingsHelper(context);
 		this.tabsList = new TabsList(context);
-
+		
 		if (!this.dBHelper.checkDataBase()) {
 			copyDb();
 		}
 
-		this.db = dBHelper.getWritableDatabase();
+		this.db = dBHelper.open();
 	}
 
 	private void copyDb() {

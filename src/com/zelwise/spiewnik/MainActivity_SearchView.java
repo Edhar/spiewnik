@@ -72,22 +72,6 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		}
 	};
 
-	protected void SetSelectedDefaultTab(Integer tabId) {
-		ArrayAdapter<TabsItem> tabAdapter = (ArrayAdapter<TabsItem>) MainAct.mainActivity_SettingsView.byDefaultResultsForTab.getAdapter();
-		if (tabAdapter != null) {
-			TabsItem curTab = (TabsItem) MainAct.mainActivity_SettingsView.byDefaultResultsForTab.getItemAtPosition(MainAct.mainActivity_SettingsView.byDefaultResultsForTab.getSelectedItemPosition());
-			TabsItem newTab = MainAct.manager.tabsList.Get(tabId);
-			for (int i = 0; i < tabAdapter.getCount(); i++) {
-				if (((TabsItem) tabAdapter.getItem(i)).Id() == newTab.Id()) {
-					if (curTab.Id() != newTab.Id()) {
-						MainAct.mainActivity_SettingsView.byDefaultResultsForTab.setSelection(i);
-					}
-					break;
-				}
-			}
-		}
-	}
-
 	Handler startSearchHandler = new Handler();
 	protected Runnable runSearchRunnable = new Runnable() {
 		public void run() {
@@ -101,14 +85,12 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		}
 	};
 
-	// to fix double event
-	String searchEditTextPrevValue = "";
-
 	protected long lastStartSearchTime;
 
 	protected void StartSearchImmediately() {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.Text, searchEditText.getText().toString(), "");
 		CreateAdapterAndSetToSongList(terms);
+		AddDynamicallyDataToListIfNeeded();
 	}
 
 	protected void StartSearchWithDelay() {
@@ -170,26 +152,6 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		songsListView.requestFocus();
 	}
 
-	protected void AddDynamicallyDataToList() {
-		SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView.getAdapter();
-		if (listAdapter != null && listAdapter.HasNextPage()) {
-			listAdapter.AddAdditionalPage();
-		}
-	}
-
-	protected void CreateAdapterAndSetToSongList(SearchTerms terms) {
-		MarkActiveTabItem(terms);
-		SongArrayAdapter songsArrayAdapter = new SongArrayAdapter(MainAct.manager, terms);
-		if (songsArrayAdapter.HasSongs()) {
-			songsListView.setAdapter(songsArrayAdapter);
-		} else {
-			songsListView.setAdapter(null);
-			Toast toast = Toast.makeText(MainAct.manager.context, MainAct.manager.context.getResources().getString(R.string.search_NothingFound), Toast.LENGTH_SHORT);
-			toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50);
-			toast.show();
-		}
-	}
-
 	private void MarkActiveTabItem(SearchTerms terms) {
 
 		int pressedColor = MainAct.manager.context.getResources().getColor(R.color.theme_violet_bg_PressedButton);
@@ -214,37 +176,41 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			favoriteButton.setBackgroundColor(pressedColor);
 			break;
 		case Text:
-			//siteRatingViewedButton.setBackgroundColor(pressedColor);
+			// siteRatingViewedButton.setBackgroundColor(pressedColor);
 			break;
 
 		default:
-			//siteRatingViewedButton.setBackgroundColor(pressedColor);
+			// siteRatingViewedButton.setBackgroundColor(pressedColor);
 			break;
 		}
 	}
 
 	protected void ClearSearchText() {
-		searchEditText.setText("");
+		SetTextWithoutEventRun_searchEditText("");
 	}
 
 	protected void LoadOftenViewed() {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.Rating, "", Names.Rating + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
+		AddDynamicallyDataToListIfNeeded();
 	}
 
 	protected void LoadSiteRatingViewed() {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.SiteRating, "", Names.SiteRating + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
+		AddDynamicallyDataToListIfNeeded();
 	}
 
 	protected void LoadRecentlyViewed() {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.RecentlyViewedDate, "", Names.RecentlyViewedDate + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
+		AddDynamicallyDataToListIfNeeded();
 	}
 
 	protected void LoadFavorite() {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.Favorite, "", Names.Favorite + DBHelper.SortDescending);
 		CreateAdapterAndSetToSongList(terms);
+		AddDynamicallyDataToListIfNeeded();
 	}
 
 	protected void ToggleClearSearchButton(Boolean show) {
@@ -311,6 +277,113 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 
 	}
 
+	final Runnable AddDynamicallyDataToList_Runnable = new Runnable() {
+		public void run() {
+			SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView.getAdapter();
+			if (listAdapter != null && listAdapter.HasNextPage()) {
+				listAdapter.AddAdditionalPage();
+			}
+		}
+	};
+
+	protected void AddDynamicallyDataToList() {
+		AddDynamicallyDataToList_Runnable.run();
+	}
+
+	protected void CreateAdapterAndSetToSongList(SearchTerms terms) {
+		MarkActiveTabItem(terms);
+		SongArrayAdapter songsArrayAdapter = new SongArrayAdapter(MainAct.manager, terms);
+		if (songsArrayAdapter.HasSongs()) {
+			songsListView.setAdapter(songsArrayAdapter);
+			//AddDynamicallyDataToListIfNeeded_Handler.postDelayed(AddDynamicallyDataToListIfNeeded_Runnable, SettingsHelper.DefaultValues.AddDynamicallyDataToListIfNeeded_CheckInterval);
+		} else {
+			songsListView.setAdapter(null);
+			Toast toast = Toast.makeText(MainAct.manager.context, MainAct.manager.context.getResources().getString(R.string.search_NothingFound), Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50);
+			toast.show();
+		}
+	}
+
+	private TextWatcher searchEditText_TextWatcher = new TextWatcher() {
+
+		@Override
+		public void onTextChanged(CharSequence newStr, int start, int before, int count) {
+
+			if (newStr.length() >= MainAct.manager.settings.MinSymbolsForStartSearch()) {
+				ToggleClearSearchButton(true);
+
+				if (MainAct.manager.settings.DoMoreRelevantSearch()) {
+					StartSearchWithDelay();
+				} else {
+					StartSearchImmediately();
+				}
+			}
+			if (newStr.toString().length() == 0) {
+				ToggleClearSearchButton(false);
+				LoadDefaultSongsListContent();
+			}
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+		}
+
+		@Override
+		public void afterTextChanged(Editable searchText) {
+
+		}
+	};
+
+	public void SetTextWithoutEventRun_searchEditText(String newValue) {
+		searchEditText.removeTextChangedListener(searchEditText_TextWatcher);
+		searchEditText.setText(newValue);
+		searchEditText.addTextChangedListener(searchEditText_TextWatcher);
+	}
+
+	Handler AddDynamicallyDataToListIfNeeded_Handler = new Handler();
+	Runnable AddDynamicallyDataToListIfNeeded_Runnable = new Runnable() {
+		public void run() {
+			AddDynamicallyDataToListIfNeeded();
+		}
+	};
+
+	private Boolean IsAddDynamicallyDataToList_Needed() {
+		// to fix onScroll fire when keyboard open
+		if (MainAct.manager.viewPager.getCurrentItem() == MainActivity_SearchView.SearchViewIndex) {
+			SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView.getAdapter();
+			if (listAdapter != null && listAdapter.HasNextPage()) {
+				int hidenSongsCount = SettingsHelper.DefaultValues.SongsPerPageHiddenToAddMore;
+				
+				int firstVisiblePosition = songsListView.getFirstVisiblePosition();
+				int lastVisiblePosition = songsListView.getLastVisiblePosition();
+				int totalItemCount = listAdapter.getCount();
+				
+				if(lastVisiblePosition == -1){
+					return true;
+				}
+				
+				int visibleItemCountOnDisplay = lastVisiblePosition - firstVisiblePosition;
+				int count = totalItemCount - firstVisiblePosition - visibleItemCountOnDisplay;
+				if (totalItemCount > 0) {
+					if (count < hidenSongsCount) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public void AddDynamicallyDataToListIfNeeded() {
+		if (IsAddDynamicallyDataToList_Needed()) {
+			AddDynamicallyDataToList();
+			AddDynamicallyDataToListIfNeeded_Handler.postDelayed(AddDynamicallyDataToListIfNeeded_Runnable, SettingsHelper.DefaultValues.AddDynamicallyDataToListIfNeeded_CheckInterval);
+		} else {
+			AddDynamicallyDataToListIfNeeded_Handler.removeCallbacks(AddDynamicallyDataToListIfNeeded_Runnable);
+		}
+	}
+
 	@Override
 	public void onCreate() {
 		View searchView = MainAct.manager.GetViewPage(SearchViewIndex);
@@ -350,21 +423,33 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 				curSong.SaveOrUpdate(MainAct.manager.db);
 			}
 		});
+
 		songsListView.setOnScrollListener(new OnScrollListener() {
 
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				MainAct.manager.HideKeyboard();
+				if (IsAddDynamicallyDataToList_Needed()) {
+					AddDynamicallyDataToList();
+				}
 			}
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItemIndex, int visibleItemCountOnDisplay, int totalItemCount) {
-				final int hidenSongsCount = 2;
-				if (totalItemCount > 0 && (totalItemCount - firstVisibleItemIndex - visibleItemCountOnDisplay) < hidenSongsCount) {
-					AddDynamicallyDataToList();
-				}
+
 			}
 		});
+		/*
+		 * songsListView.setOnScrollListener(new
+		 * EndlessScrollListener(SettingsHelper
+		 * .DefaultValues.SongsPerPageHiddenToAddMore) {
+		 * 
+		 * @Override public void onLoadMore(int page, int totalItemsCount) { //
+		 * Triggered only when new data needs to be appended to the list // Add
+		 * whatever code is needed to append new items to your // AdapterView
+		 * AddDynamicallyDataToList(); } });
+		 */
+
 		songsListView.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			public void onFocusChange(View v, boolean hasFocus) {
@@ -375,38 +460,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		});
 
 		searchEditText = (EditText) searchView.findViewById(R.id.SearchEditText);
-		searchEditText.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void onTextChanged(CharSequence newStr, int start, int before, int count) {
-
-				if (!newStr.toString().equalsIgnoreCase(searchEditTextPrevValue) && newStr.length() >= MainAct.manager.settings.MinSymbolsForStartSearch()) {
-					ToggleClearSearchButton(true);
-
-					if (MainAct.manager.settings.DoMoreRelevantSearch()) {
-						StartSearchWithDelay();
-					} else {
-						StartSearchImmediately();
-					}
-
-					searchEditTextPrevValue = newStr.toString();
-				}
-				if (newStr.toString().length() == 0) {
-					ToggleClearSearchButton(false);
-					LoadDefaultSongsListContent();
-				}
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable searchText) {
-
-			}
-		});
+		searchEditText.addTextChangedListener(searchEditText_TextWatcher);
 		searchEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			public void onFocusChange(View v, boolean hasFocus) {
@@ -419,10 +473,10 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		});
 
 		ImageHelper imgHelper = new ImageHelper(MainAct.manager.context);
-		int sizeInPx = (int) imgHelper.ConvertDipToPixel(20);
+		int sizeInPx = (int) imgHelper.ConvertDipToPixel(25);
 		Drawable resizedDrawable = imgHelper.getResizedDrawable(R.drawable.ic_action_search, sizeInPx, sizeInPx);
 		searchEditText.setCompoundDrawablesWithIntrinsicBounds(resizedDrawable, null, null, null);
-		searchEditText.setCompoundDrawablePadding(15);
+		searchEditText.setCompoundDrawablePadding(10);
 		searchEditText.setPadding(15, 0, 0, 0);
 
 		recentlyViewedButton.setOnTouchListener(onTouchListenerTabsItem);
@@ -430,6 +484,5 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		siteRatingViewedButton.setOnTouchListener(onTouchListenerTabsItem);
 		favoriteButton.setOnTouchListener(onTouchListenerTabsItem);
 		searcTextClearButton.setOnTouchListener(onTouchListenerClear);
-
 	}
 }

@@ -2,6 +2,7 @@ package com.zelwise.spiewnik;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -44,25 +45,14 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		mainActivity_Click = new MainActivity_Click(this);
 	}
 
-	protected void LoadSettings() {
-		mainActivity_SearchView.SetSelectedDefaultTab(manager.settings.DefaultTabId());
-
-		if (!mainActivity_SettingsView.minSymbolsForStartSearch.getText().toString().equalsIgnoreCase(manager.settings.MinSymbolsForStartSearch().toString())) {
-			mainActivity_SettingsView.minSymbolsForStartSearch.setText(manager.settings.MinSymbolsForStartSearch().toString());
-		}
-		if (!mainActivity_SettingsView.maxSongsPerPageOnResult.getText().toString().equalsIgnoreCase(manager.settings.SongsPerPage().toString())) {
-			mainActivity_SettingsView.maxSongsPerPageOnResult.setText(manager.settings.SongsPerPage().toString());
-		}
-		if (mainActivity_SettingsView.seachByAndShowSongNumbersInResult.isChecked() != manager.settings.SeachByAndShowSongNumbersInResult()) {
-			mainActivity_SettingsView.seachByAndShowSongNumbersInResult.setChecked(manager.settings.SeachByAndShowSongNumbersInResult());
-		}
-		if (mainActivity_SettingsView.doMoreRelevantSearch.isChecked() != manager.settings.DoMoreRelevantSearch()) {
-			mainActivity_SettingsView.doMoreRelevantSearch.setChecked(manager.settings.DoMoreRelevantSearch());
-		}
-
-		if (mainActivity_SettingsView.doNotTurnOffScreen.isChecked() != manager.settings.DoNotTurnOffScreen()) {
-			mainActivity_SettingsView.doNotTurnOffScreen.setChecked(manager.settings.DoNotTurnOffScreen());
-		}
+	protected void FillWithSettings() {
+		mainActivity_SettingsView.SetSelectedDefaultTab_byDefaultResultsForTab(manager.settings.DefaultTabId());
+		
+		mainActivity_SettingsView.SetTextWithoutEventRun_minSymbolsForStartSearch(manager.settings.MinSymbolsForStartSearch().toString());
+		mainActivity_SettingsView.SetTextWithoutEventRun_maxSongsPerPageOnResult(manager.settings.SongsPerPage().toString());
+		mainActivity_SettingsView.SetCheckBoxValue_seachByAndShowSongNumbersInResult(manager.settings.SeachByAndShowSongNumbersInResult());
+		mainActivity_SettingsView.SetCheckBoxValue_doMoreRelevantSearch(manager.settings.DoMoreRelevantSearch());
+		mainActivity_SettingsView.SetCheckBoxValue_doNotTurnOffScreen(manager.settings.DoNotTurnOffScreen());
 
 		ToggleKeepScreenOn(manager.settings.DoNotTurnOffScreen());
 
@@ -163,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 			}
 		});
 
-		LoadSettings();
+		FillWithSettings();
 
 		RestoreState(savedInstanceState);
 
@@ -265,8 +255,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putSerializable("AppState", GetAppState());
-		manager.settings.ApplicationState(SerializeHelper.serializeObjectToString(GetAppState()));
+		AppState appState = GetAppState();
+		outState.putSerializable("AppState", appState);
+		manager.settings.ApplicationState(SerializeHelper.serializeObjectToString(appState));
 		super.onSaveInstanceState(outState);
 	}
 
@@ -279,16 +270,24 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 				state = (AppState) SerializeHelper.deserializeObjectFromString(manager.settings.ApplicationState());
 			}
 
-			if (state != null) {
-				mainActivity_SearchView.searchEditText.setText(state.Terms.SearchText());
-				manager.viewPager.setCurrentItem(state.ViewIndex);
+			if (state != null && (new Date().getTime() - state.AppStateCreated.getTime()) < SettingsHelper.DefaultValues.AppStateDurationValid) {
+				manager.viewPager.setCurrentItem(state.ViewIndex);				
 				if (state.IsSongEditMode) {
 					mainActivity_SongView.SetSongEditMode();
 				}
 
 				mainActivity_SongView.UpdateContenSongView(state.SongViewSong);
+				
 
+				//mainActivity_SearchView.searchEditText.setText(state.Terms.SearchText());
+				mainActivity_SearchView.SetTextWithoutEventRun_searchEditText(state.Terms.SearchText());
+				if(state.Terms.SearchText().equals("")){
+                   mainActivity_SearchView.ToggleClearSearchButton(false);
+				}else{
+					mainActivity_SearchView.ToggleClearSearchButton(true);
+				}
 				mainActivity_SearchView.CreateAdapterAndSetToSongList(state.Terms);
+				mainActivity_SearchView.AddDynamicallyDataToListIfNeeded();
 				mainActivity_SearchView.FocusedItemInSongsList(state.FirstVisibleSongPosition);
 			} else {
 				mainActivity_SearchView.LoadDefaultSongsListContent();

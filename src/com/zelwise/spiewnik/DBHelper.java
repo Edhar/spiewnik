@@ -9,22 +9,28 @@ import java.util.Date;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
 public class DBHelper extends SQLiteOpenHelper {
-	public static String DB_PATH = "/data/data/com.zelwise.spiewnik/databases/";
+	public static String DB_PATH = "/data/data/com.zelwise.spiewnik/databases/";;
+	public static String DB_SD_PATH = Environment.getExternalStorageDirectory() + File.separator;
 	public static final String DB_NAME = "spiewnik.db";
-	public static final int DATABASE_VERSION = 2;
+	public static final int DATABASE_VERSION = 3;
 
 	public static final String SortDescending = " DESC";
 	public static final String SortAscending = " ASC";
 	private Context context;
 
-	public DBHelper(Context context) {
-		super(context, DB_NAME, null, DATABASE_VERSION);
+	public DBHelper(Context context, String appDataDirectory) {
+		super(context, context.getExternalFilesDir(null) + File.separator + DB_NAME, null, DATABASE_VERSION);
 		this.context = context;
+		// DB_PATH = appDataDirectory + "/databases/";;
 	}
 
 	public static void DropTable(SQLiteDatabase db, String tableName) {
@@ -36,6 +42,10 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		CreateTable(db, Song.Names.TableName);
 		CreateTable(db, Category.Names.TableName);
+	}
+
+	public SQLiteDatabase open() {
+		return this.getWritableDatabase();
 	}
 
 	@Override
@@ -121,7 +131,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 		InputStream myInput = context.getAssets().open(DB_NAME);
 
-		String outFileName = DB_PATH + DB_NAME;
+		String outFileName = context.getExternalFilesDir(null) + File.separator + DB_NAME;
 
 		File file = new File(DB_PATH);
 		file.mkdirs();
@@ -144,7 +154,26 @@ public class DBHelper extends SQLiteOpenHelper {
 		SQLiteDatabase checkDB = null;
 
 		try {
+
 			String myPath = DB_PATH + DB_NAME;
+
+			if (DATABASE_VERSION <= 3) {
+				try {
+					checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+					if (checkDB != null) {
+						checkDB.close();
+						checkDB = null;
+						DBUpgrade.From2to3(context.getExternalFilesDir(null).toString());
+					}
+				} catch (SQLiteException e) {
+
+				}
+			}
+
+			if (DATABASE_VERSION >= 3) {
+				myPath = context.getExternalFilesDir(null) + File.separator + DB_NAME;
+			}
+
 			checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 
 		} catch (SQLiteException e) {

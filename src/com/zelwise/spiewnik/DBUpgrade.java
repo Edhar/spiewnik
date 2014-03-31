@@ -30,22 +30,26 @@ public class DBUpgrade {
 				// From2to3();
 			}
 
-			if (oldVersion == 2) {
-				// From2to3();
-			}
-
 		} catch (Exception e) {
 
 		}
 	}
 
-	private void From2to3() {
+	public static void From2to3(String externalFilesDir) {
 		try {
-			// copy update db
-			String Update1To2Name = "Update2To3.db";
-			InputStream myInput = context.getAssets().open(Update1To2Name);
 
-			String outFileName = DBHelper.DB_PATH + Update1To2Name;
+			String dbName = DBHelper.DB_PATH + "/" + DBHelper.DB_NAME;
+			InputStream myInput = new FileInputStream(dbName);
+
+			String outFileName = externalFilesDir + File.separator + DBHelper.DB_NAME;
+
+			// delete if exists
+			try {
+				File outFileNameFile = new File(outFileName);
+				outFileNameFile.delete();
+			} catch (Exception ex) {
+
+			}
 
 			OutputStream myOutput = new FileOutputStream(outFileName);
 
@@ -59,29 +63,9 @@ public class DBUpgrade {
 			myOutput.close();
 			myInput.close();
 
-			//
-			SQLiteDatabase updateDB = null;
-
-			try {
-				updateDB = SQLiteDatabase.openDatabase(outFileName, null, SQLiteDatabase.OPEN_READONLY);
-				/*
-				 * ArrayList<Song> songs = Song.GetSongs(updateDB); for (Song
-				 * song : songs) { Song newSong = new
-				 * Song(song.Title(),song.Content
-				 * (),SettingsHelper.DefaultValues.SiteRatingValue,
-				 * song.RecentlyViewedDate()); newSong.SaveOrUpdate(db); }
-				 */
-
-			} catch (SQLiteException e) {
-				// database does't exist yet.
-			}
-
-			File tempFile = new File(outFileName);
-			tempFile.delete();
-
-			if (updateDB != null) {
-				updateDB.close();
-			}
+			File myInputFile = new File(dbName);
+			myInputFile.delete();
+			
 		} catch (Exception e) {
 
 		}
@@ -93,7 +77,7 @@ public class DBUpgrade {
 			String Update1To2Name = "Update1To2.db";
 			InputStream myInput = context.getAssets().open(Update1To2Name);
 
-			String outFileName = DBHelper.DB_PATH + Update1To2Name;
+			String outFileName = context.getExternalFilesDir(null) + File.separator + Update1To2Name;
 
 			OutputStream myOutput = new FileOutputStream(outFileName);
 

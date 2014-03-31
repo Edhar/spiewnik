@@ -1,6 +1,7 @@
 package com.zelwise.spiewnik;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class AppState implements Serializable {
 	private static final long serialVersionUID = -1658975405069863873L;
@@ -10,6 +11,7 @@ public class AppState implements Serializable {
 	public Song SongViewSong;
 	public Boolean IsSongEditMode;
 	public int FirstVisibleSongPosition;
+	public Date AppStateCreated;
 
 	public AppState(SearchTerms terms, int activeViewIndex, Song songViewSong, Boolean isSongEditMode, int firstVisibleSongPosition) {
 		this.Terms = terms;
@@ -17,5 +19,7 @@ public class AppState implements Serializable {
 		this.IsSongEditMode = isSongEditMode;
 		this.FirstVisibleSongPosition = firstVisibleSongPosition;
 		this.SongViewSong = songViewSong;
+		
+		this.AppStateCreated = new Date();
 	}
 }

@@ -26,6 +26,10 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 	public Boolean HasSongs() {
 		return songList.size() > 0;
 	}
+	
+	public int SongsCount(){
+		return songList.size();
+	}
 
 	public Boolean HasNextPage() {
 		return !currentPageIsLast;
@@ -37,12 +41,13 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 
 	public void AddAdditionalPage() {
 		if (!currentPageIsLast) {
+
 			this.searchTerms.CurrentPage(this.searchTerms.CurrentPage() + 1);
 			ArrayList<Song> addSongs = GetCurrentPageSongData(this.manager.db, this.searchTerms);
 			if (addSongs.size() > 0) {
 				songList.addAll(addSongs);
-				this.notifyDataSetChanged();
 				currentPageIsLast = addSongs.size() < searchTerms.SongsPerPage();
+				this.notifyDataSetChanged();				
 			} else {
 				currentPageIsLast = true;
 			}

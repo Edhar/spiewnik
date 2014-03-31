@@ -26,7 +26,7 @@ public class ImageHelper {
 	public Drawable getResizedDrawable(int drawableId, int widthInPx, int heightInPx) {
 		Drawable image = context.getResources().getDrawable(R.drawable.ic_action_search);
 		Bitmap b = ((BitmapDrawable) image).getBitmap();
-		Bitmap bitmapResized = Bitmap.createScaledBitmap(b, widthInPx, heightInPx, false);
+		Bitmap bitmapResized = Bitmap.createScaledBitmap(b, widthInPx, heightInPx, true);
 		Drawable resizedImage = new BitmapDrawable(context.getResources(), bitmapResized);
 		return resizedImage;
 	}
@@ -47,7 +47,7 @@ public class ImageHelper {
 		matrix.postScale(scaleWidth, scaleHeight);
 
 		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+		Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
 
 		return resizedBitmap;
 	}

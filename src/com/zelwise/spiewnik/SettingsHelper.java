@@ -16,10 +16,14 @@ public class SettingsHelper {
 		public static final String ApplicationState = "ApplicationState";
 	}
 	public static class DefaultValues {
+		public static Integer SongsPerPageMin = 1;
+		public static Integer SongsPerPageHiddenToAddMore = 5;
+		public static Integer SongsPerPage = 15;
+		public static Integer AddDynamicallyDataToListIfNeeded_CheckInterval = 100;
+		public static long AppStateDurationValid = 600000;//10*60*1000 - 10min
 		public static Integer DefaultTabId = 0;
 		public static Integer MinSymbolsForStartSearch = 1;
-		public static long StartSearchDelay = 400;
-		public static Integer SongsPerPage = 15;
+		public static long StartSearchDelay = 400;		
 		public static Boolean SeachByAndShowSongNumbersInResult = false;
 		public static Boolean DoMoreRelevantSearch = true;
 		public static Boolean DoNotTurnOffScreen = true;
@@ -89,7 +93,7 @@ public class SettingsHelper {
 		editor.putInt(Tags.SongsPerPage, songsPerPage);
 		editor.commit();
 	}
-	public void SongPerPage(String newValue) {
+	public void SongsPerPage(String newValue) {
 		songsPerPage = Utils.ToInt(newValue, DefaultValues.SongsPerPage);
 		editor.putInt(Tags.SongsPerPage, songsPerPage);
 		editor.commit();
