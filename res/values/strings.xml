@@ -60,6 +60,17 @@
 	<string name="settings_dropTablesButton">Usunąć wszystkie utwory</string>
 	<string name="settings_totalRecods">Wszystkich wpisów</string>
 	
+	<string name="settings_donate">Darować</string>
+	<string name="settings_donate_statement">Każdy rodzaj wkładu pomoże poprawić aplikację</string>
+	
+	<string name="please_wait">Chwila...</string>
+	
+	<string name="iab_bill_error">in app bill error</string>
+	<string name="iab_purchase_error">purchase error</string>
+	<string name="iab_verifyDeveloperPayload_error">verify Developer Payload error</string>
+	<string name="iab_ConsumeFinished_ThankYou">dziękuję</string>
+	<string name="iab_ConsumeFinished_error">ConsumeFinished error</string>
+	
 	<!--
 	<color name="theme_violet_bg_LayoutSearch">#609</color>
 	<color name="theme_violet_tc_SongListItemTextView">#609</color>

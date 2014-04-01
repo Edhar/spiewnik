@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.Handler;
+import android.view.Gravity;
+import android.widget.Toast;
 
 public class DBUpgrade {
 	private Context context;
@@ -24,12 +27,11 @@ public class DBUpgrade {
 
 	public void UpdateDb() {
 		try {
-
 			if (oldVersion == 1) {
 				From1to2();
 				// From2to3();
 			}
-
+			
 		} catch (Exception e) {
 
 		}
@@ -65,7 +67,7 @@ public class DBUpgrade {
 
 			File myInputFile = new File(dbName);
 			myInputFile.delete();
-			
+
 		} catch (Exception e) {
 
 		}

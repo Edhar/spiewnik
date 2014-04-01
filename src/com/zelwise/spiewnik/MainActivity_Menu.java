@@ -58,7 +58,7 @@ public class MainActivity_Menu extends MainActivity_Ext {
 			MainAct.mainActivity_SearchView.ReloadSongsListContent();
 			return true;
 		case R.id.menu_Properties:
-			MainAct.mainActivity_SearchView.ShowSongProperties(MainAct.mainActivity_SongView.GetSongFromSongView());
+			MainAct.mainActivity_SearchView.ShowSongProperties(MainAct.mainActivity_SongView.GetSongFromSongView().Id());
 			return true;
 		case R.id.menu_Delete:
 			MainAct.mainActivity_SearchView.DeleteSongMenuAction(MainAct.mainActivity_SongView.GetSongFromSongView());
@@ -81,7 +81,7 @@ public class MainActivity_Menu extends MainActivity_Ext {
 			MainAct.mainActivity_SongView.SetSongEditMode();
 			return true;
 		case R.id.menu_Properties_Context:
-			MainAct.mainActivity_SearchView.ShowSongProperties(curSong);
+			MainAct.mainActivity_SearchView.ShowSongProperties(curSong.Id());
 			return true;
 		case R.id.menu_Delete_Context:
 			MainAct.mainActivity_SearchView.DeleteSongMenuAction(curSong);

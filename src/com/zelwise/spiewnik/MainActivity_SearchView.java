@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -90,7 +92,7 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 	protected void StartSearchImmediately() {
 		SearchTerms terms = new SearchTerms(MainAct.manager.settings, SearchBy.Text, searchEditText.getText().toString(), "");
 		CreateAdapterAndSetToSongList(terms);
-		AddDynamicallyDataToListIfNeeded();
+		// AddDynamicallyDataToListIfNeeded();
 	}
 
 	protected void StartSearchWithDelay() {
@@ -117,7 +119,9 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		searchEditText.setHint(searchLabel + String.format(searchHint, MainAct.manager.settings.MinSymbolsForStartSearch()));
 	}
 
-	protected void ShowSongProperties(Song song) {
+	protected void ShowSongProperties(int songId) {
+		final Song song = Song.Get(MainAct.manager.db, songId);
+
 		String content = MainAct.manager.context.getResources().getString(R.string.labels_Id)
 				+ song.Id()
 				+ Utils.NewLine
@@ -295,7 +299,8 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		SongArrayAdapter songsArrayAdapter = new SongArrayAdapter(MainAct.manager, terms);
 		if (songsArrayAdapter.HasSongs()) {
 			songsListView.setAdapter(songsArrayAdapter);
-			//AddDynamicallyDataToListIfNeeded_Handler.postDelayed(AddDynamicallyDataToListIfNeeded_Runnable, SettingsHelper.DefaultValues.AddDynamicallyDataToListIfNeeded_CheckInterval);
+			// AddDynamicallyDataToListIfNeeded_Handler.postDelayed(AddDynamicallyDataToListIfNeeded_Runnable,
+			// SettingsHelper.DefaultValues.AddDynamicallyDataToListIfNeeded_CheckInterval);
 		} else {
 			songsListView.setAdapter(null);
 			Toast toast = Toast.makeText(MainAct.manager.context, MainAct.manager.context.getResources().getString(R.string.search_NothingFound), Toast.LENGTH_SHORT);
@@ -354,15 +359,15 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 			SongArrayAdapter listAdapter = (SongArrayAdapter) songsListView.getAdapter();
 			if (listAdapter != null && listAdapter.HasNextPage()) {
 				int hidenSongsCount = SettingsHelper.DefaultValues.SongsPerPageHiddenToAddMore;
-				
+
 				int firstVisiblePosition = songsListView.getFirstVisiblePosition();
 				int lastVisiblePosition = songsListView.getLastVisiblePosition();
 				int totalItemCount = listAdapter.getCount();
-				
-				if(lastVisiblePosition == -1){
+
+				if (lastVisiblePosition == -1) {
 					return true;
 				}
-				
+
 				int visibleItemCountOnDisplay = lastVisiblePosition - firstVisiblePosition;
 				int count = totalItemCount - firstVisiblePosition - visibleItemCountOnDisplay;
 				if (totalItemCount > 0) {
@@ -406,21 +411,23 @@ public class MainActivity_SearchView extends MainActivity_Ext {
 		songsListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> a, View view, int position, long id) {
-				MainAct.manager.viewPager.setCurrentItem(MainActivity_SongView.SongViewIndex);
+				view.setBackgroundColor(MainAct.manager.context.getResources().getColor(R.color.theme_violet_bg_PressedButton));
+				final int positionF = position;
+				final View viewF = view;
+				new Handler().post(new Runnable() {
+					public void run() {
+						MainAct.manager.viewPager.setCurrentItem(MainActivity_SongView.SongViewIndex);
 
-				MainAct.manager.HideKeyboard();
-				MainAct.mainActivity_SongView.SetSongViewViewMode();
+						MainAct.manager.HideKeyboard();
+						MainAct.mainActivity_SongView.SetSongViewViewMode();
 
-				Song curSong = (Song) (songsListView.getItemAtPosition(position));
+						Song curSong = (Song) (songsListView.getItemAtPosition(positionF));
+						MainAct.mainActivity_SongView.UpdateContenSongView(curSong);
+						curSong.UpdateSongRecentlyViewedDateAndRatingInNewThread(MainAct.manager.db);
+						viewF.setBackgroundColor((Integer) viewF.getTag());
+					}
+				});
 
-				// TODO update adapter
-				curSong = Song.Get(MainAct.manager.db, curSong.Id());
-
-				MainAct.mainActivity_SongView.UpdateContenSongView(curSong);
-
-				curSong.RecentlyViewedDate(new Date());
-				curSong.Rating(curSong.Rating() + 1);
-				curSong.SaveOrUpdate(MainAct.manager.db);
 			}
 		});
 

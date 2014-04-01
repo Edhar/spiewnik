@@ -32,6 +32,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	MainActivity_SearchView mainActivity_SearchView;
 	MainActivity_SongView mainActivity_SongView;
 	MainActivity_Click mainActivity_Click;
+	MainActivity_InAppBilling mainActivity_InAppBilling;
 
 	AppPagerAdapter pagerAdapter;
 	AppManager manager;
@@ -43,11 +44,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 		mainActivity_Menu = new MainActivity_Menu(this);
 		mainActivity_Click = new MainActivity_Click(this);
+
+		mainActivity_InAppBilling = new MainActivity_InAppBilling(this);
 	}
 
 	protected void FillWithSettings() {
 		mainActivity_SettingsView.SetSelectedDefaultTab_byDefaultResultsForTab(manager.settings.DefaultTabId());
-		
+
 		mainActivity_SettingsView.SetTextWithoutEventRun_minSymbolsForStartSearch(manager.settings.MinSymbolsForStartSearch().toString());
 		mainActivity_SettingsView.SetTextWithoutEventRun_maxSongsPerPageOnResult(manager.settings.SongsPerPage().toString());
 		mainActivity_SettingsView.SetCheckBoxValue_seachByAndShowSongNumbersInResult(manager.settings.SeachByAndShowSongNumbersInResult());
@@ -80,12 +83,53 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		}
 	}
 
+	private OnPageChangeListener OnPageChangeListener_viewPager = new OnPageChangeListener() {
+
+		@Override
+		public void onPageSelected(int arg0) {
+			mainActivity_SongView.CheckIfSongEditModeOrContentSaved();
+
+			Activity activity = (Activity) manager.context;
+
+			if (manager.viewPager.getCurrentItem() == MainActivity_SettingsView.SettingsViewIndex) {
+				activity.setTitle(getResources().getString(R.string.settings_settingsName));
+			} else if (manager.viewPager.getCurrentItem() == MainActivity_SearchView.SearchViewIndex) {
+				activity.setTitle(getResources().getString(R.string.app_name));
+			} else if (manager.viewPager.getCurrentItem() == MainActivity_SongView.SongViewIndex) {
+				try {
+					mainActivity_SongView.SetSongViewViewMode();
+					EditText songTitle = (EditText) manager.GetViewPage(MainActivity_SongView.SongViewIndex).findViewById(R.id.SongTitleEditText);
+
+					if (songTitle != null && songTitle.getText().length() != 0) {
+						activity.setTitle(songTitle.getText());
+					} else {
+						activity.setTitle(getResources().getString(R.string.app_name));
+					}
+					;
+				} catch (Exception e) {
+					activity.setTitle(getResources().getString(R.string.app_name));
+				}
+			}
+			manager.HideKeyboard();
+		}
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+
+		}
+	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		InitTitle();
 		
+		InitTitle();
+
 		LayoutInflater inflater = LayoutInflater.from(this);
 		List<View> pages = new ArrayList<View>();
 
@@ -107,51 +151,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 		manager = new AppManager(this, viewPager);
 
-		
 		mainActivity_SettingsView.onCreate();
 		mainActivity_SearchView.onCreate();
 		mainActivity_SongView.onCreate();
 
-		viewPager.setOnPageChangeListener(new OnPageChangeListener() {
+		mainActivity_InAppBilling.onCreate();
 
-			@Override
-			public void onPageSelected(int arg0) {
-				mainActivity_SongView.CheckIfSongEditModeOrContentSaved();
-
-				Activity activity = (Activity) manager.context;
-
-				if (manager.viewPager.getCurrentItem() == MainActivity_SettingsView.SettingsViewIndex) {
-					activity.setTitle(getResources().getString(R.string.settings_settingsName));
-				} else if (manager.viewPager.getCurrentItem() == MainActivity_SearchView.SearchViewIndex) {
-					activity.setTitle(getResources().getString(R.string.app_name));
-				} else if (manager.viewPager.getCurrentItem() == MainActivity_SongView.SongViewIndex) {
-					try {
-						mainActivity_SongView.SetSongViewViewMode();
-						EditText songTitle = (EditText) manager.GetViewPage(MainActivity_SongView.SongViewIndex).findViewById(R.id.SongTitleEditText);
-
-						if (songTitle != null && songTitle.getText().length() != 0) {
-							activity.setTitle(songTitle.getText());
-						} else {
-							activity.setTitle(getResources().getString(R.string.app_name));
-						}
-						;
-					} catch (Exception e) {
-						activity.setTitle(getResources().getString(R.string.app_name));
-					}
-				}
-				manager.HideKeyboard();
-			}
-
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-			}
-
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-
-			}
-		});
+		viewPager.setOnPageChangeListener(OnPageChangeListener_viewPager);
 
 		FillWithSettings();
 
@@ -221,6 +227,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		manager.CloseDB();
+		mainActivity_InAppBilling.onDestroy();
 		super.onDestroy();
 	}
 
@@ -253,6 +260,23 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 				mainActivity_SearchView.songsListView.getFirstVisiblePosition());
 	}
 
+	// DO NOT SKIP THIS METHOD
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (mainActivity_InAppBilling.mHelper == null)
+			return;
+
+		// Pass on the activity result to the helper for handling
+		if (!mainActivity_InAppBilling.mHelper.handleActivityResult(requestCode, resultCode, data)) {
+			// not handled, so handle it ourselves (here's where you'd
+			// perform any handling of activity results not related to in-app
+			// billing...
+			super.onActivityResult(requestCode, resultCode, data);
+		} else {
+			// onActivityResult handled by IABUtil.
+		}
+	}
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		AppState appState = GetAppState();
@@ -271,19 +295,18 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 			}
 
 			if (state != null && (new Date().getTime() - state.AppStateCreated.getTime()) < SettingsHelper.DefaultValues.AppStateDurationValid) {
-				manager.viewPager.setCurrentItem(state.ViewIndex);				
+				manager.viewPager.setCurrentItem(state.ViewIndex);
 				if (state.IsSongEditMode) {
 					mainActivity_SongView.SetSongEditMode();
 				}
 
 				mainActivity_SongView.UpdateContenSongView(state.SongViewSong);
-				
 
-				//mainActivity_SearchView.searchEditText.setText(state.Terms.SearchText());
+				// mainActivity_SearchView.searchEditText.setText(state.Terms.SearchText());
 				mainActivity_SearchView.SetTextWithoutEventRun_searchEditText(state.Terms.SearchText());
-				if(state.Terms.SearchText().equals("")){
-                   mainActivity_SearchView.ToggleClearSearchButton(false);
-				}else{
+				if (state.Terms.SearchText().equals("")) {
+					mainActivity_SearchView.ToggleClearSearchButton(false);
+				} else {
 					mainActivity_SearchView.ToggleClearSearchButton(true);
 				}
 				mainActivity_SearchView.CreateAdapterAndSetToSongList(state.Terms);

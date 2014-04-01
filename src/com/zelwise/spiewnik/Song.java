@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.util.Log;
 
 public class Song implements Serializable{
@@ -164,6 +165,26 @@ public class Song implements Serializable{
 		return Names.Id + " - " + this.Id() + "; " + Names.Title + " - "
 				+ this.Title() + "; " + Names.SiteId + " - " + this.SiteId()
 				+ ";";
+	}
+	
+	public void UpdateSongRecentlyViewedDateAndRatingInNewThread(SQLiteDatabase db) {
+		final SQLiteDatabase dbF = db;
+		
+		Runnable r=new Runnable()
+		{
+		    public void run() 
+		    {
+		    	UpdateSongRecentlyViewedDateAndRating(dbF); 			
+		    }
+		};
+		new Handler().postDelayed(r, 500);
+	}
+	public void UpdateSongRecentlyViewedDateAndRating(SQLiteDatabase db) {
+		Song curSong = Song.Get(db, this.Id());
+		
+		curSong.RecentlyViewedDate(new Date());
+		curSong.Rating(curSong.Rating() + 1);
+		curSong.SaveOrUpdate(db);
 	}
 
 	public void SaveOrUpdate(SQLiteDatabase db) {

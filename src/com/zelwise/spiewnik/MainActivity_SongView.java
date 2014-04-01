@@ -27,19 +27,21 @@ public class MainActivity_SongView extends MainActivity_Ext {
 		super(mainActivity);
 	}
 
-	EditText songTitleEditText, songContentEditText;	
+	EditText songTitleEditText, songContentEditText;
 	LinearLayout magnifierLinearLayout;
-	
+
 	public static final Integer SongViewIndex = 2;
-	
+
 	private Boolean isSongEditMode = false;
+
 	public Boolean IsSongEditMode() {
 		return isSongEditMode;
-	}	
+	}
+
 	public void IsSongEditMode(Boolean newState) {
 		isSongEditMode = newState;
 	}
-	
+
 	protected long lastMagnifierShowTime;
 	Handler magnifierHandler = new Handler();
 	protected Runnable updateMagnifierState = new Runnable() {
@@ -48,17 +50,18 @@ public class MainActivity_SongView extends MainActivity_Ext {
 			if (curTime - lastMagnifierShowTime > SettingsHelper.DefaultValues.MagnifiedShowTime) {
 				magnifierLinearLayout.setVisibility(View.GONE);
 			} else {
-				magnifierHandler.postDelayed(updateMagnifierState,SettingsHelper.DefaultValues.MagnifiedShowTime);
+				magnifierHandler.postDelayed(updateMagnifierState, SettingsHelper.DefaultValues.MagnifiedShowTime);
 			}
 
 		}
 	};
+
 	protected void ShowMagnifier() {
 		magnifierLinearLayout.setVisibility(View.VISIBLE);
-		magnifierHandler.postDelayed(updateMagnifierState,SettingsHelper.DefaultValues.MagnifiedShowTime);
+		magnifierHandler.postDelayed(updateMagnifierState, SettingsHelper.DefaultValues.MagnifiedShowTime);
 
 		lastMagnifierShowTime = new Date().getTime();
-	}	
+	}
 
 	protected OnTouchListener onTouchListenerMagnifier = new OnTouchListener() {
 		@Override
@@ -74,9 +77,11 @@ public class MainActivity_SongView extends MainActivity_Ext {
 			return true;
 		}
 	};
-	
+
+	private Toast fontSizeToast = null;
+
 	protected void ChangeFontSize(Boolean isEnlarge) {
-		float currentSize = Utils.pixelsToSp(MainAct.manager.context,songContentEditText.getTextSize());
+		float currentSize = Utils.pixelsToSp(MainAct.manager.context, songContentEditText.getTextSize());
 		float newSize = currentSize;
 		if (isEnlarge) {
 			newSize += SettingsHelper.DefaultValues.FontSizeMagnifierStep;
@@ -89,23 +94,26 @@ public class MainActivity_SongView extends MainActivity_Ext {
 				newSize = SettingsHelper.DefaultValues.FontSizeMin();
 			}
 		}
-
-		final Toast toast = Toast.makeText(MainAct.manager.context, newSize / SettingsHelper.DefaultValues.FontSize + "x", Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-
-		Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
+		
+		final String fontSizeMsg = newSize / SettingsHelper.DefaultValues.FontSize + "x";
+		new Runnable() {
 			@Override
 			public void run() {
-				toast.cancel();
+
+				if (fontSizeToast == null) {
+					fontSizeToast = Toast.makeText(MainAct.manager.context, "", Toast.LENGTH_SHORT);
+				}
+
+				fontSizeToast.setText(fontSizeMsg);
+				fontSizeToast.setGravity(Gravity.CENTER, 0, 0);
+				fontSizeToast.show();
 			}
-		}, 300);
+		}.run();
 
 		MainAct.manager.settings.FontSize(newSize);
 		songContentEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
 	}
-	
+
 	protected void SetSongEditMode() {
 		songTitleEditText.setVisibility(View.VISIBLE);
 		songTitleEditText.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -140,7 +148,7 @@ public class MainActivity_SongView extends MainActivity_Ext {
 
 		IsSongEditMode(false);
 	}
-	
+
 	protected void UpdateContenSongView(Song newSong) {
 		try {
 			View songView = MainAct.manager.GetViewPage(MainActivity_SongView.SongViewIndex);
@@ -171,7 +179,6 @@ public class MainActivity_SongView extends MainActivity_Ext {
 		}
 
 	}
-	
 
 	protected Song UpdateSongFromEditMode(Song originalSong) {
 		try {
@@ -191,7 +198,7 @@ public class MainActivity_SongView extends MainActivity_Ext {
 
 		return originalSong;
 	}
-	
+
 	protected void CheckIfSongEditModeOrContentSaved() {
 		if (IsSongEditMode()) {
 			final Song curSong = GetSongFromSongView();
@@ -257,7 +264,7 @@ public class MainActivity_SongView extends MainActivity_Ext {
 		UpdateContenSongView(new Song());
 		SetSongEditMode();
 	}
-	
+
 	@Override
 	protected void onCreate() {
 		View songView = MainAct.manager.GetViewPage(SongViewIndex);
@@ -281,14 +288,15 @@ public class MainActivity_SongView extends MainActivity_Ext {
 						ShowMagnifier();
 					}
 				}
-				/*if (event.getAction() == MotionEvent.ACTION_MOVE) {
-					return false;
-				}*/
+				/*
+				 * if (event.getAction() == MotionEvent.ACTION_MOVE) { return
+				 * false; }
+				 */
 
 				return false;
 			}
 		});
-		
+
 		ImageView magnifierMinus = (ImageView) songView.findViewById(R.id.MagnifierMinusImageView);
 		ImageView magnifierPlus = (ImageView) songView.findViewById(R.id.MagnifierPlusImageView);
 		magnifierMinus.setOnTouchListener(onTouchListenerMagnifier);

@@ -297,6 +297,39 @@
             </LinearLayout>
             
             <View style="@style/Line" />
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="left|center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/settings_donate_statement"
+                    android:textSize="18sp" >
+                </TextView>
+
+                <Spinner
+                    android:id="@+id/DonateSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp" >
+                </Spinner>
+                
+                <Button
+                        android:id="@+id/DonateButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_donate"
+                        android:textSize="18sp" >
+                    </Button>
+            </LinearLayout>
+            
+            <View style="@style/Line" />
                         
             <LinearLayout
                 android:layout_width="match_parent"

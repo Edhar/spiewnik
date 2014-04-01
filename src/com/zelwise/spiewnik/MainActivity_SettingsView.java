@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class MainActivity_SettingsView extends MainActivity_Ext {
@@ -21,13 +22,13 @@ public class MainActivity_SettingsView extends MainActivity_Ext {
 		super(mainActivity);
 	}
 
-	Button downloadButton, dropTablesButton;
+	Button downloadButton, dropTablesButton,donateButton;
 
 	EditText downloadFromEditText, downloadToEditText, maxSongsPerPageOnResult, minSymbolsForStartSearch;
 
 	LinearLayout advanceLinearLayout;
 
-	Spinner byDefaultResultsForTab;
+	Spinner byDefaultResultsForTab,donateSpinner;
 
 	CheckBox advanceCheckBox, seachByAndShowSongNumbersInResult, doMoreRelevantSearch, doNotTurnOffScreen;
 
@@ -217,6 +218,24 @@ public class MainActivity_SettingsView extends MainActivity_Ext {
 		downloadButton.setOnClickListener(MainAct);
 		dropTablesButton = (Button) settingsView.findViewById(R.id.DropTablesButton);
 		dropTablesButton.setOnClickListener(MainAct);
+		
+		ArrayAdapter<DonateProduct> adapterDonate = new ArrayAdapter<DonateProduct>(MainAct, android.R.layout.simple_spinner_item, MainAct.mainActivity_InAppBilling.GetDonateProducts());
+		adapterDonate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		donateSpinner = (Spinner) settingsView.findViewById(R.id.DonateSpinner);
+		donateSpinner.setAdapter(adapterDonate);
+		donateButton = (Button) settingsView.findViewById(R.id.DonateButton);
+		donateButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DonateProduct product = (DonateProduct)donateSpinner.getSelectedItem();
+				if(product!=null){
+					//Toast.makeText(MainAct, product.LabelDescription(), Toast.LENGTH_SHORT).show();
+					MainAct.mainActivity_InAppBilling.makeDonation(product);
+				}
+			}
+		});
+		
 		advanceLinearLayout = (LinearLayout) settingsView.findViewById(R.id.AdvanceLinearLayout);
 		advanceCheckBox = (CheckBox) settingsView.findViewById(R.id.AdvanceCheckBox);
 		advanceCheckBox.setOnClickListener(new OnClickListener() {

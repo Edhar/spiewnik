@@ -3,6 +3,8 @@ package com.zelwise.spiewnik;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.net.ssl.ManagerFactoryParameters;
+
 import com.zelwise.spiewnik.R;
 
 import android.R.bool;
@@ -110,11 +112,15 @@ public class SongArrayAdapter extends ArrayAdapter<Song> {
 
 		View view = super.getView(position, convertView, parent);
 
+		int bgColorListItem = 0; 
 		if (position % 2 == 1) {
-			view.setBackgroundColor(manager.context.getResources().getColor(R.color.theme_violet_bg_SongListItemTextView1));
+			bgColorListItem = manager.context.getResources().getColor(R.color.theme_violet_bg_SongListItemTextView1);
+			
 		} else {
-			view.setBackgroundColor(manager.context.getResources().getColor(R.color.theme_violet_bg_SongListItemTextView2));
+			bgColorListItem = manager.context.getResources().getColor(R.color.theme_violet_bg_SongListItemTextView2);
 		}
+		view.setBackgroundColor(bgColorListItem);
+		view.setTag(bgColorListItem);
 
 		final Song curSong = (Song) songList.get(position);
 		if (curSong != null) {
